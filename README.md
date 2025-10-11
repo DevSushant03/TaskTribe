@@ -45,23 +45,4 @@ TaskTribe is a **collaborative skill-sharing platform** where anyone with skills
 
 ## 🗂️ Folder Structure
 
-TaskTribe/
-│
-├── client/ # React frontend
-│ ├── src/
-│ │ ├── components/ # Reusable UI components
-│ │ ├── pages/ # Pages: Home, Login, Dashboard
-│ │ ├── hooks/ # Custom React hooks
-│ │ ├── App.js
-│ │ └── index.js
-│ └── package.json
-│
-├── server/ # Express backend
-│ ├── routes/ # API routes
-│ ├── controllers/ # Route logic
-│ ├── models/ # MongoDB models
-│ ├── middleware/ # JWT auth, error handling
-│ ├── server.js
-│ └── package.json
-│
-└── README.md
+![alt text](client/public/folderStructure.png)
