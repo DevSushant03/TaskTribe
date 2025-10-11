@@ -19,11 +19,6 @@ TaskTribe is a **collaborative skill-sharing platform** where anyone with skills
 
 ## 🖥️ Screenshots / Preview
 
-> **Replace these links with your actual screenshots or GIFs**
-
-![Landing Page](./assets/landing.png)  
-![Dashboard](./assets/dashboard.png)  
-![Task Details](./assets/task-details.png)
 
 ---
 
