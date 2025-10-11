@@ -1,8 +1,67 @@
 # TaskTribe
-TaskTribe is a collaborative platform designed for college students to post, share, and solve academic or campus-related tasks. Whether it's finding a partner for a group project, getting help with assignments, or offering solutions to peers, TaskTribe connects students in a trusted environment.
- 
-#Tech Stack:
-Frontend: React.js, Tailwind CSS, Framer Motion
-Backend: Node.js, Express.js
-Database: MySQL (or MongoDB – based on your setup)
-Authentication: JWT / Cookie-based sessions
+
+TaskTribe is a **collaborative skill-sharing platform** where anyone with skills or expertise can **post tasks, offer help, and collaborate** with others. It’s designed to connect people who want to help and those who need assistance, regardless of age, profession, or background.
+
+[![React](https://img.shields.io/badge/React-18.2.0-blue?logo=react&logoColor=white)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20-green?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+
+## 🚀 Features
+
+- 🔐 **User Authentication:** Secure registration and login with JWT.
+- 📝 **Post & Browse Tasks:** Add new tasks and view others' tasks.
+- 📋 **Task Pool:** Browse tasks you can contribute to.
+- ⚡ **Real-Time Updates:** Instantly see new tasks and updates.
+- 📱 **Responsive UI:** Modern and clean design for both mobile & desktop.
+
+---
+
+## 🖥️ Screenshots / Preview
+
+> **Replace these links with your actual screenshots or GIFs**
+
+![Landing Page](./assets/landing.png)  
+![Dashboard](./assets/dashboard.png)  
+![Task Details](./assets/task-details.png)
+
+---
+
+## 🧱 Tech Stack
+
+**Frontend:**
+
+- React.js (Functional Components + Hooks)
+- Tailwind CSS
+- Framer Motion
+
+**Backend:**
+
+- Node.js & Express.js
+- MongoDB (Mongoose)
+- JWT Authentication
+
+---
+
+## 🗂️ Folder Structure
+
+TaskTribe/
+│
+├── client/ # React frontend
+│ ├── src/
+│ │ ├── components/ # Reusable UI components
+│ │ ├── pages/ # Pages: Home, Login, Dashboard
+│ │ ├── hooks/ # Custom React hooks
+│ │ ├── App.js
+│ │ └── index.js
+│ └── package.json
+│
+├── server/ # Express backend
+│ ├── routes/ # API routes
+│ ├── controllers/ # Route logic
+│ ├── models/ # MongoDB models
+│ ├── middleware/ # JWT auth, error handling
+│ ├── server.js
+│ └── package.json
+│
+└── README.md
