@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { tasks, stats } from '../utils/api';
+import { getUser } from '../utils/auth';
 import { Plus, Filter, TrendingUp, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function TaskList() {
   const navigate = useNavigate();
+  const currentUser = getUser();
   const [activeTab, setActiveTab] = useState('available');
   const [availableTasks, setAvailableTasks] = useState([]);
   const [myPostedTasks, setMyPostedTasks] = useState([]);
@@ -60,7 +62,7 @@ function TaskList() {
     <div
       key={task.id}
       className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer"
-      onClick={() => navigate(`/user/${task.posterId || task.solverId}/task/${task.id}`)}
+      onClick={() => navigate(`/user/${currentUser?.id}/task/${task.id}`)}
     >
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-xl font-bold text-gray-800">{task.title}</h3>
