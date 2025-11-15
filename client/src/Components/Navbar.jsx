@@ -53,7 +53,7 @@ function Navbar() {
         </Link>
 
         {/* Mobile Menu Icon */}
-        <div className="md:hidden text-3xl cursor-pointer">☰</div>
+        <div className="md:hidden text-3xl text-white cursor-pointer">☰</div>
       </div>
     </nav>
   );

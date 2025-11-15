@@ -23,7 +23,7 @@ function HeroSection() {
       {/* Hero Text Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 h-full flex flex-col items-center justify-center text-center text-white">
 
-        <h1 className="title text-4xl md:text-5xl leading-tight">
+        <h1 className="title text-3xl md:text-5xl leading-tight">
           Your Skill, Your Impact <br />
           <span className="text-orange-400">Growing Together on TaskTribe</span>
         </h1>

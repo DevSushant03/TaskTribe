@@ -1,14 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Knewave&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Blaka&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Blaka&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap');
 @import "tailwindcss";
 body {
   background-color: black;
   font-family: "Lexend Deca", sans-serif;
 }
 .title {
-  font-family: "Knewave", system-ui;
+  font-family: "Rubik Dirt", system-ui;
 }
-.logoText{
-   font-family: "Blaka", system-ui;
+.logoText {
+  font-family: "Blaka", system-ui;
 }
