@@ -4,9 +4,12 @@ import LightRays from "../Components/LightRays";
 import FeaturesSection from "../Components/FeaturesSection";
 import SolveAndEarn from "../Components/SolveAndEarn";
 import FeedbackSection from "../Components/FeedbackSection";
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 export default function Home() {
   return (
     <>
+    <Navbar/>
       <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
         <LightRays
           raysOrigin="top-center"
@@ -25,6 +28,7 @@ export default function Home() {
       <FeaturesSection />
       <SolveAndEarn/>
       <FeedbackSection/>
+      <Footer/>
     </>
   );
 }

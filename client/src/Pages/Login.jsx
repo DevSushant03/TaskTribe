@@ -1,13 +1,14 @@
-// src/pages/LoginPage.jsx
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import SidePicture from "/src/assets/loginPage.jpg";
+
 export default function Login() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       <div className="flex-1 flex flex-col justify-center px-8 py-8 bg-white">
-        <div className="max-w-md mx-auto w-full">
+        <div className="max-w-md mx-auto mt-10 w-full">
           <h2 className="text-center text-2xl font-semibold mb-6">Sign In</h2>
 
           {/* Social Login */}
@@ -59,12 +60,12 @@ export default function Login() {
           {/* Signup link */}
           <p className="mt-5 text-center text-sm">
             Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="text-blue-600"
-            >
+            <Link to="/register" className="text-blue-600">
               Sign Up
             </Link>
+          </p>
+          <p className="mt-10 text-center underline">
+             <Link to="/"> {"< "}Back to home</Link>
           </p>
         </div>
       </div>

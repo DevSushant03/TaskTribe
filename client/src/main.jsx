@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 
-import AppLayout from "./Layout/AppLayout";
 import UserLayout from "./Layout/UserLayout";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
@@ -17,18 +16,15 @@ import ProfilePage from "./Pages/ProfilePage";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppLayout />,
-    children: [
-      { index: true, element: <Home /> },
-      { path: "login", element: <Login /> },
-      { path: "register", element: <Register /> },
-    ],
+    element: <Home />,
   },
+  { path: "login", element: <Login /> },
+  { path: "register", element: <Register /> },
   {
     path: "/user/:id",
     element: <UserLayout />,
     children: [
-      { index: true, path:"browse", element: <TaskList /> },
+      { index: true, path: "browse", element: <TaskList /> },
       { path: "task/:taskId", element: <TaskDetails /> },
       { path: "post-task", element: <PostTask /> },
       { path: "notification", element: <Notification /> },
