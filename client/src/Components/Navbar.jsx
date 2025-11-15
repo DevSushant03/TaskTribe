@@ -46,14 +46,12 @@ function Navbar() {
 
         {/* Button */}
         <Link
-          to="/Register"
-          className="hidden md:block bg-orange-600 text-white px-5 py-2 rounded-lg hover:bg-orange-700 duration-200"
+          to="/login"
+          className="block bg-orange-600 text-white px-5 py-2 rounded-lg hover:bg-orange-700 duration-200"
         >
-          Register
+          Sign In
         </Link>
 
-        {/* Mobile Menu Icon */}
-        <div className="md:hidden text-3xl text-white cursor-pointer">☰</div>
       </div>
     </nav>
   );
