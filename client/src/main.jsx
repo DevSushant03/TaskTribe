@@ -28,7 +28,7 @@ const router = createBrowserRouter([
     path: "/user/:id",
     element: <UserLayout />,
     children: [
-      { index: true, element: <TaskList /> },
+      { index: true, path:"browse", element: <TaskList /> },
       { path: "task/:taskId", element: <TaskDetails /> },
       { path: "post-task", element: <PostTask /> },
       { path: "notification", element: <Notification /> },
