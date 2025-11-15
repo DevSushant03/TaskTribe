@@ -1,10 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Knewave&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Blaka&display=swap');
 @import "tailwindcss";
 body {
   background-color: black;
-  font-family: "Merriweather Sans", sans-serif;
+  font-family: "Lexend Deca", sans-serif;
 }
 .title {
-  font-family: "Luckiest Guy", cursive;
+  font-family: "Knewave", system-ui;
+}
+.logoText{
+   font-family: "Blaka", system-ui;
 }
