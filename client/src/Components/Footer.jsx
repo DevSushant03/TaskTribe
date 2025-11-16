@@ -15,7 +15,7 @@ export default function Footer() {
           <div className="p-6 rounded-lg flex flex-col items-center bg-yellow-500 md:items-end gap-3">
             <h1 className="text-3xl text-black font-bold">Get Started</h1>
             <Link
-              to="/login"
+              to="/auth"
               className="px-6 py-2 bg-black font-semibold rounded-lg hover:opacity-70 transition"
             >
               Post Task
