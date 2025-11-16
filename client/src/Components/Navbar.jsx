@@ -48,7 +48,7 @@ function Navbar() {
 
         {/* Button */}
         <Link
-          to="/login"
+          to="/auth"
           className="block bg-orange-600 text-white px-5 py-2 rounded-lg hover:bg-orange-700 duration-200"
         >
           Sign In

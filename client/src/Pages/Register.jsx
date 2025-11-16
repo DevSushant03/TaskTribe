@@ -5,6 +5,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"; // Optional for passwo
 import teamwork from "/src/assets/teamwork.jpg";
 import Footer from "../Components/Footer";
 export default function Register() {
+
   return (
     <>
       <div className="min-h-screen flex flex-col md:flex-row">
@@ -87,7 +88,7 @@ export default function Register() {
             {/* Login link */}
             <p className="mt-5 text-center text-sm">
               Already have an account?{" "}
-              <Link to="/login" className="text-blue-600">
+              <Link to="/auth" className="text-blue-600">
                 Sign In
               </Link>
             </p>

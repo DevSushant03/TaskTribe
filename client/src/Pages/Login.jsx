@@ -4,6 +4,7 @@ import { FaFacebookF } from "react-icons/fa";
 import SidePicture from "/src/assets/friendsWorking.jpg";
 import Footer from "../Components/Footer";
 export default function Login() {
+  let display = 2;
   return (
     <>
       <div className="min-h-screen flex flex-col md:flex-row">
@@ -60,7 +61,7 @@ export default function Login() {
             {/* Signup link */}
             <p className="mt-5 text-center text-sm">
               Don't have an account?{" "}
-              <Link to="/register" className="text-blue-600">
+              <Link to="/auth/register" className="text-blue-600">
                 Sign Up
               </Link>
             </p>
