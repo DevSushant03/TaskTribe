@@ -20,33 +20,13 @@ export default function UnderConstruction() {
           <div className="bg-gray-100 rounded-full px-4 py-2 text-sm text-gray-700 border border-gray-200">
             Current status:{" "}
             <span className="font-semibold text-orange-500">
-              Nailing the UI ✨
+              Dashboard & Other
             </span>
           </div>
         </div>
 
         {/* Right: Actions */}
         <div className="w-full md:w-1/2 flex flex-col gap-4">
-          <div className="p-4 rounded-lg border border-gray-100 bg-white">
-            <p className="text-sm text-gray-600 mb-3">Meanwhile, try these:</p>
-            <ul className="list-disc list-inside text-gray-700">
-              <li>
-                Follow our{" "}
-                <a className="text-orange-500 font-medium">Twitter</a> for
-                updates
-              </li>
-              <li>
-                Check out our{" "}
-                <a className="text-orange-500 font-medium">Docs</a> (coming
-                soon)
-              </li>
-              <li>
-                Got feedback?{" "}
-                <a className="text-orange-500 font-medium">Send us a message</a>
-              </li>
-            </ul>
-          </div>
-
           <div className="mt-2 text-sm text-gray-500">
             If you must, try refreshing after a cup of coffee ☕ — we promise
             it'll be worth it.
@@ -64,7 +44,7 @@ export default function UnderConstruction() {
       </div>
 
       {/* Bottom tiny footer */}
-      <div className="absolute bottom-6 text-xs text-gray-400">
+      <div className=" hidden md:block absolute bottom-6 text-xs text-gray-400">
         Built with ❤️ by the TaskTribe crew — Under construction but having fun!
       </div>
     </div>

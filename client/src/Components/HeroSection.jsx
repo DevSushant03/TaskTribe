@@ -21,7 +21,7 @@ function HeroSection() {
       {/* <div className="absolute inset-0 bg-black/40"></div> */}
 
       {/* Hero Text Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 h-full flex flex-col items-center justify-center text-center text-white">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 h-full flex flex-col items-center justify-center mt-10 md:mt-0 text-center text-white">
 
         <h1 className="title text-3xl md:text-5xl leading-tight">
           Your Skill, Your Impact <br />

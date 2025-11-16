@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap');
 @import "tailwindcss";
 body {
-  background-color: black;
+  background-color: #0C0C0C;
   font-family: "Lexend Deca", sans-serif;
 }
 a,button{
