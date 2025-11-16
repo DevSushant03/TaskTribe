@@ -2,13 +2,12 @@ import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
 import SidePicture from "/src/assets/friendsWorking.jpg";
-import Footer from "../Components/Footer";
 export default function Login() {
   let display = 2;
   return (
     <>
       <div className="min-h-screen flex flex-col md:flex-row">
-        <div className="flex-1 flex flex-col justify-center px-8 py-8 bg-white">
+        <div className="flex-1 flex flex-col justify-center px-8 py-8 bg-[#f0f8ff]">
           <div className="max-w-md mx-auto mt-10 w-full">
             <h2 className="text-center text-2xl font-semibold mb-6">Sign In</h2>
 

@@ -410,7 +410,7 @@ void main() {
   return (
     <div
       ref={containerRef}
-      className={`w-full h-full pointer-events-none overflow-hidden absolute ${className}`.trim()}
+      className={`w-full h-full hidden md:block pointer-events-none overflow-hidden absolute ${className}`.trim()}
     />
   );
 };

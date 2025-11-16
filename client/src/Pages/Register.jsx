@@ -3,14 +3,13 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"; // Optional for password visibility
 import teamwork from "/src/assets/teamwork.jpg";
-import Footer from "../Components/Footer";
 export default function Register() {
 
   return (
     <>
       <div className="min-h-screen flex flex-col md:flex-row">
         {/* Left: Signup Form */}
-        <div className="flex-1 flex flex-col justify-center px-8 py-8 bg-white">
+        <div className="flex-1 flex flex-col justify-center px-8 py-8 bg-[#f0f8ff]">
           <div className="max-w-md mx-auto w-full mt-10">
             <h2 className="text-center text-2xl font-semibold mb-6">Sign up</h2>
 

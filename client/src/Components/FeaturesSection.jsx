@@ -23,7 +23,7 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="w-full py-20 bg-black text-white">
+    <section className="w-full py-20 text-white">
       <div className="max-w-6xl mx-auto px-6 text-center">
         
         {/* Heading */}

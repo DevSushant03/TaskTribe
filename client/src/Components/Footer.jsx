@@ -3,8 +3,8 @@ import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import logo from "/public/icon.jpeg"
 export default function Footer() {
   return (
-    <footer className="w-full bg-black text-white py-16 flex justify-center">
-      <div className="w-[90%] p-10 max-w-7xl flex flex-col gap-16 bg-white rounded-2xl text-black">
+    <footer className="w-full text-white py-16 flex justify-center">
+      <div className="w-[90%] p-10 max-w-7xl flex flex-col gap-16 bg-[#f0f8ff] rounded-2xl text-black">
         {/* Top Section */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
