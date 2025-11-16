@@ -13,16 +13,18 @@ import Notification from "./Pages/Notification";
 import ProfilePage from "./Pages/ProfilePage";
 import Authentication from "./Layout/Authentication";
 import GetUserInfo from "./Pages/GetUserInfo";
-
+import NotFound404 from "./Pages/NoFound404";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+    errorElement: <NotFound404 />,
   },
 
   {
     path: "auth",
     element: <Authentication />,
+    errorElement: <NotFound404 />,
     children: [
       { index: true, element: <Login /> },
       { path: "register", element: <Register /> },
