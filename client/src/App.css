@@ -6,6 +6,9 @@ body {
   background-color: black;
   font-family: "Lexend Deca", sans-serif;
 }
+a,button{
+  cursor: pointer;
+}
 .title {
   font-family: "Rubik Dirt", system-ui;
 }

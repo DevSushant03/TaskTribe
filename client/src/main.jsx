@@ -12,6 +12,7 @@ import PostTask from "./Pages/PostTask";
 import Notification from "./Pages/Notification";
 import ProfilePage from "./Pages/ProfilePage";
 import Authentication from "./Layout/Authentication";
+import GetUserInfo from "./Pages/GetUserInfo";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Login /> },
       { path: "register", element: <Register /> },
+      {
+        path: "createProfile",
+        element: <GetUserInfo />,
+      },
     ],
   },
 

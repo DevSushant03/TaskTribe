@@ -54,7 +54,7 @@ export default function Login() {
                 type="submit"
                 className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"
               >
-                Log in
+                <Link to="/auth/createProfile">Log in</Link>
               </button>
             </form>
 

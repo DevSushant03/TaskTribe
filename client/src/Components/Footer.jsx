@@ -4,7 +4,7 @@ import logo from "/public/icon.jpeg"
 export default function Footer() {
   return (
     <footer className="w-full bg-black text-white py-16 flex justify-center">
-      <div className="w-[80%] max-w-7xl flex flex-col gap-16">
+      <div className="w-[90%] p-10 max-w-7xl flex flex-col gap-16 bg-white rounded-2xl text-black">
         {/* Top Section */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
@@ -16,7 +16,7 @@ export default function Footer() {
             <h1 className="text-3xl text-black font-bold">Get Started</h1>
             <Link
               to="/auth"
-              className="px-6 py-2 bg-black font-semibold rounded-lg hover:opacity-70 transition"
+              className="px-6 py-2 bg-black text-white font-semibold rounded-lg hover:opacity-70 transition"
             >
               Post Task
             </Link>
@@ -26,32 +26,32 @@ export default function Footer() {
         {/* Links + Social */}
         <div className="flex flex-col md:flex-row justify-between gap-10">
           {/* Quick Links */}
-          <div className="grid grid-cols-3 gap-5 text-gray-300">
-            <a href="#Home" className="hover:text-white transition">
+          <div className="grid grid-cols-3 gap-5 text-black">
+            <a href="#Home" className="hover:text-orange-500 transition">
               Home
             </a>
-            <a href="#Tasks" className="hover:text-white transition">
+            <a href="#Tasks" className="hover:text-orange-500 transition">
               Tasks
             </a>
-            <a href="#About" className="hover:text-white transition">
+            <a href="#About" className="hover:text-orange-500 transition">
               About
             </a>
-            <a href="#Contact" className="hover:text-white transition">
+            <a href="#Contact" className="hover:text-orange-500 transition">
               Contact
             </a>
-            <a href="#FAQ" className="hover:text-white transition">
+            <a href="#FAQ" className="hover:text-orange-500 transition">
               FAQ
             </a>
-            <a href="#Support" className="hover:text-white transition">
+            <a href="#Support" className="hover:text-orange-500 transition">
               Support
             </a>
-            <a href="#Community" className="hover:text-white transition">
+            <a href="#Community" className="hover:text-orange-500 transition">
               Community
             </a>
-            <a href="#Privacy" className="hover:text-white transition">
+            <a href="#Privacy" className="hover:text-orange-500 transition">
               Privacy
             </a>
-            <a href="#Terms" className="hover:text-white transition">
+            <a href="#Terms" className="hover:text-orange-500 transition">
               Terms
             </a>
           </div>
@@ -73,7 +73,7 @@ export default function Footer() {
 
         {/* Large Background Text */}
         <div className="w-full flex justify-center">
-          <h1 className="logoText text-[15vw] md:text-[180px] font-bold tracking-widest select-none">
+          <h1 className="logoText m-0 text-[15vw] md:text-[200px] font-semibold tracking-widest select-none">
             Task.Tribe
           </h1>
         </div>
