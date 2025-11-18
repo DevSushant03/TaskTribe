@@ -72,11 +72,9 @@ export default function Footer() {
         </div>
 
         {/* Large Background Text */}
-        <div className="w-full flex justify-center">
-          <h1 className="logoText m-0 text-[15vw] md:text-[200px] font-semibold tracking-widest select-none">
+          <h1 className="logoText m-0 text-center text-[15vw] md:text-[240px] font-semibold tracking-widest select-none">
             Task.Tribe
           </h1>
-        </div>
       </div>
     </footer>
   );
