@@ -1,9 +1,52 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
-import SidePicture from "/src/assets/friendsWorking.jpg";
+import SidePicture from "/src/assets/teamworks.jpg";
+import { useState } from "react";
+import { auth } from "../utils/api";
+import { toast } from "react-toastify";
+import {loginSchema} from "../Validation/auth_validation.js"
 export default function Login() {
-  let display = 2;
+  const navigate = useNavigate();
+  const [error,seterror]=useState("")
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Validate before API call
+    const validation = loginSchema.safeParse(formData);
+  
+    if (!validation.success) {
+      const firstError = validation.error.issues[0].message;
+      seterror(firstError);
+      toast.error(firstError);
+      return;
+    }
+  
+    try {
+      const { data } = await auth.login(formData);
+  
+      if (data.success) {
+        if (data.user.isCreatedProfile) {
+          navigate("/dashboard");
+        } else {
+          navigate("/auth/createProfile");
+        }
+      } else {
+        seterror(data.message);
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+  
   return (
     <>
       <div className="min-h-screen flex flex-col md:flex-row">
@@ -27,9 +70,12 @@ export default function Login() {
             </div>
 
             {/* Login Form */}
-            <form>
+            <form onSubmit={handleSubmit}>
               <input
                 type="text"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Email or Username"
                 className="w-full mb-3 py-2 px-3 border border-gray-300 rounded"
                 required
@@ -37,9 +83,15 @@ export default function Login() {
               <input
                 type="password"
                 placeholder="Password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full mb-3 py-2 px-3 border border-gray-300 rounded"
                 required
               />
+              {
+                error && ( <p className="bg-red-100 border-1 border-solid p-2 my-2 rounded-sm text-red-500 text-sm">{error}</p>)
+              }
               <div className="flex justify-between items-center mb-3 text-sm">
                 <label className="flex items-center">
                   <input type="checkbox" className="mr-1" />
@@ -53,7 +105,7 @@ export default function Login() {
                 type="submit"
                 className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"
               >
-                <Link to="/auth/createProfile">Log in</Link>
+                Log In
               </button>
             </form>
 
@@ -70,12 +122,13 @@ export default function Login() {
           </div>
         </div>
         {/* Right Visual Side */}
-        <div className="flex-1 bg-gray-900 relative hidden md:flex items-center justify-center">
+        <div className="h-screen flex-1 bg-gray-900 relative hidden md:flex overflow-hidden
+ items-center justify-center">
           <img
             src={SidePicture}
             alt="Motivational Visual"
             loading="lazy"
-            className="w-full h-full object-cover object-center"
+            className="w-full object-cover object-center"
           />
 
           <p className="absolute bottom-12 right-16 text-white text-2xl font-script">

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 export default function UserOnboarding1({ onNext }) {
-  const [fullName, setFullName] = useState("");
+ 
   const [photo, setPhoto] = useState(null);
 
   const handlePhotoChange = (e) => {
@@ -9,8 +9,11 @@ export default function UserOnboarding1({ onNext }) {
     if (file) setPhoto(URL.createObjectURL(file));
   };
 
-  const handleSubmit = () => {
-    onNext({ fullName, photo });
+  const handleSubmit = async () => {
+  onNext({
+   
+    photo
+  });
   };
 
   return (
@@ -23,18 +26,6 @@ export default function UserOnboarding1({ onNext }) {
           Help your teammates recognize and connect with you more easily.
         </p>
 
-        {/* Name Input */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Jane Doe"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            className="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:border-blue-400 text-lg"
-          />
-        </div>
-
-        {/* Profile Photo Upload */}
         <div className="mb-8">
           <label className="block text-gray-300 mb-2 text-sm">Your profile photo (optional)</label>
           <label className="flex items-center gap-3 w-fit bg-gray-800 border border-gray-700 px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-700 transition">

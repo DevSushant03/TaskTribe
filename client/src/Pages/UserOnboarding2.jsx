@@ -1,6 +1,11 @@
 import React, { useState } from "react";
+import { users } from "../utils/api";
+import { toast } from "react-toastify";
+import { Navigate, useNavigate } from "react-router-dom";
 
-export default function SkillBioStep({ onNext, onBack }) {
+export default function UserOnboarding2({ onNext, onBack, userData }) {
+  const Navigate = useNavigate(); 
+  const [photo, setPhoto] = useState(userData.photo || null);
   const [skills, setSkills] = useState([]);
   const [bio, setBio] = useState("");
 
@@ -14,6 +19,7 @@ export default function SkillBioStep({ onNext, onBack }) {
     "Software Setup"
     
   ];
+ 
 
   const toggleSkill = (skill) => {
     if (skills.includes(skill)) {
@@ -23,8 +29,15 @@ export default function SkillBioStep({ onNext, onBack }) {
     }
   };
 
-  const handleSubmit = () => {
-    onNext({ skills, bio });
+  const handleSubmit = async () => {
+    const response = await users.setUserData({photo, skills, bio });
+    console.log(response);
+    
+    if (response.data.success) {
+      Navigate("/dashboard")
+    } else {
+      toast.error(response.message);
+    }
   };
 
   return (
