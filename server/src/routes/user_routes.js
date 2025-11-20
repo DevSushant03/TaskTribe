@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getUserData, setUserData } from "../controller/user_controller.js";
-import { verifyAuth } from "../Middleware/auth.js";
+import { verifyAuth } from "../middleware/auth.js";
 const router = Router();
 
 router.get("/getuser/:id",verifyAuth, getUserData);

@@ -8,7 +8,7 @@ import {
   sendResetotp,
   verifyOtp,
 } from "../controller/auth_controller.js";
-import { verifyAuth } from "../Middleware/auth.js";
+import { verifyAuth } from "../middleware/auth.js";
 const router = Router();
 
 router.post("/login", login);
