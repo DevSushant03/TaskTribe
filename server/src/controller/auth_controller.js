@@ -9,7 +9,6 @@ import {
 //! Login functionality---------------------------------------
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
 
   if (!email || !password) {
     return res.json({
@@ -34,6 +33,7 @@ export const login = async (req, res) => {
         message: "Incorrect password. Please try again.",
       });
     }
+    
 
     createAccessToken(jwt, user, res);
 

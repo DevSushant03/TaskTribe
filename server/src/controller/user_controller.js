@@ -15,9 +15,8 @@ export const setUserData = async (req, res) => {
   try {
     const { userid } = req.user;
     const {photo, skills, bio} = req.body;
-    const user = await userModel.findByIdAndUpdate(userid, { photo, skills, bio, isCreatedProfile: true});
-    await user.save();
-    return res.json({ success: true, message: user });
+    const user = await userModel.findByIdAndUpdate(userid, { photo, skills, bio, isCreatedProfile: true},  { new: true, runValidators: true });
+    return res.json({ success: true, message: "Profile Created Succesfully" });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
