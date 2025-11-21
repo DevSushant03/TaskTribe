@@ -33,7 +33,7 @@ export default function Login() {
       const { data } = await auth.login(formData);
   
       if (data.success) {
-        if (data.user.isCreatedProfile) {
+        if (data.user) {
           navigate("/dashboard");
         } else {
           navigate("/auth/createProfile");
