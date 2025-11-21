@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import {loginSchema} from "../Validation/auth_validation.js"
 export default function Login() {
   const navigate = useNavigate();
+  const [loading,setloading]=useState(false);
   const [error,seterror]=useState("")
   const [formData, setFormData] = useState({
     email: "",
@@ -17,12 +18,14 @@ export default function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
+    setloading(true);
     e.preventDefault();
   
     // Validate before API call
     const validation = loginSchema.safeParse(formData);
   
     if (!validation.success) {
+      setloading(false)
       const firstError = validation.error.issues[0].message;
       seterror(firstError);
       toast.error(firstError);
@@ -33,17 +36,20 @@ export default function Login() {
       const { data } = await auth.login(formData);
   
       if (data.success) {
+        setloading(false)
         if (data.user) {
           navigate("/dashboard");
         } else {
           navigate("/auth/createProfile");
         }
       } else {
+        setloading(false)
         seterror(data.message);
         toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);
+      seterror(error.message);
     }
   };
   
@@ -105,7 +111,7 @@ export default function Login() {
                 type="submit"
                 className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"
               >
-                Log In
+                {loading?"Loading..":"Log In"}
               </button>
             </form>
 

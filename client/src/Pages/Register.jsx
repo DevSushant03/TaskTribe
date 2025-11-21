@@ -13,6 +13,7 @@ import { registerSchema } from "../Validation/auth_validation.js";
 
 export default function Register() {
   const navigate = useNavigate();
+  const [loading,setloading]=useState(false);
   const [error,seterror] = useState("")
 
   const {
@@ -24,17 +25,22 @@ export default function Register() {
   });
 
   const onSubmit = async (data) => {
+    setloading(true)
     try {
       const response = await auth.register(data);
 
       if (response.data.success) {
+        setloading(false)
         navigate("/auth");
       } else {
+        setloading(false)
         seterror(response.data.message)
         toast.error(response.data.message || "Something went wrong!");
       }
     } catch (error) {
+      setloading(false)
       toast.error(error.message || "Registration failed");
+      seterror(error.message)
     }
   };
 
@@ -133,7 +139,7 @@ export default function Register() {
                 type="submit"
                 className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"
               >
-                Join TaskTribe
+                {loading?"loading...":"Join TaskTribe"}
               </button>
             </form>
 

@@ -5,6 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 export default function UserOnboarding2({ onNext, onBack, userData }) {
   const Navigate = useNavigate(); 
+  const [loading,setloading]=useState(false);
   const [photo, setPhoto] = useState(userData.photo || null);
   const [skills, setSkills] = useState([]);
   const [bio, setBio] = useState("");
@@ -30,13 +31,14 @@ export default function UserOnboarding2({ onNext, onBack, userData }) {
   };
 
   const handleSubmit = async () => {
+    setloading(true)
     const response = await users.setUserData({photo, skills, bio });
-    console.log(response);
     
     if (response.data.success) {
       Navigate("/dashboard")
     } else {
-      toast.error(response.message);
+      setloading(false)
+      toast.error(response.data?.message || "Unable to save profile");
     }
   };
 
@@ -94,7 +96,7 @@ export default function UserOnboarding2({ onNext, onBack, userData }) {
             onClick={handleSubmit}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
-            Continue →
+            {loading?"loading...":"Continue →"}
           </button>
         </div>
       </div>
