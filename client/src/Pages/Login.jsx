@@ -38,7 +38,7 @@ export default function Login() {
       if (data.success) {
         setloading(false)
         if (data.user) {
-          navigate("/dashboard");
+          navigate("/user/1");
         } else {
           navigate("/auth/createProfile");
         }

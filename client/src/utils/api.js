@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_SERVER_URL;
-console.log(API_URL);
 
 const api = axios.create({
   baseURL: API_URL,
@@ -27,4 +26,7 @@ export const users = {
   setUserData: (data) => api.post('/user/setUserData', data),
 };
 
+export const task = {
+  createTask:(data)=>api.post("/task/createTask",data,{headers: { "Content-Type": "multipart/form-data" },})
+}
 export default api;

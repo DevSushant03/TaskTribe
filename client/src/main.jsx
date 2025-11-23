@@ -9,11 +9,14 @@ import Register from "./Pages/Register";
 import TaskList from "./Pages/TaskList";
 import TaskDetails from "./Pages/TaskDetails";
 import PostTask from "./Pages/PostTask";
-import Notification from "./Pages/Notification";
+import Notification from "./Pages/Manage";
 import ProfilePage from "./Pages/ProfilePage";
 import Authentication from "./Layout/Authentication";
 import GetUserInfo from "./Pages/GetUserInfo";
 import NotFound404 from "./Pages/NoFound404";
+import AppLayout from "./Layout/AppLayout";
+import Chats from "./Pages/Chats";
+import DashBoard from "./Pages/DashBoard";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -28,24 +31,41 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Login /> },
       { path: "register", element: <Register /> },
-      {
-        path: "createProfile",
-        element: <GetUserInfo />,
-      },
+      { path: "createProfile", element: <GetUserInfo /> },
     ],
   },
 
-  // {
-  //   path: "/user/:id",
-  //   element: <UserLayout />,
-  //   children: [
-  //     { index: true, path: "browse", element: <TaskList /> },
-  //     { path: "task/:taskId", element: <TaskDetails /> },
-  //     { path: "post-task", element: <PostTask /> },
-  //     { path: "notification", element: <Notification /> },
-  //     { path: "profile", element: <ProfilePage /> },
-  //   ],
-  // },
+  {
+    path: "/user/:id",
+    element: <AppLayout />,
+    children: [
+      // Browse tasks page
+      {
+        index:true,
+        path: "dashboard",
+        element: <DashBoard/>,
+      },
+      {
+        path: "browse",
+        element: <TaskList />,
+      },
+
+      // Nested routes for browse
+      {
+        path: "browse/task/:taskId",
+        element: <TaskDetails />,
+      },
+      {
+        path: "browse/post-task",
+        element: <PostTask />,
+      },
+
+      // Other user pages
+      { path: "manage", element: <Notification /> },
+      { path: "chats", element: <Chats /> },
+      { path: "profile", element: <ProfilePage /> },
+    ],
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
