@@ -1,6 +1,6 @@
 import { Router } from "express";
 import upload from "../Middleware/multer.js";
-import { verifyAuth } from "../middleware/auth.js";
+import { verifyAuth } from "../Middleware/auth.js";
 import {
   createTask,
   getAllTasks,
