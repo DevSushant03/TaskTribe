@@ -33,11 +33,9 @@ export const login = async (req, res) => {
         message: "Incorrect password. Please try again.",
       });
     }
-    
-
     createAccessToken(jwt, user, res);
 
-    return res.json({ success: true, user: user.isCreatedProfile });
+    return res.json({ success: true, user: user.isCreatedProfile,userid:user._id });
 
   } catch (error) {
     res.json({ success: false, message: error.message });

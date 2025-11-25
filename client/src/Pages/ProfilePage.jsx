@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaEdit, FaEnvelope, FaStar, FaTrophy, FaCheckCircle, FaSpinner } from 'react-icons/fa';
+import { auth } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 // Demo user data
 const demoUser = {
@@ -21,7 +23,19 @@ const demoUser = {
 function ProfilePage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
+  const handleLogOut = async()=>{
+    const res = await auth.logout()
+    if(res.data.success){
+      alert(res.data.message)
+      navigate("/")
+      
+    }else{
+      alert(res.data.message)
+
+    }
+  }
   useEffect(() => {
     // Simulate loading delay
     const timer = setTimeout(() => {
@@ -245,6 +259,21 @@ function ProfilePage() {
               <p className="text-white text-lg capitalize">{user.role || 'user'}</p>
             </div>
           </div>
+        </div>
+        {/* Account Controll */}
+        <div>
+        <div className="mt-8 flex flex-col md:flex-row md:items-center gap-4">
+          <button
+            className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400 flex items-center gap-2 shadow"
+            onClick={handleLogOut}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+            </svg>
+            Log Out
+          </button>
+          <span className="text-gray-500 text-sm">Manage your account securely.</span>
+        </div>
         </div>
       </div>
     </div>

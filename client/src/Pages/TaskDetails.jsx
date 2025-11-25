@@ -1,9 +1,200 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { task } from "../utils/api";
 
-function TaskDetails() {
+const TaskDetails = () => {
+  const { taskId, userId } = useParams();
+
+  const [detailTask, setDetailTask] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [applyLoading, setApplyLoading] = useState(false);
+  const [requestBox, setRequestBox] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const fetchTask = async () => {
+      try {
+        const res = await task.getTaskById(taskId);
+        setDetailTask(res.data.task);
+      } catch (error) {
+        console.error("Error fetching task details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTask();
+  }, [taskId, userId]);
+
+  // Disable scroll when modal open
+  useEffect(() => {
+    document.body.style.overflow = requestBox ? "hidden" : "auto";
+
+    const handleEsc = (e) => {
+      if (e.key === "Escape") setRequestBox(false);
+    };
+
+    window.addEventListener("keydown", handleEsc);
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [requestBox]);
+
+  const handleApply = async () => {
+    if (!message.trim()) return alert("Please write a message.");
+
+    try {
+      setApplyLoading(true);
+      const res = await task.applyTask(taskId,message)
+
+      alert(res.data.message);
+      setRequestBox(false);
+      setMessage("");
+    } catch (error) {
+      console.error(error);
+      alert(res.data.message);
+    } finally {
+      setApplyLoading(false);
+    }
+  };
+
+  if (loading)
+    return <div className="p-10 text-center text-orange-400">Loading...</div>;
+
+  if (!detailTask)
+    return (
+      <div className="p-10 text-center text-red-500">
+        Task Not Found or Removed
+      </div>
+    );
+
   return (
-    <div>TaskDetails</div>
-  )
-}
+    <div className="relative max-w-4xl mx-auto p-4 md:p-6 bg-[#0d0d0d] min-h-screen text-gray-200">
+      {/* Title */}
+      <h1 className="text-3xl md:text-4xl font-extrabold text-orange-400 mb-4 drop-shadow-lg">
+        {detailTask.title}
+      </h1>
 
-export default TaskDetails
+      {/* Budget + Deadline */}
+      <div className="flex flex-wrap gap-4 mb-6">
+        <span className="px-4 py-2 bg-[#1a1a1a] border border-orange-500/40 text-orange-300 rounded-lg text-sm shadow-md">
+          Budget: ₹{detailTask.budget.min} - ₹{detailTask.budget.max}
+        </span>
+
+        <span className="px-4 py-2 bg-[#1a1a1a] border border-orange-500/40 text-orange-300 rounded-lg text-sm shadow-md">
+          Deadline: {new Date(detailTask.deadline).toLocaleDateString()}
+        </span>
+      </div>
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 mb-5">
+        {detailTask.tags?.map((tag, i) => (
+          <span
+            key={i}
+            className="px-3 py-1 bg-[#1b1b1b] text-orange-300 border border-orange-500/40 text-xs font-medium rounded-full shadow-sm"
+          >
+            #{tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Description */}
+      <p className="text-gray-300 mb-10 leading-relaxed text-lg bg-[#111] p-4 rounded-xl border border-orange-500/20 shadow-lg">
+        {detailTask.description}
+      </p>
+
+      {/* Attachments */}
+      {detailTask.attachments?.length > 0 && (
+        <div className="mb-10">
+          <h2 className="text-xl font-semibold text-orange-400 mb-3">
+            Attachments
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {detailTask.attachments.map((file, idx) => (
+              <a
+                key={idx}
+                href={file.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4 bg-[#1a1a1a] border border-orange-500/20 rounded-xl hover:border-orange-500/60 hover:bg-[#222] transition shadow-sm"
+              >
+                <p className="text-orange-300 font-medium text-sm truncate">
+                  {file.filename}
+                </p>
+                <p className="text-gray-500 text-xs mt-1">Click to open</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Posted By */}
+      <div className="border border-orange-500/30 p-5 rounded-2xl bg-[#121212] shadow-xl mb-10">
+        <h2 className="text-xl font-semibold text-orange-400 mb-4">
+          Posted By
+        </h2>
+        <div className="flex items-center gap-3">
+          <img
+            src={detailTask.createdBy.avatar || "/user.png"}
+            alt="User"
+            className="w-14 h-14 rounded-full object-cover border border-orange-500/40 shadow-lg"
+          />
+          <div>
+            <h3 className="font-semibold text-gray-200 text-lg">
+              {detailTask.createdBy.name}
+            </h3>
+            <p className="text-sm text-gray-400">
+              {detailTask.createdBy.email}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Apply Button */}
+      <button
+        onClick={() => setRequestBox(true)}
+        className="w-full md:w-auto px-8 py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-black font-semibold rounded-xl transition transform hover:scale-105 shadow-xl"
+      >
+        Apply For This Task
+      </button>
+
+      {/* ---------- APPLY MODAL ---------- */}
+      {requestBox && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-[#1a1a1a] p-6 rounded-2xl shadow-2xl max-w-md w-full border border-orange-500/20 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setRequestBox(false)}
+              className="absolute -right-3 -top-3 bg-orange-500 text-black w-8 h-8 rounded-full flex items-center justify-center font-bold hover:bg-orange-600 transition"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-xl font-semibold text-orange-400 mb-4 text-center">
+              Send Request to Task Creator
+            </h2>
+
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Write a short message..."
+              className="w-full min-h-[100px] px-4 py-3 rounded-lg bg-black/40 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4"
+            />
+
+            <button
+              onClick={handleApply}
+              disabled={applyLoading}
+              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-black font-semibold py-3 rounded-lg shadow-lg disabled:opacity-50"
+            >
+              {applyLoading ? "Sending..." : "Send Request"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TaskDetails;

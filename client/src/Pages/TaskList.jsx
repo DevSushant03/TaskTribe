@@ -1,139 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // import axios from "../utils/axiosInstance"
+import { task } from "../utils/api";
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
-  const [filtered, setFiltered] = useState([
-    {
-      _id: "task001",
-      title: "Create Logo for Mobile App",
-      description:
-        "I need a modern, minimalist logo for my upcoming productivity app. Prefer soft colors and a geometric icon.",
-      tags: ["design", "logo", "branding"],
-      budget: { min: 800, max: 2000 },
-      deadline: "2025-12-10T00:00:00.000Z",
-      attachments: [],
-      createdBy: "user001",
-      status: "open",
-      applicantsCount: 3,
-    },
-
-    {
-      _id: "task002",
-      title: "Fix React Authentication Bug",
-      description:
-        "Login page keeps redirecting even after successful authentication. Need help debugging JWT + Axios interceptors.",
-      tags: ["development", "react", "bugfix"],
-      budget: { min: 500, max: 1500 },
-      deadline: "2025-12-05T00:00:00.000Z",
-      attachments: [],
-      createdBy: "user002",
-      status: "open",
-      applicantsCount: 5,
-    },
-
-    {
-      _id: "task003",
-      title: "Write Blog on AI Trends 2025",
-      description:
-        "Write a 1200-word blog covering the latest advancements in generative AI, LLMs, and future predictions.",
-      tags: ["writing", "blog", "AI"],
-      budget: { min: 700, max: 1200 },
-      deadline: "2025-12-12T00:00:00.000Z",
-      attachments: [],
-      createdBy: "user003",
-      status: "open",
-      applicantsCount: 1,
-    },
-
-    {
-      _id: "task004",
-      title: "Build Node.js API for QR Authentication",
-      description:
-        "Need a REST API that generates QR tokens and verifies login sessions. MongoDB + Express preferred.",
-      tags: ["development", "backend", "nodejs"],
-      budget: { min: 1500, max: 4000 },
-      deadline: "2025-12-20T00:00:00.000Z",
-      attachments: [],
-      createdBy: "user004",
-      status: "open",
-      applicantsCount: 2,
-    },
-
-    {
-      _id: "task005",
-      title: "UI/UX Audit for Landing Page",
-      description:
-        "Analyze my current landing page and provide improvement suggestions with wireframes.",
-      tags: ["design", "uiux"],
-      budget: { min: 1000, max: 3000 },
-      deadline: "2025-12-18T00:00:00.000Z",
-      attachments: [],
-      createdBy: "user001",
-      status: "open",
-      applicantsCount: 4,
-    },
-
-    {
-      _id: "task006",
-      title: "Convert PDF Recipes to Word Format",
-      description:
-        "Convert 30+ vegetarian recipes from PDF to clean Word documents with proper formatting.",
-      tags: ["writing", "data-entry"],
-      budget: { min: 500, max: 900 },
-      deadline: "2025-12-02T00:00:00.000Z",
-      attachments: [],
-      createdBy: "user006",
-      status: "open",
-      applicantsCount: 0,
-    },
-
-    {
-      _id: "task007",
-      title: "Add Dark Mode to Existing Website",
-      description:
-        "Need to implement dark mode using Tailwind CSS + localStorage theme switching logic.",
-      tags: ["development", "frontend", "tailwind"],
-      budget: { min: 1200, max: 2500 },
-      deadline: "2025-12-14T00:00:00.000Z",
-      attachments: [],
-      createdBy: "user007",
-      status: "open",
-      applicantsCount: 3,
-    },
-
-    {
-      _id: "task008",
-      title: "Create Poster for College Event",
-      description:
-        "Need a vibrant poster for a cultural event. Should include date, venue, and sponsor logos.",
-      tags: ["design", "poster", "graphics"],
-      budget: { min: 300, max: 1000 },
-      deadline: "2025-12-03T00:00:00.000Z",
-      attachments: [],
-      createdBy: "user008",
-      status: "open",
-      applicantsCount: 1,
-    },
-  ]);
+  const [filtered, setFiltered] = useState([]);
   const [activeFilter, setActiveFilter] = useState("all");
 
   const filters = ["all", "design", "development", "writing", "other"];
 
-  // Fetch tasks
-  // useEffect(() => {
-  //   const fetchTasks = async () => {
-  //     try {
-  //       const res = await axios.get("/tasks/getTask");
-  //       setTasks(res.data.tasks);
-  //       setFiltered(res.data.tasks);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  // fetchTasks();
-  //   };
-  // }, []);
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await task.getAllTask();
+
+        console.log(res.data.tasks);
+
+        setTasks(res.data.tasks);
+        setFiltered(res.data.tasks);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchTasks();
+  }, []);
 
   // Filter Logic
   const applyFilter = (category) => {
@@ -152,7 +43,7 @@ export default function TaskList() {
   };
 
   return (
-    <div className="w-full p-6 md:p-10">
+    <div className="w-full p-6 md:p-10 overflow-y-auto">
       {/* Header + Post Button */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold text-white">Explore Tasks</h1>
@@ -227,7 +118,7 @@ export default function TaskList() {
 
             {/* View Task Button */}
             <Link
-              to={`/task/${task._id}`}
+              to={`task/${task._id}`}
               className="block mt-5 text-center bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 transition"
             >
               View Details

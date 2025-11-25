@@ -41,7 +41,6 @@ const router = createBrowserRouter([
     children: [
       // Browse tasks page
       {
-        index:true,
         path: "dashboard",
         element: <DashBoard/>,
       },
