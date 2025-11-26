@@ -162,19 +162,26 @@ export const applyForTask = async (req, res) => {
     const { userid } = req.user;
     const { message } = req.body;
 
-
     const task = await taskModel.findById(taskId);
+
     if (!task) {
       return res.status(404).json({ msg: "Task not found" });
     }
+
     const alreadyApplied = task.applicants.some(
       (a) => a.user.toString() === userid
     );
 
     if (alreadyApplied) {
-      return res.json({success:false, message: "Already applied to this task" });
+      return res.json({
+        success: false,
+        message: "Already applied to this task",
+      });
     }
-    task.applicants.push({ user: userid, message });
+    task.applicants.push({
+      user: userid,
+      message,
+    });
     task.applicantsCount += 1;
 
     await task.save();
@@ -182,5 +189,31 @@ export const applyForTask = async (req, res) => {
     res.status(200).json({ msg: "Applied successfully" });
   } catch (error) {
     res.status(500).json({ msg: "Server error", error });
+  }
+};
+
+export const getMyTask = async (req, res) => {
+  try {
+    const { userid } = req.user;
+
+  const tasks = await taskModel
+  .find({ createdBy: userid })
+  .populate("applicants.user", "name surname skills bio email photo");
+
+    if (!tasks) {
+      return res.json({
+        success: false,
+        message: "Task Not found",
+      });
+    }
+    return res.json({
+      success: true,
+      tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch tasks",
+    });
   }
 };

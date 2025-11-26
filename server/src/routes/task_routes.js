@@ -7,6 +7,7 @@ import {
   getTaskById,
   deleteTask,
   applyForTask,
+  getMyTask,
 } from "../controller/task_controller.js";
 const router = Router();
 
@@ -15,5 +16,6 @@ router.get("/getAllTask",verifyAuth, getAllTasks);
 router.get("/getTask/:taskId", verifyAuth, getTaskById);
 router.get("/deleteTask/:taskId", verifyAuth, deleteTask);
 router.post("/apply/:taskId", verifyAuth, applyForTask);
+router.get("/myTask", verifyAuth, getMyTask);
 
 export default router;

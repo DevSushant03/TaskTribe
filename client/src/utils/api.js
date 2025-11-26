@@ -38,5 +38,6 @@ export const task = {
     api.post(`/task/apply/${taskId}`, {
       message,
     }),
+  getMyTask:()=>api.get("/task/myTask")
 };
 export default api;
