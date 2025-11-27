@@ -43,7 +43,7 @@ export default function TaskList() {
   };
 
   return (
-    <div className="w-full p-6 md:p-10 overflow-y-auto">
+    <div className="w-full h-screen p-6 md:p-10 overflow-y-scroll">
       {/* Header + Post Button */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold text-white">Explore Tasks</h1>

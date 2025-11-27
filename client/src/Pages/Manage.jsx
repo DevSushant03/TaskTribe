@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { task } from "../utils/api";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { ArrowLeft } from "lucide-react";
+
+<ArrowLeft className="w-6 h-6" />;
 
 const Manage = () => {
   const [tab, setTab] = useState("posted");
@@ -8,7 +12,7 @@ const Manage = () => {
   const [assignedTasks, setAssignedTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [applicants, setApplicants] = useState([]);
-
+  const [open, setopen] = useState(null);
   // Fetch My Posted Tasks
   const fetchPostedTasks = async () => {
     try {
@@ -34,7 +38,7 @@ const Manage = () => {
     try {
       setApplicants(Applicants);
       console.log(Applicants);
-      
+
       setTab("applicants");
     } catch (err) {
       console.log(err);
@@ -42,7 +46,7 @@ const Manage = () => {
   };
 
   const rejectApplicant = async (id) => {
-     const res = await task.rejectApplicant(id);
+    const res = await task.rejectApplicant(id);
   };
   const acceptApplicant = async (id) => {};
 
@@ -52,7 +56,7 @@ const Manage = () => {
   }, []);
 
   return (
-    <div className="w-full px-5 md:px-16 mt-10 mb-20 bg-[#0D0D0D] text-white">
+    <div className="w-full h-full overflow-y-auto px-5 md:px-16 mt-10 mb-20 bg-[#0D0D0D] text-white">
       {/* Page Title */}
       <h1 className="text-3xl font-bold mb-6 text-[#FF6B00] tracking-wide">
         Manage Tasks
@@ -138,9 +142,10 @@ const Manage = () => {
         <div>
           <button
             onClick={() => setTab("posted")}
-            className="mb-4 text-[#FF6B00]"
+            className="mb-4 flex items-center gap-2 text-[#FF6B00] hover:text-orange-500 transition"
           >
-            ← Back
+            <ArrowLeft size={20} />
+            Back
           </button>
 
           <h2 className="text-xl font-semibold mb-4">Applicants</h2>
@@ -173,9 +178,27 @@ const Manage = () => {
                       {applicant.user.email}
                     </p>
                   </div>
+                  {applicant._id == open ? (
+                    <button onClick={() => setopen(null)} type="button">
+                      <FiChevronUp size={30} />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setopen(applicant._id)}
+                      type="button"
+                    >
+                      <FiChevronDown size={30} />
+                    </button>
+                  )}
                 </div>
 
-                <div className="mt-4 space-y-3">
+                <div
+                  className={`mt-4 space-y-3 transition-all duration-300 overflow-hidden ${
+                    applicant._id === open
+                      ? "max-h-96 opacity-100"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
                   {/* Skills */}
                   {applicant.user.skills?.length > 0 && (
                     <div>
@@ -228,7 +251,7 @@ const Manage = () => {
                   </button>
 
                   <button
-                    onClick={()=>rejectApplicant(applicant.user._id)}
+                    onClick={() => rejectApplicant(applicant.user._id)}
                     className="px-4 py-2 rounded-lg font-medium
                  bg-transparent text-red-400 border border-red-400
                  hover:bg-red-500 hover:text-white hover:border-red-500

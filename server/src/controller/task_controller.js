@@ -186,9 +186,9 @@ export const applyForTask = async (req, res) => {
 
     await task.save();
 
-    res.status(200).json({ msg: "Applied successfully" });
+    res.status(200).json({ success: false, message: "Applied successfully" });
   } catch (error) {
-    res.status(500).json({ msg: "Server error", error });
+    res.status(500).json({ success: false, message: "Server error", error });
   }
 };
 
