@@ -38,6 +38,8 @@ export const task = {
     api.post(`/task/apply/${taskId}`, {
       message,
     }),
-  getMyTask:()=>api.get("/task/myTask")
+  getMyTask:()=>api.get("/task/myTask"),
+  rejectApplicant:(id)=>api.post(`/task/rejectApplicant/${id}`),
+  acceptApplicant:(id)=>api.post(`/task/acceptApplicant/${id}`)
 };
 export default api;

@@ -33,11 +33,18 @@ const Manage = () => {
   const fetchApplicants = async (Applicants) => {
     try {
       setApplicants(Applicants);
+      console.log(Applicants);
+      
       setTab("applicants");
     } catch (err) {
       console.log(err);
     }
   };
+
+  const rejectApplicant = async (id) => {
+     const res = await task.rejectApplicant(id);
+  };
+  const acceptApplicant = async (id) => {};
 
   useEffect(() => {
     fetchPostedTasks();
@@ -46,7 +53,6 @@ const Manage = () => {
 
   return (
     <div className="w-full px-5 md:px-16 mt-10 mb-20 bg-[#0D0D0D] text-white">
-
       {/* Page Title */}
       <h1 className="text-3xl font-bold mb-6 text-[#FF6B00] tracking-wide">
         Manage Tasks
@@ -132,7 +138,7 @@ const Manage = () => {
         <div>
           <button
             onClick={() => setTab("posted")}
-            className="mb-4 text-[#FF6B00] underline"
+            className="mb-4 text-[#FF6B00]"
           >
             ← Back
           </button>
@@ -147,27 +153,88 @@ const Manage = () => {
             applicants.map((applicant) => (
               <div
                 key={applicant._id}
-                className="p-5 mb-4 border border-[#262626] rounded-xl bg-[#1A1A1A] shadow-[0_0_10px_rgba(255,107,0,0.15)]"
+                className="p-6 mb-5 rounded-2xl border border-[#2A2A2A] bg-[#121212] 
+             hover:border-[#FF6B00] transition-all shadow-md hover:shadow-lg"
               >
-                <h3 className="text-lg font-semibold">
-                  {applicant.user.name}
-                </h3>
+                {/* Top Section */}
+                <div className="flex items-center gap-4">
+                  <img
+                    src={applicant.user.photo}
+                    alt="profile"
+                    className="w-14 h-14 rounded-full object-cover border border-[#2A2A2A]"
+                  />
 
-                <p className="text-sm text-[#C9C9C9]">
-                  Email: {applicant.user.email}
-                </p>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">
+                      {applicant.user.name} {applicant.user.surname}
+                    </h3>
 
-                <p className="mt-1 text-[#C9C9C9]">
-                  Message: {applicant.message}
-                </p>
+                    <p className="text-sm text-[#B5B5B5]">
+                      {applicant.user.email}
+                    </p>
+                  </div>
+                </div>
 
-                <div className="flex gap-3 mt-4">
-                  <button className="px-3 py-2 bg-[#FF6B00] text-white rounded-md hover:bg-[#FF7E26] transition">
-                    Accept
+                <div className="mt-4 space-y-3">
+                  {/* Skills */}
+                  {applicant.user.skills?.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-[#FF6B00] mb-1">
+                        Skills:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {applicant.user.skills.map((skill, idx) => (
+                          <span
+                            key={idx}
+                            className="px-3 py-1 text-xs rounded-full 
+                       bg-[#1E1E1E] border border-[#2A2A2A] 
+                       text-[#E6E6E6] hover:border-[#FF6B00] transition"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bio */}
+                  {applicant.user.bio && (
+                    <p className="text-sm text-[#CCCCCC] leading-relaxed">
+                      <span className="font-medium text-[#FF6B00]">Bio:</span>{" "}
+                      {applicant.user.bio}
+                    </p>
+                  )}
+
+                  {/* Message */}
+                  {applicant.message && (
+                    <p className="text-sm text-[#DDDDDD] leading-relaxed">
+                      <span className="font-medium text-[#FF6B00]">
+                        Message:
+                      </span>{" "}
+                      {applicant.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-4 mt-5">
+                  <button
+                    onClick={acceptApplicant(applicant.user._id)}
+                    className="px-4 py-2 rounded-lg font-medium 
+                 bg-[#FF6B00] text-white 
+                 hover:bg-[#FF7E26] active:scale-95 transition"
+                  >
+                    Accept Applicant
                   </button>
 
-                  <button className="px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
-                    Reject
+                  <button
+                    onClick={()=>rejectApplicant(applicant.user._id)}
+                    className="px-4 py-2 rounded-lg font-medium
+                 bg-transparent text-red-400 border border-red-400
+                 hover:bg-red-500 hover:text-white hover:border-red-500
+                 active:scale-95 transition"
+                  >
+                    Reject Applicant
                   </button>
                 </div>
               </div>
@@ -203,9 +270,7 @@ const Manage = () => {
                   Requirements: {task.description}
                 </p>
 
-                <button
-                  className="mt-4 px-3 py-2 bg-[#FF6B00] text-white rounded-md hover:bg-[#FF7E26] transition"
-                >
+                <button className="mt-4 px-3 py-2 bg-[#FF6B00] text-white rounded-md hover:bg-[#FF7E26] transition">
                   Mark Completed
                 </button>
               </div>

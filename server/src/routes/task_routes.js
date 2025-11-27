@@ -8,6 +8,8 @@ import {
   deleteTask,
   applyForTask,
   getMyTask,
+  rejectApplicant,
+  acceptApplicant,
 } from "../controller/task_controller.js";
 const router = Router();
 
@@ -17,5 +19,7 @@ router.get("/getTask/:taskId", verifyAuth, getTaskById);
 router.get("/deleteTask/:taskId", verifyAuth, deleteTask);
 router.post("/apply/:taskId", verifyAuth, applyForTask);
 router.get("/myTask", verifyAuth, getMyTask);
+router.post("/rejectApplicant/:applicantId", verifyAuth, rejectApplicant);
+router.post("/acceptApplicant/:applicantId", verifyAuth, acceptApplicant);
 
 export default router;

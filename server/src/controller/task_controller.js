@@ -196,9 +196,9 @@ export const getMyTask = async (req, res) => {
   try {
     const { userid } = req.user;
 
-  const tasks = await taskModel
-  .find({ createdBy: userid })
-  .populate("applicants.user", "name surname skills bio email photo");
+    const tasks = await taskModel
+      .find({ createdBy: userid })
+      .populate("applicants.user", "name surname skills bio email photo");
 
     if (!tasks) {
       return res.json({
@@ -210,6 +210,28 @@ export const getMyTask = async (req, res) => {
       success: true,
       tasks,
     });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch tasks",
+    });
+  }
+};
+
+export const rejectApplicant = async (req, res) => {
+  try {
+    const { applicantId } = req.params;
+    console.log(applicantId);
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch tasks",
+    });
+  }
+};
+export const acceptApplicant = async (req, res) => {
+  try {
+    const { applicantId } = req.params;
   } catch (error) {
     return res.status(500).json({
       success: false,
