@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Block private user pages
+Disallow: /user/
+Disallow: /auth/createProfile
+
+# Block server files or configs if any exist
+Disallow: /server/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://tasktribe-plum.vercel.app/sitemap.xml

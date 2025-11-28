@@ -10,11 +10,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../Validation/auth_validation.js";
+import { Helmet } from "react-helmet";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [loading,setloading]=useState(false);
-  const [error,seterror] = useState("")
+  const [loading, setloading] = useState(false);
+  const [error, seterror] = useState("");
 
   const {
     register,
@@ -25,29 +26,36 @@ export default function Register() {
   });
 
   const onSubmit = async (data) => {
-    setloading(true)
+    setloading(true);
     try {
       const response = await auth.register(data);
 
       if (response.data.success) {
-        setloading(false)
+        setloading(false);
         navigate("/auth");
       } else {
-        setloading(false)
-        seterror(response.data.message)
+        setloading(false);
+        seterror(response.data.message);
         toast.error(response.data.message || "Something went wrong!");
       }
     } catch (error) {
-      setloading(false)
+      setloading(false);
       toast.error(error.message || "Registration failed");
-      seterror(error.message)
+      seterror(error.message);
     }
   };
 
   return (
     <>
+      <Helmet>
+        <title>Create Account | TaskTribe</title>
+        <meta
+          name="description"
+          content="Join TaskTribe to post tasks or earn money by solving tasks. Free to sign up."
+        />
+      </Helmet>
+
       <div className="min-h-screen flex flex-col md:flex-row">
-        
         <div className="flex-1 flex flex-col justify-center px-8 py-8 bg-[#f0f8ff]">
           <div className="max-w-md mx-auto w-full mt-10">
             <h2 className="text-center text-2xl font-semibold mb-6">Sign up</h2>
@@ -68,7 +76,6 @@ export default function Register() {
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
-
               <div className="flex space-x-3 mb-3">
                 <div className="w-1/2">
                   <input
@@ -78,7 +85,9 @@ export default function Register() {
                     className="w-full py-2 px-3 border border-gray-300 rounded"
                   />
                   {errors.name && (
-                    <p className="text-red-500 text-sm">{errors.name.message}</p>
+                    <p className="text-red-500 text-sm">
+                      {errors.name.message}
+                    </p>
                   )}
                 </div>
 
@@ -90,7 +99,9 @@ export default function Register() {
                     className="w-full py-2 px-3 border border-gray-300 rounded"
                   />
                   {errors.surname && (
-                    <p className="text-red-500 text-sm">{errors.surname.message}</p>
+                    <p className="text-red-500 text-sm">
+                      {errors.surname.message}
+                    </p>
                   )}
                 </div>
               </div>
@@ -117,21 +128,29 @@ export default function Register() {
                 />
                 <FaRegEyeSlash className="absolute right-3 top-3 text-gray-400" />
                 {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password.message}</p>
+                  <p className="text-red-500 text-sm">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
-              {
-                error && ( <p className="bg-red-100 border-1 border-solid p-2 my-2 rounded-sm text-red-500 text-sm">{error}</p>)
-              }
-              
+              {error && (
+                <p className="bg-red-100 border-1 border-solid p-2 my-2 rounded-sm text-red-500 text-sm">
+                  {error}
+                </p>
+              )}
 
               <div className="flex items-center mb-3 text-sm">
                 <input type="checkbox" className="mr-2" />
                 <span>
                   I agree to the{" "}
-                  <a href="#" className="text-blue-600 hover:underline">User Agreement</a>{" "}
+                  <a href="#" className="text-blue-600 hover:underline">
+                    User Agreement
+                  </a>{" "}
                   and{" "}
-                  <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
+                  <a href="#" className="text-blue-600 hover:underline">
+                    Privacy Policy
+                  </a>
+                  .
                 </span>
               </div>
 
@@ -139,7 +158,7 @@ export default function Register() {
                 type="submit"
                 className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"
               >
-                {loading?"loading...":"Join TaskTribe"}
+                {loading ? "loading..." : "Join TaskTribe"}
               </button>
             </form>
 

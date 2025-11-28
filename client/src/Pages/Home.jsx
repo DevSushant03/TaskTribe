@@ -6,10 +6,19 @@ import SolveAndEarn from "../Components/SolveAndEarn";
 import FeedbackSection from "../Components/FeedbackSection";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+import { Helmet } from "react-helmet";
 export default function Home() {
   return (
     <>
-    <Navbar/>
+      <Helmet>
+        <title>TaskTribe – Post & Solve Tasks Instantly</title>
+        <meta
+          name="description"
+          content="TaskTribe is a modern task marketplace to post and solve tasks instantly."
+        />
+      </Helmet>
+
+      <Navbar />
       <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
         <LightRays
           raysOrigin="top-center"
@@ -26,9 +35,9 @@ export default function Home() {
         <HeroSection />
       </div>
       <FeaturesSection />
-      <SolveAndEarn/>
-      <FeedbackSection/>
-      <Footer/>
+      <SolveAndEarn />
+      <FeedbackSection />
+      <Footer />
     </>
   );
 }

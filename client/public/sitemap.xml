@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Public pages -->
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/</loc>
+    <priority>1.0</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Auth pages -->
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/auth</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/auth/register</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/auth/createProfile</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Main pages (static) -->
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/browse</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/browse/post-task</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Dynamic task page template -->
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/browse/task/{taskId}</loc>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Protected user routes (kept for structure but set to noindex) -->
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/user/{id}/dashboard</loc>
+    <priority>0.1</priority>
+    <changefreq>never</changefreq>
+  </url>
+
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/user/{id}/manage</loc>
+    <priority>0.1</priority>
+    <changefreq>never</changefreq>
+  </url>
+
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/user/{id}/chats</loc>
+    <priority>0.1</priority>
+    <changefreq>never</changefreq>
+  </url>
+
+  <url>
+    <loc>https://tasktribe-plum.vercel.app/user/{id}/profile</loc>
+    <priority>0.1</priority>
+    <changefreq>never</changefreq>
+  </url>
+
+</urlset>
