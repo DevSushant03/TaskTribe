@@ -6,6 +6,7 @@ import { useState } from "react";
 import { auth } from "../utils/api";
 import { toast } from "react-toastify";
 import {loginSchema} from "../Validation/auth_validation.js"
+import { Helmet } from "react-helmet";
 export default function Login() {
   const navigate = useNavigate();
   const [loading,setloading]=useState(false);
@@ -55,6 +56,13 @@ export default function Login() {
   
   return (
     <>
+     <Helmet>
+        <title>Login | TaskTribe</title>
+        <meta
+          name="description"
+          content="Login to TaskTribe and start posting or solving tasks quickly."
+        />
+      </Helmet>
       <div className="min-h-screen flex flex-col md:flex-row">
         <div className="flex-1 flex flex-col justify-center px-8 py-8 bg-[#f0f8ff]">
           <div className="max-w-md mx-auto mt-10 w-full">
