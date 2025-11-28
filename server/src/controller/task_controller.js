@@ -218,10 +218,35 @@ export const getMyTask = async (req, res) => {
   }
 };
 
-export const rejectApplicant = async (req, res) => {
+export const acceptApplicant = async (req, res) => {
   try {
-    const { applicantId } = req.params;
-    console.log(applicantId);
+    const { applicantId, TaskId } = req.params;
+
+    const task = await taskModel.findById(TaskId);
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+    const applicant = task.applicants.find(
+      (a) => a.user.toString() === applicantId
+    );
+    if (!applicant) {
+      return res
+        .status(400)
+        .json({ message: "Applicant not found in this task" });
+    }
+    task.assignedTo = applicantId;
+    task.status = "in_progress";
+    task.applicants = [];
+    task.applicantsCount = 0;
+    await task.save();
+
+    res.json({
+      message: "Applicant accepted",
+      task,
+    });
+    console.log("Applicant accepted");
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -229,13 +254,54 @@ export const rejectApplicant = async (req, res) => {
     });
   }
 };
-export const acceptApplicant = async (req, res) => {
+export const rejectApplicant = async (req, res) => {
   try {
-    const { applicantId } = req.params;
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch tasks",
+    const { applicantId, TaskId } = req.params;
+
+    const task = await taskModel.findById(TaskId);
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+    const updatedApplicants = task.applicants.filter(
+      (a) => a.user.toString() !== applicantId
+    );
+
+    task.applicants = updatedApplicants;
+    task.applicantsCount = updatedApplicants.length;
+    await task.save();
+
+    res.json({
+      message: "Applicant rejected",
+      task,
     });
+    console.log("Applicant rejected");
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export const getAssignedTask = async (req, res) => {
+  try {
+    const { userid } = req.user;
+
+    const tasks = await taskModel.find({
+      assignedTo: userid,
+    });
+
+    if (tasks.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No tasks have been assigned to you yet.",
+      });
+    }
+
+    res.json({
+      success: true,
+      tasks,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error });
   }
 };

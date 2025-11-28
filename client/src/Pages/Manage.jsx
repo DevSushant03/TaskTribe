@@ -26,33 +26,38 @@ const Manage = () => {
   // Fetch Tasks Assigned to Me
   const fetchAssignedTasks = async () => {
     try {
-      const res = await axios.get("/api/tasks/assigned-to-me");
-      setAssignedTasks(res.data || []);
+      const res = await task.getAssignedTask();
+      console.log(res.data);
+      setAssignedTasks(res.data.tasks || []);
+      
     } catch (err) {
       console.log(err);
     }
   };
 
   // Fetch Applicants
-  const fetchApplicants = async (Applicants) => {
+  const fetchApplicants = async (Applicants, TaskId) => {
     try {
       setApplicants(Applicants);
-      console.log(Applicants);
-
+      setSelectedTask(TaskId);
       setTab("applicants");
     } catch (err) {
       console.log(err);
     }
   };
 
-  const rejectApplicant = async (id) => {
-    const res = await task.rejectApplicant(id);
+  const rejectApplicant = async (applicantId, Taskid) => {
+    const res = await task.rejectApplicant(applicantId, Taskid);
+    console.log(res.data.message);
   };
-  const acceptApplicant = async (id) => {};
+  const acceptApplicant = async (applicantId, Taskid) => {
+    const res = await task.acceptApplicant(applicantId, Taskid);
+    console.log(res.data.message);
+  };
 
   useEffect(() => {
     fetchPostedTasks();
-    // fetchAssignedTasks();
+    fetchAssignedTasks();
   }, []);
 
   return (
@@ -121,7 +126,7 @@ const Manage = () => {
                 {/* Buttons */}
                 <div className="flex gap-3 mt-4">
                   <button
-                    onClick={() => fetchApplicants(task.applicants)}
+                    onClick={() => fetchApplicants(task.applicants, task._id)}
                     className="px-3 py-2 bg-[#FF6B00] text-white rounded-md hover:bg-[#FF7E26] transition"
                   >
                     View Applicants
@@ -242,7 +247,9 @@ const Manage = () => {
                 {/* Action Buttons */}
                 <div className="flex gap-4 mt-5">
                   <button
-                    onClick={acceptApplicant(applicant.user._id)}
+                    onClick={() =>
+                      acceptApplicant(applicant.user._id, selectedTask)
+                    }
                     className="px-4 py-2 rounded-lg font-medium 
                  bg-[#FF6B00] text-white 
                  hover:bg-[#FF7E26] active:scale-95 transition"
@@ -251,7 +258,9 @@ const Manage = () => {
                   </button>
 
                   <button
-                    onClick={() => rejectApplicant(applicant.user._id)}
+                    onClick={() =>
+                      rejectApplicant(applicant.user._id, selectedTask)
+                    }
                     className="px-4 py-2 rounded-lg font-medium
                  bg-transparent text-red-400 border border-red-400
                  hover:bg-red-500 hover:text-white hover:border-red-500

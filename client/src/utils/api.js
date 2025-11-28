@@ -39,7 +39,8 @@ export const task = {
       message,
     }),
   getMyTask:()=>api.get("/task/myTask"),
-  rejectApplicant:(id)=>api.post(`/task/rejectApplicant/${id}`),
-  acceptApplicant:(id)=>api.post(`/task/acceptApplicant/${id}`)
+  getAssignedTask:()=>api.get("/task/assignedToMe"),
+  rejectApplicant:(applicantId,TaskId)=>api.post(`/task/${TaskId}/rejectApplicant/${applicantId}`),
+  acceptApplicant:(applicantId,TaskId)=>api.post(`/task/${TaskId}/acceptApplicant/${applicantId}`)
 };
 export default api;
