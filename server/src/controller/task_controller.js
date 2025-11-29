@@ -78,8 +78,8 @@ export const getAllTasks = async (req, res) => {
   const { userid } = req.user;
   try {
     const tasks = await taskModel
-      .find({ createdBy: { $ne: userid } })
-      .populate("createdBy","name surname email photo bio skills")
+      .find({ createdBy: { $ne: userid }, status: "open" })
+      .populate("createdBy", "name surname email photo bio skills")
       .populate("assignedTo");
 
     return res.json({
@@ -197,8 +197,8 @@ export const getMyTask = async (req, res) => {
     const { userid } = req.user;
 
     const tasks = await taskModel
-      .find({ createdBy: userid })
-      .populate("applicants.user", "name surname skills bio email photo")
+      .find({ createdBy: userid})
+      .populate("applicants.user", "name surname skills bio email photo");
 
     if (!tasks) {
       return res.json({
@@ -286,9 +286,11 @@ export const getAssignedTask = async (req, res) => {
   try {
     const { userid } = req.user;
 
-    const tasks = await taskModel.find({
-      assignedTo: userid,
-    }).populate("createdBy","name surname email photo");
+    const tasks = await taskModel
+      .find({
+        assignedTo: userid,
+      })
+      .populate("createdBy", "name surname email photo");
 
     if (tasks.length === 0) {
       return res.status(404).json({

@@ -14,9 +14,6 @@ export default function TaskList() {
     const fetchTasks = async () => {
       try {
         const res = await task.getAllTask();
-
-        console.log(res.data.tasks);
-
         setTasks(res.data.tasks);
         setFiltered(res.data.tasks);
       } catch (err) {

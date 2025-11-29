@@ -43,7 +43,6 @@ const taskSchema = new mongoose.Schema(
       type: String,
       enum: [
         "open",
-        "applied",
         "in_progress",
         "submitted",
         "completed",
