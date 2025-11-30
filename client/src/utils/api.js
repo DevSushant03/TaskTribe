@@ -38,9 +38,15 @@ export const task = {
     api.post(`/task/apply/${taskId}`, {
       message,
     }),
-  getMyTask:()=>api.get("/task/myTask"),
-  getAssignedTask:()=>api.get("/task/assignedToMe"),
-  rejectApplicant:(applicantId,TaskId)=>api.post(`/task/${TaskId}/rejectApplicant/${applicantId}`),
-  acceptApplicant:(applicantId,TaskId)=>api.post(`/task/${TaskId}/acceptApplicant/${applicantId}`)
+  getMyTask: () => api.get("/task/myTask"),
+  getAssignedTask: () => api.get("/task/assignedToMe"),
+  rejectApplicant: (applicantId, TaskId) =>
+    api.post(`/task/${TaskId}/rejectApplicant/${applicantId}`),
+  acceptApplicant: (applicantId, TaskId) =>
+    api.post(`/task/${TaskId}/acceptApplicant/${applicantId}`),
+  submitWork: (formData, TaskId) =>
+    api.post(`/task/${TaskId}/submitWork`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 };
 export default api;

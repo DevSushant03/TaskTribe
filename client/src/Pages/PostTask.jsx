@@ -82,19 +82,19 @@ export default function PostTask() {
   };
 
   return (
-    <div className="p-6 md:p-10 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-teal-700 mb-6">Post a Task</h1>
+    <div className="p-6 md:p-10 w-full mx-auto overflow-y-auto">
+      <h1 className="text-3xl font-bold text-orange-500 mb-6">Post a Task</h1>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl shadow-lg p-6 space-y-6"
+        className="bg-[#1a1a1a] text-white rounded-2xl shadow-lg p-6 space-y-6"
       >
         {/* Title */}
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Title</label>
+          <label className="block text-white-700 font-medium mb-1">Title</label>
           <input
             type="text"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-300"
+            className="w-full border border-white-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-300"
             placeholder="Enter task title"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
@@ -104,12 +104,12 @@ export default function PostTask() {
 
         {/* Description */}
         <div>
-          <label className="block text-gray-700 font-medium mb-1">
+          <label className="block text-white-700 font-medium mb-1">
             Description
           </label>
           <textarea
             rows="5"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-300"
+            className="w-full border border-white-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-300"
             placeholder="Describe the task…"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -119,11 +119,11 @@ export default function PostTask() {
 
         {/* Tags */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">Tags</label>
+          <label className="block text-white-700 font-medium mb-2">Tags</label>
           <div className="flex gap-3">
             <input
               type="text"
-              className="flex-1 border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-300"
+              className="flex-1 border border-white-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-300"
               placeholder="Add a tag (e.g., Design)"
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
@@ -131,7 +131,7 @@ export default function PostTask() {
             <button
               type="button"
               onClick={addTag}
-              className="bg-teal-600 text-white px-4 py-2 rounded-lg"
+              className="bg-orange-600 text-white px-4 py-2 rounded-lg"
             >
               Add
             </button>
@@ -142,7 +142,7 @@ export default function PostTask() {
             {form.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm flex items-center gap-2"
+                className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm flex items-center gap-2"
               >
                 {tag}
                 <button
@@ -159,20 +159,20 @@ export default function PostTask() {
 
         {/* Budget */}
         <div>
-          <label className="block text-gray-700 font-medium mb-1">
+          <label className="block text-white-700 font-medium mb-1">
             Budget (₹)
           </label>
           <div className="grid grid-cols-2 gap-3">
             <input
               type="number"
-              className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-300"
+              className="border border-white-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-300"
               placeholder="Min"
               value={form.budgetMin}
               onChange={(e) => setForm({ ...form, budgetMin: e.target.value })}
             />
             <input
               type="number"
-              className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-300"
+              className="border border-white-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-300"
               placeholder="Max"
               value={form.budgetMax}
               onChange={(e) => setForm({ ...form, budgetMax: e.target.value })}
@@ -182,12 +182,12 @@ export default function PostTask() {
 
         {/* Deadline */}
         <div>
-          <label className="block text-gray-700 font-medium mb-1">
+          <label className="block text-white-700 font-medium mb-1">
             Deadline
           </label>
           <input
             type="date"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-300"
+            className="w-full border border-white-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-300"
             value={form.deadline}
             onChange={(e) => setForm({ ...form, deadline: e.target.value })}
           />
@@ -195,18 +195,18 @@ export default function PostTask() {
 
         {/* Attachments */}
         <div>
-          <label className="block text-gray-700 font-medium mb-1">
+          <label className="block text-white-700 font-medium mb-1">
             Attachments (optional)
           </label>
           <input
             type="file"
             multiple
             onChange={handleFileChange}
-            className="w-full border border-gray-300 rounded-lg p-2"
+            className="w-full border border-white-300 rounded-lg p-2"
           />
 
           {/* File Preview */}
-          <ul className="mt-2 text-sm text-gray-600">
+          <ul className="mt-2 text-sm text-white-600">
             {form.attachments.map((f) => (
               <li key={f.filename}>📎 {f.filename}</li>
             ))}
@@ -216,7 +216,7 @@ export default function PostTask() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-teal-600 text-white py-3 rounded-xl text-lg font-medium hover:bg-teal-700 transition"
+          className="w-full bg-orange-600 text-white py-3 rounded-xl text-lg font-medium hover:bg-orange-700 transition"
         >
           {loading ? "Posting..." : "Post Task"}
         </button>

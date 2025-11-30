@@ -1,10 +1,10 @@
 import taskModel from "../models/task_model.js";
 import cloudinary from "../config/cloudinary.js";
 
-const uploadToCloudinary = (fileBuffer) => {
+const uploadToCloudinary = (fileBuffer, folderName) => {
   return new Promise((resolve, reject) => {
     const upload = cloudinary.uploader.upload_stream(
-      { resource_type: "auto", folder: "tasktribe/tasks" },
+      { resource_type: "auto", folder: `tasktribe/${folderName}` },
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -28,7 +28,7 @@ export const createTask = async (req, res) => {
     if (req.files && req.files.length > 0) {
       for (let file of req.files) {
         try {
-          const result = await uploadToCloudinary(file.buffer);
+          const result = await uploadToCloudinary(file.buffer, "tasks");
 
           uploadedFiles.push({
             url: result.secure_url,
@@ -197,7 +197,7 @@ export const getMyTask = async (req, res) => {
     const { userid } = req.user;
 
     const tasks = await taskModel
-      .find({ createdBy: userid})
+      .find({ createdBy: userid })
       .populate("applicants.user", "name surname skills bio email photo");
 
     if (!tasks) {
@@ -305,5 +305,49 @@ export const getAssignedTask = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error", error });
+  }
+};
+
+export const submitWork = async (req, res) => {
+  try {
+    const { TaskId } = req.params;
+    const task = await taskModel.findById(TaskId);
+    let uploadedFiles = [];
+
+    if (req.files && req.files.length > 0) {
+      for (let file of req.files) {
+        try {
+          const result = await uploadToCloudinary(file.buffer, "workFiles");
+             
+          uploadedFiles.push({
+            url: result.secure_url,
+            filename: result.original_filename,
+          });
+        } catch (error) {
+          return res.status(400).json({
+            success: false,
+            message: error.message,
+          });
+        }
+      }
+    }
+
+    task.submittedWork = {
+      files: uploadedFiles,
+      submittedAt: new Date(),
+    };
+    task.status="submitted";
+    await task.save();
+    res.json({
+      success: true,
+      message: "Work Submitted Successfully",
+      uploadedFiles
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Work Not Submitted ,Server error",
+      error
+    });
   }
 };

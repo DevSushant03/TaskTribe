@@ -41,13 +41,7 @@ const taskSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: [
-        "open",
-        "in_progress",
-        "submitted",
-        "completed",
-        "cancelled",
-      ],
+      enum: ["open", "in_progress", "submitted", "completed", "cancelled"],
       default: "open",
     },
 
@@ -68,13 +62,23 @@ const taskSchema = new mongoose.Schema(
       default: 0,
     },
 
-    // ✔️ Attachments directly inside taskSchema (NO separate schema file)
     attachments: [
       {
         url: { type: String, required: true },
         filename: { type: String, required: true },
       },
     ],
+
+    submittedWork: {
+      message: { type: String, default: "" },
+      files: [
+        {
+          url: { type: String },
+          filename: { type: String },
+        },
+      ],
+      submittedAt: { type: Date },
+    },
   },
 
   { timestamps: true }

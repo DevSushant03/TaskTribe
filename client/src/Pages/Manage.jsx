@@ -136,7 +136,7 @@ const Manage = () => {
             </p>
           ) : (
             assignedTasks.map((task) => (
-              <AssignedTaskCard task={task}/>
+              <AssignedTaskCard tasks={task}/>
             ))
           )}
         </div>
