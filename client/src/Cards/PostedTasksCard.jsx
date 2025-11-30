@@ -16,13 +16,36 @@ function PostedTasksCard({ tasks, fetchApplicants }) {
         Reward: ₹{tasks.budget.min}-₹{tasks.budget.max}
       </p>
 
-      <p className="mt-2 px-3 py-1 rounded-full text-xs font-medium bg-[#262626] text-[#FF6B00] border border-[#FF6B00]">
+      <p
+        className="mt-2 inline-block px-3 py-1 rounded-full text-xs font-medium 
+               bg-[#262626] text-[#FF6B00] border border-[#FF6B00]"
+      >
         {tasks.status}
       </p>
+
       {tasks.status === "open" && (
         <p className="mt-2 text-sm text-[#C9C9C9]">
           Applicants: {tasks.applicants.length}
         </p>
+      )}
+
+      {tasks?.submittedWork?.files?.length > 0 && (
+        <div className="mt-3">
+          {tasks.submittedWork.files.map((file, index) => (
+            <div key={index} className="mt-2 flex items-center justify-between">
+              <span className="text-gray-400 text-xs">{file.filename}</span>
+
+              <a
+                href={file.url.replace("/upload/", "/upload/fl_attachment/")}
+                rel="noopener noreferrer"
+                className="px-2 py-1 text-[11px] bg-[#1f1f1f] border border-gray-700 
+                     rounded-md hover:bg-[#2a2a2a] cursor-pointer"
+              >
+                Download
+              </a>
+            </div>
+          ))}
+        </div>
       )}
 
       {/* Buttons */}
@@ -35,8 +58,12 @@ function PostedTasksCard({ tasks, fetchApplicants }) {
             View Applicants
           </button>
         ) : (
-          <button className="px-3 py-2 bg-green-700 text-white rounded-md  transition">
-            {tasks.status === "in_progress" ? "Pending" : "Recieved work"}
+          <button
+            className={`px-3 py-2 text-white rounded-md transition ${
+              tasks.status === "submitted" ? "bg-green-700" : "bg-orange-600"
+            }`}
+          >
+            {tasks.status === "in_progress" ? "Pending" : "Mark as Complete"}
           </button>
         )}
 

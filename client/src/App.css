@@ -6,7 +6,7 @@ body {
   background-color: #0C0C0C;
   font-family: "Lexend Deca", sans-serif;
 }
-a,button{
+a{
   cursor: pointer;
 }
 .title {

@@ -1,8 +1,9 @@
 import React from "react";
-import { FiChevronUp } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { task } from "../utils/api";
 import { useState } from "react";
-function AssignedTaskCard({ tasks }) {
+function AssignedTaskCard({ tasks,key }) {
+  const [open, setopen] = useState(null);
   const [file, setfile] = useState([]);
   const handleFileChange = (e) => {
     setfile([...e.target.files]);
@@ -15,8 +16,6 @@ function AssignedTaskCard({ tasks }) {
       formData.append("workFiles", file);
     });
     const res = await task.submitWork(formData, TaskId);
-    console.log(res.data);
-    
   };
   return (
     <div
@@ -43,63 +42,71 @@ function AssignedTaskCard({ tasks }) {
         </div>
 
         {/* Status */}
-        <span className="text-[10px] px-2 py-[2px] rounded bg-[#FF6B00]/20 text-[#FF6B00] uppercase">
+        <span className="text-[10px] px-2 py-[2px] rounded bg-[#FF6B00]/20 text-[#ffffff] uppercase">
           {tasks.status.replace("_", " ")}
         </span>
-        <button>
-          <FiChevronUp size={30} />
-        </button>
+        {key=== open ? (
+          <button className="cursor:pointer" onClick={() => setopen(null)}>
+            <FiChevronUp size={30} />
+          </button>
+        ) : (
+          <button className="cursor:pointer" onClick={() => setopen(key)}>
+            <FiChevronDown size={30} />
+          </button>
+        )}
       </div>
+        {/* Title */}
+        <h2 className="text-sm font-semibold text-white mt-3 line-clamp-1">
+          {tasks.title}
+        </h2>
+      <div className={ `transition-all duration-300 ${key === open ? "block" : "hidden"}`}>
 
-      {/* Title */}
-      <h2 className="text-sm font-semibold text-white mt-3 line-clamp-1">
-        {tasks.title}
-      </h2>
+        {/* Info List */}
+        <ul className="flex mt-2 text-[12px] text-gray-300 space-x-3">
+          <li>
+            <span className="text-gray-200 font-medium">Deadline:</span>{" "}
+            {new Date(tasks.deadline).toLocaleDateString()}
+          </li>
+          <li>
+            <span className="text-gray-200 font-medium">Budget:</span> ₹
+            {tasks.budget.min} - ₹{tasks.budget.max}
+          </li>
+        </ul>
 
-      {/* Info List */}
-      <ul className="flex mt-2 text-[12px] text-gray-300 space-x-3">
-        <li>
-          <span className="text-gray-200 font-medium">Deadline:</span>{" "}
-          {new Date(tasks.deadline).toLocaleDateString()}
-        </li>
-        <li>
-          <span className="text-gray-200 font-medium">Budget:</span> ₹
-          {tasks.budget.min} - ₹{tasks.budget.max}
-        </li>
-      </ul>
+        {/* Description */}
+        <p className="mt-2 text-gray-400 text-[12px]">{tasks.description}</p>
 
-      {/* Description */}
-      <p className="mt-2 text-gray-400 text-[12px]">{tasks.description}</p>
+        {/* Attachments */}
+        {tasks.attachments?.length > 0 && (
+          <div className="mt-3">
+            <h3 className="text-[11px] font-medium text-gray-200 mb-1">
+              Attachments
+            </h3>
 
-      {/* Attachments */}
-      {tasks.attachments?.length > 0 && (
-        <div className="mt-3">
-          <h3 className="text-[11px] font-medium text-gray-200 mb-1">
-            Attachments
-          </h3>
+            <div className="flex gap-2 flex-wrap">
+              {tasks.attachments.map((file) => (
+                <a
+                  key={file._id}
+                  href={file.url.replace("/upload/", "/upload/fl_attachment/")}
+                  rel="noopener noreferrer"
+                  download
+                  className="group relative w-16 h-16 border border-[#333] rounded-md overflow-hidden bg-[#1b1b1b] hover:border-[#FF6B00] transition"
+                >
+                  <img
+                    src={file.url}
+                    className="w-full h-full object-cover group-hover:scale-105 transition"
+                  />
 
-          <div className="flex gap-2 flex-wrap">
-            {tasks.attachments.map((file) => (
-              <a
-                key={file._id}
-                href={file.url}
-                download
-                className="group relative w-16 h-16 border border-[#333] rounded-md overflow-hidden bg-[#1b1b1b] hover:border-[#FF6B00] transition"
-              >
-                <img
-                  src={file.url}
-                  className="w-full h-full object-cover group-hover:scale-105 transition"
-                />
-
-                {/* Download Hover Overlay */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[10px] text-white transition">
-                  Download
-                </div>
-              </a>
-            ))}
+                  {/* Download Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[10px] text-white transition">
+                    Download
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Upload Work */}
       <div className="mt-3">
@@ -108,16 +115,18 @@ function AssignedTaskCard({ tasks }) {
         </label>
         <input
           type="file"
+          disabled={tasks.status === "submitted"}
           multiple
           onChange={handleFileChange}
-          className="mt-1 text-[11px] text-gray-400 w-full border border-[#333] rounded-md bg-[#1b1b1b] p-2"
+          className="mt-1 text-[11px] text-gray-400 w-full border border-[#333] disabled:cursor-not-allowed rounded-md bg-[#1b1b1b] p-2"
         />
       </div>
 
       {/* Button */}
       <button
+        disabled={tasks.status == "submitted"}
         onClick={() => uploadWork(tasks._id)}
-        className="mt-3 w-full py-2 text-[12px] rounded-md bg-[#FF6B00] text-white hover:bg-[#ff7f2e] transition"
+        className="mt-3 w-full py-2 text-[12px] rounded-md bg-[#FF6B00] disabled:cursor-not-allowed text-white hover:bg-[#ff7f2e] transition"
       >
         Mark Completed
       </button>

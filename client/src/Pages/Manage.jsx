@@ -120,8 +120,8 @@ const Manage = () => {
               No one has applied for this task yet.
             </p>
           ) : (
-            applicants.map((applicant) => (
-              <ApplicantCard applicant={applicant} selectedTask={selectedTask}/>
+            applicants.map((applicant,key) => (
+              <ApplicantCard applicant={applicant} key={key} selectedTask={selectedTask}/>
             ))
           )}
         </div>
@@ -135,8 +135,8 @@ const Manage = () => {
               No tasks have been assigned to you yet.
             </p>
           ) : (
-            assignedTasks.map((task) => (
-              <AssignedTaskCard tasks={task}/>
+            assignedTasks.map((task,key) => (
+              <AssignedTaskCard tasks={task} key={key}/>
             ))
           )}
         </div>
