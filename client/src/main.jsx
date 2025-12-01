@@ -64,7 +64,7 @@ const router = createBrowserRouter([
       { path: "manage", element: <Notification /> },
       { path: "chats", element: <Chats /> },
       { path: "profile", element: <ProfilePage /> },
-      { path: "MyBankDetials", element: <BankDetailsForm /> },
+      { path: "MyBankDetails", element: <BankDetailsForm /> },
 
     ],
   },

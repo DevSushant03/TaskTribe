@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const bankDetailsSchema = new mongoose.Schema(
   {
     userId: {
@@ -12,6 +11,9 @@ const bankDetailsSchema = new mongoose.Schema(
     accountHolder: { type: String, required: true },
     accountNumber: { type: String, required: true },
     ifsc: { type: String, required: true },
+    bankName: { type: String, required: true },
+    branch: { type: String, required: true },
+    upi: { type: String, default: "" },
 
     razorpayContactId: { type: String, default: "" },
     razorpayFundAccountId: { type: String, default: "" },
@@ -19,4 +21,7 @@ const bankDetailsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("BankDetails", bankDetailsSchema);
+const bankModel =
+  mongoose.models.BankDetails ||
+  mongoose.model("BankDetails", bankDetailsSchema);
+export default bankModel;

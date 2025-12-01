@@ -1,21 +1,39 @@
 import React, { useState } from "react";
+import { Bank } from "../utils/api";
+import { bankDetails } from "../Validation/BankDetails_validation";
 
 export default function BankDetailsForm() {
   const [form, setForm] = useState({
     accountHolder: "",
     accountNumber: "",
+    confirmAccountNumber: "",
     ifsc: "",
     bankName: "",
     branch: "",
+    upi: "",
   });
-
+  const [error, seterror] = useState("");
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    seterror("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
+    const validation = bankDetails.safeParse(form);
+
+    if (!validation.success) {
+      const firstError = validation.error.issues[0].message;
+      seterror(firstError);
+      return;
+    }
+
+    if (form.accountNumber !== form.confirmAccountNumber) {
+      seterror("Account numbers do not match");
+      return;
+    }
+    const res = await Bank.addBankDetails(form);
+    alert(res.data.message)   
   };
 
   return (
@@ -33,6 +51,8 @@ export default function BankDetailsForm() {
         <div className="flex flex-col gap-2">
           <label className="text-[#B5B5B5] text-sm">Account Number</label>
           <input
+            name="accountNumber"
+            onChange={handleChange}
             type="text"
             className="bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-xl focus:border-[#FF6B00] outline-none"
             placeholder="Enter account number"
@@ -46,6 +66,8 @@ export default function BankDetailsForm() {
           </label>
           <input
             type="text"
+            name="confirmAccountNumber"
+            onChange={handleChange}
             className="bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-xl focus:border-[#FF6B00] outline-none"
             placeholder="Confirm account number"
           />
@@ -55,7 +77,9 @@ export default function BankDetailsForm() {
         <div className="flex flex-col gap-2">
           <label className="text-[#B5B5B5] text-sm">IFSC Code</label>
           <input
+            name="ifsc"
             type="text"
+            onChange={handleChange}
             className="bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-xl focus:border-[#FF6B00] outline-none"
             placeholder="Enter IFSC code"
           />
@@ -65,7 +89,9 @@ export default function BankDetailsForm() {
         <div className="flex flex-col gap-2">
           <label className="text-[#B5B5B5] text-sm">Bank Name</label>
           <input
+            name="bankName"
             type="text"
+            onChange={handleChange}
             className="bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-xl focus:border-[#FF6B00] outline-none"
             placeholder="Enter bank name"
           />
@@ -75,7 +101,9 @@ export default function BankDetailsForm() {
         <div className="flex flex-col gap-2">
           <label className="text-[#B5B5B5] text-sm">Branch Name</label>
           <input
+            name="branch"
             type="text"
+            onChange={handleChange}
             className="bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-xl focus:border-[#FF6B00] outline-none"
             placeholder="Enter branch name"
           />
@@ -85,7 +113,9 @@ export default function BankDetailsForm() {
         <div className="flex flex-col gap-2">
           <label className="text-[#B5B5B5] text-sm">Account Holder Name</label>
           <input
+            name="accountHolder"
             type="text"
+            onChange={handleChange}
             className="bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-xl focus:border-[#FF6B00] outline-none"
             placeholder="Enter holder name"
           />
@@ -96,14 +126,20 @@ export default function BankDetailsForm() {
           <label className="text-[#B5B5B5] text-sm">UPI ID (Optional)</label>
           <input
             type="text"
+            name="upi"
+            onChange={handleChange}
             className="bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-xl focus:border-[#FF6B00] outline-none"
             placeholder="example@upi"
           />
         </div>
 
         {/* Submit Button */}
-        <div className="md:col-span-2 flex justify-end mt-4">
-          <button className="px-8 py-3 bg-[#FF6B00] hover:bg-[#FF7E26] text-white font-semibold rounded-xl shadow-md transition">
+        <div className="md:col-span-2 flex justify-between mt-4">
+          <p className="text-[#fc0303] text-xl">{error}</p>
+          <button
+            onClick={handleSubmit}
+            className="px-8 py-3 bg-[#FF6B00] hover:bg-[#FF7E26] text-white font-semibold rounded-xl shadow-md transition"
+          >
             Save Bank Details
           </button>
         </div>

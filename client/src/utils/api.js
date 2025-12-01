@@ -49,4 +49,8 @@ export const task = {
       headers: { "Content-Type": "multipart/form-data" },
     }),
 };
+
+export const Bank = {
+  addBankDetails: (BankDetails) => api.post("/bank/addDetails", BankDetails),
+};
 export default api;
