@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import PostedTasksCard from "../Cards/PostedTasksCard";
 import ApplicantCard from "../Cards/ApplicantCard";
 import AssignedTaskCard from "../Cards/AssignedTaskCard";
-
+import { Helmet } from "react-helmet";
 <ArrowLeft className="w-6 h-6" />;
 
 const Manage = () => {
@@ -15,7 +15,7 @@ const Manage = () => {
   const [assignedTasks, setAssignedTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [applicants, setApplicants] = useState([]);
- 
+
   // Fetch My Posted Tasks
   const fetchPostedTasks = async () => {
     try {
@@ -49,7 +49,6 @@ const Manage = () => {
     }
   };
 
-  
   useEffect(() => {
     fetchPostedTasks();
     fetchAssignedTasks();
@@ -57,6 +56,13 @@ const Manage = () => {
 
   return (
     <div className="w-full h-full overflow-y-auto px-5 md:px-16 mt-10 mb-20 bg-[#0D0D0D] text-white">
+      <Helmet>
+        <title>Manage | TaskTribe</title>
+        <meta
+          name="description"
+          content="Manage your posted tasks on TaskTribe. View applicants, update task details, track progress, and manage task status easily."
+        />
+      </Helmet>
       {/* Page Title */}
       <h1 className="text-3xl font-bold mb-6 text-[#FF6B00] tracking-wide">
         Manage Tasks
@@ -96,7 +102,7 @@ const Manage = () => {
             </p>
           ) : (
             postedTasks.map((task) => (
-              <PostedTasksCard tasks={task} fetchApplicants={fetchApplicants}/>
+              <PostedTasksCard tasks={task} fetchApplicants={fetchApplicants} />
             ))
           )}
         </div>
@@ -120,8 +126,12 @@ const Manage = () => {
               No one has applied for this task yet.
             </p>
           ) : (
-            applicants.map((applicant,key) => (
-              <ApplicantCard applicant={applicant} key={key} selectedTask={selectedTask}/>
+            applicants.map((applicant, key) => (
+              <ApplicantCard
+                applicant={applicant}
+                key={key}
+                selectedTask={selectedTask}
+              />
             ))
           )}
         </div>
@@ -135,8 +145,8 @@ const Manage = () => {
               No tasks have been assigned to you yet.
             </p>
           ) : (
-            assignedTasks.map((task,key) => (
-              <AssignedTaskCard tasks={task} key={key}/>
+            assignedTasks.map((task, key) => (
+              <AssignedTaskCard tasks={task} key={key} />
             ))
           )}
         </div>

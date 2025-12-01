@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // import axios from "../utils/axiosInstance"
 import { task } from "../utils/api";
-
+import { Helmet } from "react-helmet";
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -41,6 +41,13 @@ export default function TaskList() {
 
   return (
     <div className="w-full h-screen p-6 md:p-10 overflow-y-scroll">
+      <Helmet>
+        <title>Browse | TaskTribe</title>
+        <meta
+          name="description"
+          content="Browse open tasks on TaskTribe. Find opportunities, apply for tasks, explore categories, and start solving tasks to earn rewards."
+        />
+      </Helmet>
       {/* Header + Post Button */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold text-white">Explore Tasks</h1>
