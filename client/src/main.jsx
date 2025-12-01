@@ -17,6 +17,7 @@ import NotFound404 from "./Pages/NoFound404";
 import AppLayout from "./Layout/AppLayout";
 import Chats from "./Pages/Chats";
 import DashBoard from "./Pages/DashBoard";
+import BankDetailsForm from "./Components/BankDetailsForm";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -63,6 +64,8 @@ const router = createBrowserRouter([
       { path: "manage", element: <Notification /> },
       { path: "chats", element: <Chats /> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "MyBankDetials", element: <BankDetailsForm /> },
+
     ],
   },
 ]);

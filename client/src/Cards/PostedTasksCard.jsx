@@ -16,13 +16,9 @@ function PostedTasksCard({ tasks, fetchApplicants }) {
         Reward: ₹{tasks.budget.min}-₹{tasks.budget.max}
       </p>
 
-      <p
-        className="mt-2 inline-block px-3 py-1 rounded-full text-xs font-medium 
-               bg-[#262626] text-[#FF6B00] border border-[#FF6B00]"
-      >
+      <p className="mt-2 px-3 py-1 rounded-full text-xs font-medium bg-[#262626] text-[#FF6B00] border border-[#FF6B00]">
         {tasks.status}
       </p>
-
       {tasks.status === "open" && (
         <p className="mt-2 text-sm text-[#C9C9C9]">
           Applicants: {tasks.applicants.length}
@@ -31,6 +27,7 @@ function PostedTasksCard({ tasks, fetchApplicants }) {
 
       {tasks?.submittedWork?.files?.length > 0 && (
         <div className="mt-3">
+
           {tasks.submittedWork.files.map((file, index) => (
             <div key={index} className="mt-2 flex items-center justify-between">
               <span className="text-gray-400 text-xs">{file.filename}</span>
