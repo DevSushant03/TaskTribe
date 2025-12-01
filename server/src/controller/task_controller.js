@@ -1,5 +1,6 @@
 import taskModel from "../models/task_model.js";
 import cloudinary from "../config/cloudinary.js";
+import bankModel from "../models/BankDetails_model.js";
 
 const uploadToCloudinary = (fileBuffer, folderName) => {
   return new Promise((resolve, reject) => {
@@ -161,11 +162,15 @@ export const applyForTask = async (req, res) => {
     const { taskId } = req.params;
     const { userid } = req.user;
     const { message } = req.body;
-
+    
+    const bankAccount = await bankModel.findOne({userId:userid})
+     if (!bankAccount) {
+      return res.status(404).json({success:false, message: "Please add your bank details" });
+    }
     const task = await taskModel.findById(taskId);
 
     if (!task) {
-      return res.status(404).json({ msg: "Task not found" });
+      return res.status(404).json({ message: "Task not found" });
     }
 
     const alreadyApplied = task.applicants.some(

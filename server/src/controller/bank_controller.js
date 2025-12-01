@@ -32,6 +32,7 @@ export const addBankDetails = async (req, res) => {
       branch,
       upi,
     });
+    newBank.isBankDetails = false;
     await newBank.save();
 
     res.json({

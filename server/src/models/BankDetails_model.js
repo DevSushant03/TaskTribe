@@ -14,7 +14,6 @@ const bankDetailsSchema = new mongoose.Schema(
     bankName: { type: String, required: true },
     branch: { type: String, required: true },
     upi: { type: String, default: "" },
-
     razorpayContactId: { type: String, default: "" },
     razorpayFundAccountId: { type: String, default: "" },
   },

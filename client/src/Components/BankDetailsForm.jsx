@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Bank } from "../utils/api";
 import { bankDetails } from "../Validation/BankDetails_validation";
-
+import {useNavigate} from "react-router-dom"
 export default function BankDetailsForm() {
+  const navigate = useNavigate()
   const [form, setForm] = useState({
     accountHolder: "",
     accountNumber: "",
@@ -33,7 +34,9 @@ export default function BankDetailsForm() {
       return;
     }
     const res = await Bank.addBankDetails(form);
-    alert(res.data.message)   
+    alert(res.data.message)  
+    navigate("/browse") 
+
   };
 
   return (
