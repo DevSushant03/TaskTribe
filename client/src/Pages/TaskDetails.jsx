@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { task } from "../utils/api";
 
 const TaskDetails = () => {
-  const { taskId, userId } = useParams();
-
+  const { taskId, id:userId } = useParams();
+  const navigate = useNavigate();
   const [detailTask, setDetailTask] = useState(null);
   const [loading, setLoading] = useState(true);
   const [applyLoading, setApplyLoading] = useState(false);
@@ -46,14 +46,23 @@ const TaskDetails = () => {
 
     try {
       setApplyLoading(true);
-      const res = await task.applyTask(taskId,message)
+      const res = await task.applyTask(taskId, message);
+      if (res.data.action === "ADD_BANK_DETAILS") {
+        alert(res.data.message);
+
+        return navigate(`/user/${userId}/MyBankDetails`);
+      }
+
+      if (res.data.action === "ALREADY_APPLIED") {
+        alert(res.data.message);
+        toast.error("You already applied!");
+      }
 
       alert(res.data.message);
       setRequestBox(false);
       setMessage("");
     } catch (error) {
-      console.error(error);
-      alert(res.data.message);
+      console.log(error);
     } finally {
       setApplyLoading(false);
     }

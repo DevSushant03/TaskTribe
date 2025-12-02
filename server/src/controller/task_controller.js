@@ -156,21 +156,29 @@ export const deleteTask = async (req, res) => {
     });
   }
 };
-
 export const applyForTask = async (req, res) => {
   try {
     const { taskId } = req.params;
     const { userid } = req.user;
     const { message } = req.body;
-    
-    const bankAccount = await bankModel.findOne({userId:userid})
-     if (!bankAccount) {
-      return res.status(404).json({success:false, message: "Please add your bank details" });
-    }
-    const task = await taskModel.findById(taskId);
 
+    const bankAccount = await bankModel.findOne({ userId: userid });
+
+    if (!bankAccount) {
+      return res.json({
+        success: false,
+        action: "ADD_BANK_DETAILS",
+        message: "Please add your bank details",
+      });
+    }
+
+    const task = await taskModel.findById(taskId);
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return res.json({
+        success: false,
+        action: "TASK_NOT_FOUND",
+        message: "Task not found",
+      });
     }
 
     const alreadyApplied = task.applicants.some(
@@ -180,20 +188,31 @@ export const applyForTask = async (req, res) => {
     if (alreadyApplied) {
       return res.json({
         success: false,
+        action: "ALREADY_APPLIED",
         message: "Already applied to this task",
       });
     }
+
     task.applicants.push({
       user: userid,
       message,
     });
-    task.applicantsCount += 1;
 
+    task.applicantsCount += 1;
     await task.save();
 
-    res.status(200).json({ success: false, message: "Applied successfully" });
+    return res.status(200).json({
+      success: true,
+      action: "APPLIED_SUCCESSFULLY",
+      message: "Applied successfully",
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error", error });
+    res.status(500).json({
+      success: false,
+      action: "SERVER_ERROR",
+      message: "Server error",
+      error,
+    });
   }
 };
 
@@ -323,7 +342,7 @@ export const submitWork = async (req, res) => {
       for (let file of req.files) {
         try {
           const result = await uploadToCloudinary(file.buffer, "workFiles");
-             
+
           uploadedFiles.push({
             url: result.secure_url,
             filename: result.original_filename,
@@ -341,18 +360,18 @@ export const submitWork = async (req, res) => {
       files: uploadedFiles,
       submittedAt: new Date(),
     };
-    task.status="submitted";
+    task.status = "submitted";
     await task.save();
     res.json({
       success: true,
       message: "Work Submitted Successfully",
-      uploadedFiles
+      uploadedFiles,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Work Not Submitted ,Server error",
-      error
+      error,
     });
   }
 };
