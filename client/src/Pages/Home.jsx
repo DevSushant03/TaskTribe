@@ -7,6 +7,7 @@ import FeedbackSection from "../Components/FeedbackSection";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import { Helmet } from "react-helmet";
+import InfiniteScroll from "../Components/InfiniteScroll";
 export default function Home() {
   return (
     <>
@@ -34,6 +35,7 @@ export default function Home() {
         />
         <HeroSection />
       </div>
+      <InfiniteScroll/>
       <FeaturesSection />
       <SolveAndEarn />
       <FeedbackSection />

@@ -5,22 +5,7 @@ function HeroSection() {
   return (
     <section className="absolute w-full h-[100vh] overflow-hidden">
 
-      {/* Background Video */}
-      {/* <video
-        className="absolute top-0 left-0 w-full h-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-      >
-        <source src="/hero-bg.mp4" type="video/mp4" />
-      </video> */}
-
-      {/* Overlay for better text visibility */}
-      {/* <div className="absolute inset-0 bg-black/40"></div> */}
-
-      {/* Hero Text Content */}
+      
       <div className="relative z-10 max-w-5xl mx-auto px-6 h-full flex flex-col items-center justify-center mt-10 md:mt-0 text-center text-white">
 
         <h1 className="title text-3xl md:text-5xl leading-tight">
@@ -36,22 +21,22 @@ function HeroSection() {
         {/* Stats */}
         <div className="flex flex-wrap justify-center gap-10 mt-10 text-white font-semibold">
           <div className="text-center">
-            <p className="text-3xl font-bold">325</p>
+            <p className="text-3xl font-bold">2+</p>
             <p className="text-sm text-gray-300">Tasks Posted</p>
           </div>
 
           <div className="text-center">
-            <p className="text-3xl font-bold">8500</p>
+            <p className="text-3xl font-bold">5</p>
             <p className="text-sm text-gray-300">Verified Users</p>
           </div>
 
           <div className="text-center">
-            <p className="text-3xl font-bold">50,000+</p>
+            <p className="text-3xl font-bold">0</p>
             <p className="text-sm text-gray-300">Messages</p>
           </div>
 
           <div className="text-center">
-            <p className="text-3xl font-bold">₹2.1 Lakh</p>
+            <p className="text-3xl font-bold">₹0</p>
             <p className="text-sm text-gray-300">Payments Made</p>
           </div>
         </div>

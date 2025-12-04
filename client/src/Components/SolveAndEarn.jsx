@@ -1,19 +1,42 @@
 export default function SolveAndEarn() {
   const items = [
-    { title: "Doubt Clearing", img: "/assets/doubt.jpg" },
-    { title: "Projects", img: "/assets/projects.jpg" },
-    { title: "Logs", img: "/assets/logs.jpg" },
-    { title: "Research", img: "/assets/research.jpg" },
-    { title: "Data Entry", img: "/assets/dataentry.jpg" },
-    { title: "Editing", img: "/assets/editing.jpg" },
-    { title: "Coding", img: "/assets/coding.jpg" },
-    { title: "Software Support", img: "/assets/support.jpg" },
+    {
+      title: "UI/UX Design",
+      img: "https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+      title: "PowerPoint",
+      img: "https://images.unsplash.com/photo-1509395176047-4a66953fd231",
+    },
+    {
+      title: "Software Development",
+      img: "https://images.unsplash.com/photo-1517433456452-f9633a875f6f?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+      title: "Research",
+      img: "https://images.unsplash.com/photo-1551434678-e076c223a692",
+    },
+    {
+      title: "Data Entry",
+      img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c",
+    },
+    {
+      title: "Editing",
+      img: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
+    },
+    {
+      title: "Coding",
+      img: "https://images.unsplash.com/photo-1555949963-aa79dcee981c",
+    },
+    {
+      title: "Software Support",
+      img: "https://images.unsplash.com/photo-1593642532973-d31b6557fa68",
+    },
   ];
 
   return (
     <section className="w-full py-20 text-white">
       <div className="max-w-6xl mx-auto px-6 text-center">
-
         {/* Heading */}
         <h2 className="text-4xl md:text-5xl font-bold mb-3">
           What Can You <span className="text-orange-500">Solve & Earn</span>
@@ -21,7 +44,8 @@ export default function SolveAndEarn() {
 
         {/* Subheading */}
         <p className="text-gray-300 max-w-2xl mx-auto mb-14">
-          Explore a variety of tasks — complete work, earn rewards, and grow your skills.
+          Explore a variety of tasks — complete work, earn rewards, and grow
+          your skills.
         </p>
 
         {/* Grid */}
@@ -49,7 +73,6 @@ export default function SolveAndEarn() {
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

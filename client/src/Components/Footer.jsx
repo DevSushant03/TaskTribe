@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-import logo from "/public/icon.jpeg"
+import { FaInstagram, FaLinkedin, FaTwitter, FaGithub, FaGlobe } from "react-icons/fa";
+import logo from "/public/icon.jpeg";
+
 export default function Footer() {
   return (
     <footer className="w-full text-white py-16 flex justify-center">
@@ -71,10 +72,65 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* 🔥 Developer Signature Section (NEW) */}
+
         {/* Large Background Text */}
-          <h1 className="logoText m-0 text-center text-[15vw] md:text-[240px] font-semibold tracking-widest select-none">
-            Task.Tribe
-          </h1>
+        <h1 className="logoText m-0 text-center text-[15vw] md:text-[240px] font-semibold tracking-widest select-none">
+          Task.Tribe
+        </h1>
+        <div className="w-full bg-black text-white rounded-2xl py-6 px-8 flex flex-col md:flex-row items-center justify-between shadow-xl border border-white/20">
+          <div>
+            <h2 className="text-xl font-bold tracking-wide">Developed By</h2>
+            <p className="text-orange-400 text-2xl font-extrabold uppercase mt-1">
+              Sushant Nachanekar
+            </p>
+            <p className="text-gray-300 mt-1 text-sm">
+              Full Stack Developer • React • Node • MongoDB • Tailwind • GSAP
+            </p>
+          </div>
+
+          <div className="flex gap-5 text-3xl mt-4 md:mt-0">
+            {/* GitHub */}
+            <a
+              href="https://github.com/DevSushant03"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group"
+            >
+              <FaGithub className="transition transform group-hover:-translate-y-1 group-hover:text-gray-300" />
+            </a>
+
+            {/* LinkedIn */}
+            <a
+              href="https://linkedin.com/in/sushant-nachanekar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group"
+            >
+              <FaLinkedin className="transition transform group-hover:-translate-y-1 group-hover:text-blue-400" />
+            </a>
+
+            {/* Instagram */}
+            <a
+              href="https://instagram.com/mr__sushant__030"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group"
+            >
+              <FaInstagram className="transition transform group-hover:-translate-y-1 group-hover:text-pink-500" />
+            </a>
+
+            {/* Portfolio (FaGlobe) */}
+            <a
+              href="https://devsushant03.netlify.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group"
+            >
+              <FaGlobe className="transition transform group-hover:-translate-y-1 group-hover:text-green-400" />
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );
