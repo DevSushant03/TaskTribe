@@ -26,7 +26,7 @@ export default function FeedbackSection() {
 
         {/* Heading */}
         <h2 className="text-4xl md:text-5xl font-bold text-center">
-          Fake Results From <span className="text-orange-500">Clients</span>
+          Real Results From <span className="text-orange-500">Clients</span>
         </h2>
 
         <p className="text-gray-300 text-center max-w-2xl mx-auto mt-3 mb-12">
