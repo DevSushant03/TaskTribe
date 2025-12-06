@@ -2,9 +2,62 @@
 @import url("https://fonts.googleapis.com/css2?family=Blaka&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap");
 @import "tailwindcss";
+@layer utilities {
+  /* Neumorphism Shadows */
+  .shadow-neumorph {
+    box-shadow: 8px 8px 16px #e5e5e5, -8px -8px 16px #ffffff;
+  }
+
+  .shadow-neumorph-inset {
+    box-shadow: inset 8px 8px 16px #e0e0e0, inset -8px -8px 16px #fafafa;
+  }
+
+  .shadow-neumorph-hover {
+    box-shadow: 6px 6px 12px #e5e5e5, -6px -6px 12px #ffffff,
+      inset 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-neumorph-orange {
+    box-shadow: 8px 8px 16px rgba(249, 115, 22, 0.3),
+      -8px -8px 16px rgba(255, 255, 255, 0.8);
+  }
+
+  .shadow-neumorph-orange-inset {
+    box-shadow: inset 8px 8px 16px rgba(249, 115, 22, 0.25),
+      inset -8px -8px 16px rgba(255, 255, 255, 0.9);
+  }
+
+  .shadow-neumorph-sm {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1),
+      -4px -4px 8px rgba(255, 255, 255, 0.9);
+  }
+
+  .shadow-neumorph-orange-sm {
+    box-shadow: 4px 4px 8px rgba(249, 115, 22, 0.2),
+      -4px -4px 8px rgba(255, 255, 255, 0.95);
+  }
+
+  .shadow-neumorph-focus {
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2),
+      6px 6px 12px rgba(0, 0, 0, 0.1), -6px -6px 12px rgba(255, 255, 255, 0.9);
+  }
+
+  .shadow-neumorph-orange-focus {
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3),
+      inset 4px 4px 8px rgba(249, 115, 22, 0.15),
+      inset -4px -4px 8px rgba(255, 255, 255, 0.95);
+  }
+
+  .shadow-neumorph-checkbox {
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2),
+      -2px -2px 4px rgba(255, 255, 255, 0.9);
+  }
+}
+
 body {
   background-color: #0c0c0c;
   font-family: "Lexend Deca", sans-serif;
+  scroll-behavior: smooth;
 }
 a {
   cursor: pointer;

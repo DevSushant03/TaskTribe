@@ -22,7 +22,7 @@ function Navbar() {
           </li>
           <li>
             <a
-              href="#process"
+              href="#features"
               className="hover:text-white hover:bg-orange-500 rounded-2xl p-2 px-3 duration-200"
             >
               Features
@@ -30,7 +30,7 @@ function Navbar() {
           </li>
           <li>
             <a
-              href="#about"
+              href="#Category"
               className="hover:text-white hover:bg-orange-500 rounded-2xl p-2 px-3 duration-200"
             >
               Category

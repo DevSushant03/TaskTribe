@@ -44,14 +44,14 @@ function HeroSection() {
         {/* Buttons */}
         <div className="mt-12 flex flex-col sm:flex-row gap-6 justify-center">
           <Link
-            to="/post-task"
+            to="/auth"
             className="px-8 py-3 bg-orange-600 text-white rounded-lg text-lg font-medium hover:bg-orange-700 transition"
           >
             Launch Your Task
           </Link>
 
           <Link
-            to="/tasks"
+            to="/auth"
             className="px-8 py-3 border border-orange-400 text-orange-300 rounded-lg text-lg font-medium hover:bg-orange-500/20 transition"
           >
             Explore Active Tasks

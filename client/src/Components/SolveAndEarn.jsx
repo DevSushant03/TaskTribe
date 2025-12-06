@@ -49,7 +49,7 @@ export default function SolveAndEarn() {
   ];
 
   return (
-    <section className="w-full py-20 text-white">
+    <section id="Category" className="w-full py-20 text-white">
       <div className="max-w-6xl mx-auto px-6">
         <h2 className="text-4xl md:text-5xl font-bold mb-3 text-center">
           What Can You <span className="text-orange-500">Solve & Earn</span>

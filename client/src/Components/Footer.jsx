@@ -4,7 +4,7 @@ import logo from "/public/icon.jpeg";
 
 export default function Footer() {
   return (
-    <footer className="w-full text-white py-16 flex justify-center">
+    <footer id="contact" className="w-full text-white py-16 flex justify-center">
       <div className="w-[90%] p-10 max-w-7xl flex flex-col gap-16 bg-[#f0f8ff] rounded-2xl text-black">
         {/* Top Section */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
