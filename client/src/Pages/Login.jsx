@@ -125,7 +125,7 @@ export default function Login() {
               </div>
               <button
                 type="submit"
-                className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange hover:border-orange-500/80 shadow-neumorph-orange-inset focus:shadow-neumorph-orange-focus transition-all duration-300 text-lg"
+                className="w-full py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange hover:border-orange-500/80  focus:shadow-neumorph-orange-focus transition-all duration-300 text-lg"
                 disabled={loading}
               >
                 {loading ? "Loading.." : "Log In"}
@@ -140,14 +140,6 @@ export default function Login() {
                 className="text-orange-600 font-semibold hover:text-orange-700 transition-colors"
               >
                 Sign Up
-              </Link>
-            </p>
-            <p className="mt-8 text-center bg-gradient-to-r from-orange-100 to-orange-50 px-6 py-3 rounded-2xl border border-orange-200/60 shadow-neumorph-sm">
-              <Link
-                to="/"
-                className="text-orange-700 hover:text-orange-800 font-medium transition-colors"
-              >
-                Back to home
               </Link>
             </p>
           </div>

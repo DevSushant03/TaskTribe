@@ -56,36 +56,37 @@ export default function Register() {
       </Helmet>
 
       <div className="min-h-screen flex flex-col md:flex-row">
-        <div className="flex-1 flex flex-col justify-center px-8 py-8 bg-[#f0f8ff]">
+        <div className="flex-1 flex flex-col justify-center px-8 py-8 min-h-screen bg-gradient-to-br from-orange-50 to-white">
           <div className="max-w-md mx-auto w-full mt-10">
-            <h2 className="text-center text-2xl font-semibold mb-6">Sign up</h2>
-
-            <button className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 mb-3 hover:bg-gray-100">
-              <FcGoogle className="h-5 w-5 mr-2" />
-              Continue with Google
-            </button>
-            <button className="w-full flex items-center justify-center bg-blue-600 text-white rounded-lg py-2 mb-4 hover:bg-blue-700">
-              <FaFacebookF className="h-5 w-5 mr-2" />
-              Continue with Facebook
+            {/* Social Login */}
+            <button className="w-full flex items-center justify-center bg-white/70 backdrop-blur-sm border-2 border-orange-200/60 rounded-2xl py-3 mb-3 hover:shadow-neumorph-hover hover:border-orange-300/80 hover:bg-orange-50/80 transition-all duration-300 shadow-neumorph h-5 w-5">
+              <FcGoogle className="h-5 w-5 mr-2" /> Continue with Google
             </button>
 
+            {/* Divider */}
             <div className="flex items-center my-3">
-              <div className="flex-grow border-t border-gray-300"></div>
-              <span className="mx-2 text-gray-500 font-bold">OR</span>
-              <div className="flex-grow border-t border-gray-300"></div>
+              <div className="flex-grow border-t border-orange-200/60"></div>
+              <span className="mx-2 text-gray-600 font-bold bg-white/90 px-3 py-1 rounded-full border border-orange-200/50 shadow-neumorph-sm">
+                OR
+              </span>
+              <div className="flex-grow border-t border-orange-200/60"></div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="flex space-x-3 mb-3">
+            {/* Login Form */}
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-orange-200/50 shadow-neumorph-inset"
+            >
+              <div className="flex space-x-3 mb-4">
                 <div className="w-1/2">
                   <input
                     type="text"
                     placeholder="First Name"
                     {...register("name")}
-                    className="w-full py-2 px-3 border border-gray-300 rounded"
+                    className="w-full py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
                   />
                   {errors.name && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-600 text-sm mt-1 font-medium bg-orange-50/80 border border-orange-200/60 px-2 py-1 rounded-lg shadow-neumorph-orange-sm">
                       {errors.name.message}
                     </p>
                   )}
@@ -96,58 +97,70 @@ export default function Register() {
                     type="text"
                     placeholder="Last Name"
                     {...register("surname")}
-                    className="w-full py-2 px-3 border border-gray-300 rounded"
+                    className="w-full py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
                   />
                   {errors.surname && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-600 text-sm mt-1 font-medium bg-orange-50/80 border border-orange-200/60 px-2 py-1 rounded-lg shadow-neumorph-orange-sm">
                       {errors.surname.message}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="mb-3">
+              <div className="mb-4">
                 <input
                   type="email"
                   placeholder="Email"
                   {...register("email")}
-                  className="w-full py-2 px-3 border border-gray-300 rounded"
+                  className="w-full py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email.message}</p>
+                  <p className="text-red-600 text-sm mt-1 font-medium bg-orange-50/80 border border-orange-200/60 px-2 py-1 rounded-lg shadow-neumorph-orange-sm">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
               {/* Password */}
-              <div className="relative mb-3">
+              <div className="relative mb-4">
                 <input
                   type="password"
                   placeholder="Password"
                   {...register("password")}
-                  className="w-full py-2 px-3 border border-gray-300 rounded pr-10"
+                  className="w-full py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm pr-10"
                 />
-                <FaRegEyeSlash className="absolute right-3 top-3 text-gray-400" />
+                <FaRegEyeSlash className="absolute right-4 top-4 text-gray-400 h-5 w-5" />
                 {errors.password && (
-                  <p className="text-red-500 text-sm">
+                  <p className="text-red-600 text-sm mt-1 font-medium bg-orange-50/80 border border-orange-200/60 px-2 py-1 rounded-lg shadow-neumorph-orange-sm">
                     {errors.password.message}
                   </p>
                 )}
               </div>
+
               {error && (
-                <p className="bg-red-100 border-1 border-solid p-2 my-2 rounded-sm text-red-500 text-sm">
+                <p className="bg-red-50 border-2 border-orange-200/60 p-3 my-2 rounded-xl text-orange-700 text-sm shadow-neumorph-orange-sm backdrop-blur-sm">
                   {error}
                 </p>
               )}
 
-              <div className="flex items-center mb-3 text-sm">
-                <input type="checkbox" className="mr-2" />
-                <span>
+              <div className="flex items-center mb-4 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  className="mr-2 w-4 h-4 border-2 border-orange-300 rounded focus:border-orange-500 focus:ring-orange-400 shadow-neumorph-checkbox"
+                />
+                <span className="text-gray-600">
                   I agree to the{" "}
-                  <a href="#" className="text-blue-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-orange-600 hover:text-orange-700 hover:underline font-medium transition-colors"
+                  >
                     User Agreement
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="text-blue-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-orange-600 hover:text-orange-700 hover:underline font-medium transition-colors"
+                  >
                     Privacy Policy
                   </a>
                   .
@@ -156,23 +169,25 @@ export default function Register() {
 
               <button
                 type="submit"
-                className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"
+                className="w-full py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange hover:border-orange-500/80  focus:shadow-neumorph-orange-focus transition-all duration-300 text-lg"
+                disabled={loading}
               >
                 {loading ? "loading..." : "Join TaskTribe"}
               </button>
             </form>
 
             {/* Login link */}
-            <p className="mt-5 text-center text-sm">
+            <p className="mt-6 text-center text-sm text-gray-700 bg-white/70 backdrop-blur-sm px-4 py-3 rounded-2xl border border-orange-200/50 shadow-neumorph-sm">
               Already have an account?{" "}
-              <Link to="/auth" className="text-blue-600">
+              <Link
+                to="/auth"
+                className="text-orange-600 font-semibold hover:text-orange-700 transition-colors"
+              >
                 Sign In
               </Link>
             </p>
 
-            <p className="mt-10 text-center underline">
-              <Link to="/"> {"< "}Back to home</Link>
-            </p>
+           
           </div>
         </div>
 
