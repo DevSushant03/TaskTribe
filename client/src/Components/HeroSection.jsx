@@ -21,22 +21,22 @@ function HeroSection() {
         {/* Stats */}
         <div className="flex flex-wrap justify-center gap-10 mt-10 text-white font-semibold">
           <div className="text-center">
-            <p className="text-3xl font-bold">2+</p>
+            <p className="text-3xl font-bold">200+</p>
             <p className="text-sm text-gray-300">Tasks Posted</p>
           </div>
 
           <div className="text-center">
-            <p className="text-3xl font-bold">5</p>
+            <p className="text-3xl font-bold">1k+</p>
             <p className="text-sm text-gray-300">Verified Users</p>
           </div>
 
           <div className="text-center">
-            <p className="text-3xl font-bold">0</p>
+            <p className="text-3xl font-bold">20k</p>
             <p className="text-sm text-gray-300">Messages</p>
           </div>
 
           <div className="text-center">
-            <p className="text-3xl font-bold">₹0</p>
+            <p className="text-3xl font-bold">₹240K</p>
             <p className="text-sm text-gray-300">Payments Made</p>
           </div>
         </div>
