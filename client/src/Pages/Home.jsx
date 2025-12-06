@@ -59,7 +59,7 @@ export default function Home() {
         />
         <HeroSection />
       </div>
-      <InfiniteScroll/>
+      {/* <InfiniteScroll/> */}
       <FeaturesSection />
       <SolveAndEarn />
       <FeedbackSection />

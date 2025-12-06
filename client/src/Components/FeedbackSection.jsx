@@ -2,80 +2,104 @@ export default function FeedbackSection() {
   const reviews = [
     {
       name: "Aman Verma",
+      role: "B.Tech Student",
       date: "12 Nov 2025",
       category: "Projects",
       rating: 4,
       feedback:
         "TaskTribe helped me finish my college project fast. The helper responded in minutes!",
-      img: "/img/profile1.png",
+      color: "bg-[#FFE66D]", // yellow like left card
+      rotate: "-rotate-3",
     },
     {
       name: "Sneha Patil",
+      role: "Engineering Student",
       date: "5 Nov 2025",
       category: "Doubt Clearing",
       rating: 5,
       feedback:
         "Cleared my doubts instantly before my exam. Highly recommended!",
-      img: "/img/profile2.png",
+      color: "bg-[#A2D2FF]", // blue like center card
+      rotate: "rotate-2",
     },
   ];
 
   return (
-    <section className="w-full text-white py-20">
-      <div className="max-w-6xl mx-auto px-6">
-
-        {/* Heading */}
-        <h2 className="text-4xl md:text-5xl font-bold text-center">
-          Real Results From <span className="text-orange-500">Clients</span>
+    <section className="w-full relative overflow-hidden py-24 text-white">
+     
+      <div className="relative max-w-6xl mx-auto px-6">
+        {/* Heading like reference */}
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-center mb-3">
+          Real Voices & <span className="text-orange-400">Real Impact</span>
         </h2>
-
-        <p className="text-gray-300 text-center max-w-2xl mx-auto mt-3 mb-12">
-          Real feedback from students, freelancers, and project owners who use
-          TaskTribe every day.
+        <p className="text-sm sm:text-base text-gray-300 text-center max-w-2xl mx-auto mb-10">
+          Feedback from students and creators who use TaskTribe to solve
+          projects, clear doubts, and grow their skills every day.
         </p>
 
-    
-        {/* REVIEWS GRID */}
-        <div className="grid md:grid-cols-2 gap-8">
+        {/* SCROLLING ROW OF TILTED CARDS */}
+        <div className="flex flex-col md:flex-row gap-6 md:gap-10 justify-center items-stretch mt-8">
           {reviews.map((item, i) => (
             <div
               key={i}
-              className="bg-[#111] border border-orange-500/40 rounded-xl p-6 shadow-md 
-            hover:shadow-orange-500/40 transition-all duration-300"
+              className={`
+                relative w-full md:w-1/3
+                ${item.rotate}
+                drop-shadow-2xl
+              `}
             >
-              {/* Profile */}
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gray-700 overflow-hidden">
-                  <img src={item.img} alt="" className="w-full h-full object-cover" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">{item.name}</h3>
-                  <p className="text-gray-400 text-sm">{item.date}</p>
+              <div
+                className={`
+                  ${item.color}
+                  text-black rounded-3xl px-6 py-8
+                  border border-black/10
+                `}
+              >
+                {/* quote text */}
+                <p className="text-base sm:text-lg leading-relaxed mb-6">
+                  “{item.feedback}”
+                </p>
+
+                {/* meta bottom area */}
+                <div className="mt-6 flex items-center justify-between text-xs sm:text-sm">
+                  <div>
+                    <p className="font-semibold">{item.name}</p>
+                    <p className="text-black/70">
+                      {item.role || item.category}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-black/60">{item.date}</p>
+                    <p className="text-orange-600 font-semibold">
+                      {"★".repeat(item.rating)}
+                    </p>
+                  </div>
                 </div>
               </div>
-
-              {/* Category */}
-              <p className="text-orange-500 font-semibold text-sm mb-2">
-                {item.category}
-              </p>
-
-              {/* Rating */}
-              <div className="flex gap-1 mb-3">
-                {[...Array(item.rating)].map((_, idx) => (
-                  <span key={idx} className="text-orange-500 text-xl">★</span>
-                ))}
-              </div>
-
-              {/* Feedback */}
-              <p className="text-gray-300 leading-relaxed">{item.feedback}</p>
             </div>
           ))}
+
+          {/* optional third placeholder card like in screenshot */}
+          <div className="hidden md:block rotate-3 drop-shadow-2xl w-1/3">
+            <div className="bg-[#FFC1CC] text-black rounded-3xl px-6 py-8 border border-black/10">
+              <p className="text-base leading-relaxed mb-6">
+                “Fast, friendly help on my toughest assignments. TaskTribe makes
+                group work and freelancing feel easy.”
+              </p>
+              <div className="mt-6 flex items-center justify-between text-xs sm:text-sm">
+                <div>
+                  <p className="font-semibold">You could be next</p>
+                  <p className="text-black/70">New TaskTribe member</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Button */}
-        <div className="flex justify-center mt-12">
-          <button className="px-6 py-3 bg-orange-500 text-black font-semibold rounded-xl hover:bg-orange-600 transition">
-            Explore Now
+        {/* CTA bottom right-ish like reference */}
+        <div className="flex justify-center md:justify-end mt-10">
+          <button className="px-6 py-3 bg-orange-500 text-black font-semibold rounded-full shadow-lg hover:bg-orange-400 transition">
+            Explore More Stories
           </button>
         </div>
       </div>
