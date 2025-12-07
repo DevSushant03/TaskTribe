@@ -63,6 +63,7 @@ function InfiniteScroll() {
             {/* left circle avatar */}
             <div className="flex h-[110px] w-[110px] items-center justify-center">
               <img
+                loading="lazy"
                 src={item.img}
                 alt={item.profile}
                 className="h-[96px] w-[96px] rounded-full object-cover border-[3px] border-white/80 shadow-md"

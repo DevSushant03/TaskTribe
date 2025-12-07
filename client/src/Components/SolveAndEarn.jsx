@@ -11,6 +11,11 @@ export default function SolveAndEarn() {
       img: "https://images.unsplash.com/photo-1509395176047-4a66953fd231?w=600&q=60&auto=format",
     },
     {
+      title: "Editing",
+      desc: "Review content, fix grammar, and improve clarity for blogs and reports.",
+      img: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=60&auto=format",
+    },
+    {
       title: "Software Development",
       desc: "Build and ship production-ready features in web and mobile apps.",
       img: "https://images.unsplash.com/photo-1517433456452-f9633a875f6f?w=600&q=60&auto=format",
@@ -26,19 +31,14 @@ export default function SolveAndEarn() {
       img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&q=60&auto=format",
     },
     {
-      title: "Editing",
-      desc: "Review content, fix grammar, and improve clarity for blogs and reports.",
-      img: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=60&auto=format",
+      title: "Software Support",
+      desc: "Help users, triage bugs, and document solutions for recurring issues.",
+      img: "https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=600&q=60&auto=format",
     },
     {
       title: "Coding",
       desc: "Solve coding challenges, debug issues, and automate workflows.",
       img: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&q=60&auto=format",
-    },
-    {
-      title: "Software Support",
-      desc: "Help users, triage bugs, and document solutions for recurring issues.",
-      img: "https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=600&q=60&auto=format",
     },
     {
       title: "Content Writing",
