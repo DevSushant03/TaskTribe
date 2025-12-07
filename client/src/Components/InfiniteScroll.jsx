@@ -15,32 +15,32 @@ function InfiniteScroll() {
       color: "from-sky-500/15 to-sky-500/5",
     },
     {
-      profile: "Product Designer",
+      profile: "Freelancer",
       img: profile2,
       color: "from-emerald-500/15 to-emerald-500/5",
     },
     {
-      profile: "Data Engineer",
-      img: profile3,
-      color: "from-amber-500/15 to-amber-500/5",
-    },
-    {
-      profile: "Project Manager",
-      img: profile4,
-      color: "from-purple-500/15 to-purple-500/5",
-    },
-    {
-      profile: "QA Analyst",
-      img: profile5,
-      color: "from-rose-500/15 to-rose-500/5",
-    },
-    {
-      profile: "DevOps Engineer",
+      profile: "Ui/UX Designer",
       img: profile6,
       color: "from-cyan-500/15 to-cyan-500/5",
     },
     {
-      profile: "UX Researcher",
+      profile: "Students",
+      img: profile3,
+      color: "from-amber-500/15 to-amber-500/5",
+    },
+    {
+      profile: "Video Editor",
+      img: profile4,
+      color: "from-purple-500/15 to-purple-500/5",
+    },
+    {
+      profile: "Graphic Designer",
+      img: profile5,
+      color: "from-rose-500/15 to-rose-500/5",
+    },
+    {
+      profile: "Data Analysis",
       img: profile7,
       color: "from-indigo-500/15 to-indigo-500/5",
     },
