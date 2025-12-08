@@ -5,7 +5,7 @@ export default function UserOnboarding1({ onNext }) {
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    if (file) setPhoto(URL.createObjectURL(file));
+    setPhoto(file);
   };
 
   const handleSubmit = async () => {
@@ -41,7 +41,7 @@ export default function UserOnboarding1({ onNext }) {
 
           {photo && (
             <img
-              src={photo}
+              src={URL.createObjectURL(photo)}
               alt="Preview"
               className="mt-4 w-20 h-20 rounded-full object-cover border border-gray-600"
             />

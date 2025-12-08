@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { users } from "../utils/api";
 import { toast } from "react-toastify";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function UserOnboarding2({ onNext, onBack, userData }) {
-  const Navigate = useNavigate(); 
-  const [loading,setloading]=useState(false);
+export default function UserOnboarding2({ onBack, userData }) {
+  const Navigate = useNavigate();
+  const [loading, setloading] = useState(false);
   const [photo, setPhoto] = useState(userData.photo || null);
   const [skills, setSkills] = useState([]);
   const [bio, setBio] = useState("");
@@ -17,10 +17,8 @@ export default function UserOnboarding2({ onNext, onBack, userData }) {
     "Video Editing",
     "Graphic Design",
     "Data Entry",
-    "Software Setup"
-    
+    "Software Setup",
   ];
- 
 
   const toggleSkill = (skill) => {
     if (skills.includes(skill)) {
@@ -31,13 +29,17 @@ export default function UserOnboarding2({ onNext, onBack, userData }) {
   };
 
   const handleSubmit = async () => {
-    setloading(true)
-    const response = await users.setUserData({photo, skills, bio });
-    
+    setloading(true);
+    const fd = new FormData();
+    fd.append("skills", skills);
+    fd.append("bio", bio);
+    fd.append("photo", photo);
+    const response = await users.setUserData(fd);
+
     if (response.data.success) {
-      Navigate(`/user/${response.data.userid}`)
+      Navigate(`/user/${response.data.userid}`);
     } else {
-      setloading(false)
+      setloading(false);
       toast.error(response.data?.message || "Unable to save profile");
     }
   };
@@ -96,7 +98,7 @@ export default function UserOnboarding2({ onNext, onBack, userData }) {
             onClick={handleSubmit}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
-            {loading?"loading...":"Continue →"}
+            {loading ? "loading..." : "Continue →"}
           </button>
         </div>
       </div>

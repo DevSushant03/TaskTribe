@@ -2,7 +2,7 @@ import taskModel from "../models/task_model.js";
 import cloudinary from "../config/cloudinary.js";
 import bankModel from "../models/BankDetails_model.js";
 
-const uploadToCloudinary = (fileBuffer, folderName) => {
+export const uploadToCloudinary = (fileBuffer, folderName) => {
   return new Promise((resolve, reject) => {
     const upload = cloudinary.uploader.upload_stream(
       { resource_type: "auto", folder: `tasktribe/${folderName}` },

@@ -1,21 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function HeroSection() {
   return (
     <section className="absolute w-full h-[100vh] overflow-hidden">
-
-      
       <div className="relative z-10 max-w-5xl mx-auto px-6 h-full flex flex-col items-center justify-center mt-10 md:mt-0 text-center text-white">
-
         <h1 className="title text-3xl md:text-5xl leading-tight">
           Your Skill, Your Impact <br />
           <span className="text-orange-400">Growing Together on TaskTribe</span>
         </h1>
 
         <p className="mt-4 max-w-2xl text-gray-200 leading-relaxed">
-          Freelance journey with transparent task launch and trusted build-your-profile
-          system. Help others and earn — all in one.
+          Freelance journey with transparent task launch and trusted
+          build-your-profile system. Help others and earn — all in one.
         </p>
 
         {/* Stats */}
@@ -57,7 +55,6 @@ function HeroSection() {
             Explore Active Tasks
           </Link>
         </div>
-
       </div>
     </section>
   );

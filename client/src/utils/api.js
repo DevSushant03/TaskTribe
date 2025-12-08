@@ -24,7 +24,10 @@ export const auth = {
 export const users = {
   getUser: (id) => api.get(`/user/getuser/${id}`),
   updateUser: (id, data) => api.put(`/user/updateUserData/${id}`, data),
-  setUserData: (data) => api.post("/user/setUserData", data),
+  setUserData: (data) =>
+    api.post("/user/setUserData", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 };
 
 export const task = {
