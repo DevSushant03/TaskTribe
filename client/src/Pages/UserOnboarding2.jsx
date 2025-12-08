@@ -37,7 +37,7 @@ export default function UserOnboarding2({ onBack, userData }) {
     const response = await users.setUserData(fd);
 
     if (response.data.success) {
-      Navigate(`/user/${response.data.userid}`);
+      Navigate(`/user/${response.data.userid}/dashboard`);
     } else {
       setloading(false);
       toast.error(response.data?.message || "Unable to save profile");
