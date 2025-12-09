@@ -10,6 +10,7 @@ import { Helmet } from "react-helmet";
 <ArrowLeft className="w-6 h-6" />;
 
 const Manage = () => {
+  const [open, setopen] = useState(null);
   const [tab, setTab] = useState("posted");
   const [postedTasks, setPostedTasks] = useState([]);
   const [assignedTasks, setAssignedTasks] = useState([]);
@@ -129,7 +130,8 @@ const Manage = () => {
             applicants.map((applicant, key) => (
               <ApplicantCard
                 applicant={applicant}
-                key={key}
+                open={open}
+                setopen={setopen}
                 setTab={setTab}
                 selectedTask={selectedTask}
                 fetchApplicants={fetchApplicants}
