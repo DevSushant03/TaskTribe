@@ -46,7 +46,6 @@ export default function UserOnboarding2({ onBack, userData }) {
 
   return (
     <div className="w-screen min-h-screen bg-gray-900 text-white flex justify-center">
-      {/* LEFT SECTION */}
       <div className="p-12 flex flex-col justify-center">
         <p className="text-sm text-gray-400 mb-2">Step 2 of 2</p>
 
@@ -55,7 +54,6 @@ export default function UserOnboarding2({ onBack, userData }) {
           Tell others what you can do and what makes you unique on TaskTribe.
         </p>
 
-        {/* Skills Section */}
         <label className="block mb-3 text-gray-300 font-medium">
           Select your skills
         </label>

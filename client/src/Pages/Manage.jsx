@@ -20,8 +20,8 @@ const Manage = () => {
   const fetchPostedTasks = async () => {
     try {
       const res = await task.getMyTask();
-
       setPostedTasks(res.data.tasks || []);
+      console.log(res.data.tasks );
     } catch (err) {
       console.log(err);
     }
@@ -130,7 +130,9 @@ const Manage = () => {
               <ApplicantCard
                 applicant={applicant}
                 key={key}
+                setTab={setTab}
                 selectedTask={selectedTask}
+                fetchApplicants={fetchApplicants}
               />
             ))
           )}

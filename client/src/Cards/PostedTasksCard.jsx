@@ -1,75 +1,150 @@
-import React from "react";
+export default function PostedTasksCard({ tasks, fetchApplicants }) {
+  const isOpen = tasks.status === "open";
+  const hasFiles = tasks?.submittedWork?.files?.length > 0;
 
-function PostedTasksCard({ tasks, fetchApplicants }) {
   return (
     <div
       key={tasks._id}
-      className="p-5 flex flex-col justify-between border border-[#262626] rounded-xl bg-[#1A1A1A] border hover:border-[#FF6B00] transition"
+      className="
+        w-full max-w-3xl
+        rounded-2xl bg-[#050505]
+        border border-[#1b1b1b]
+        shadow-[0_18px_45px_rgba(0,0,0,0.65)]
+        px-5 py-4
+        transition-all duration-300
+        hover:border-[#ff6b00]
+        hover:shadow-[0_22px_55px_rgba(255,107,0,0.18)]
+      "
     >
-      <h2 className="text-lg font-semibold">{tasks.title}</h2>
+      {/* TOP ROW */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h2 className="text-[17px] font-semibold text-white truncate">
+            {tasks.title}
+          </h2>
 
-      <p className="text-sm mt-1 text-[#C9C9C9]">
-        Posted: {new Date(tasks.createdAt).toLocaleDateString()}
-      </p>
+          <div className="mt-1 flex items-center gap-4 text-[11px] text-gray-400">
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-gray-500" />
+              {new Date(tasks.createdAt).toLocaleDateString()}
+            </span>
 
-      <p className="text-sm mt-1 font-medium text-[#FF6B00]">
-        Reward: ₹{tasks.budget.min}-₹{tasks.budget.max}
-      </p>
-
-      <p className="mt-2 px-3 py-1 rounded-full text-xs font-medium bg-[#262626] text-[#FF6B00] border border-[#FF6B00]">
-        {tasks.status}
-      </p>
-      {tasks.status === "open" && (
-        <p className="mt-2 text-sm text-[#C9C9C9]">
-          Applicants: {tasks.applicants.length}
-        </p>
-      )}
-
-      {tasks?.submittedWork?.files?.length > 0 && (
-        <div className="mt-3">
-
-          {tasks.submittedWork.files.map((file, index) => (
-            <div key={index} className="mt-2 flex items-center justify-between">
-              <span className="text-gray-400 text-xs">{file.filename}</span>
-
-              <a
-                href={file.url.replace("/upload/", "/upload/fl_attachment/")}
-                rel="noopener noreferrer"
-                className="px-2 py-1 text-[11px] bg-[#1f1f1f] border border-gray-700 
-                     rounded-md hover:bg-[#2a2a2a] cursor-pointer"
-              >
-                Download
-              </a>
-            </div>
-          ))}
+            <span className="flex items-center gap-1 text-[#ffb469] font-medium">
+              ₹{tasks.budget.min} – ₹{tasks.budget.max}
+            </span>
+          </div>
         </div>
-      )}
 
-      {/* Buttons */}
-      <div className="flex gap-3 mt-4">
-        {tasks.status === "open" ? (
+        {/* STATUS BADGE */}
+        <span
+          className={`
+            px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide
+            border
+            ${
+              isOpen
+                ? "bg-[#101010] border-[#26c281]/40 text-[#26c281]"
+                : "bg-[#101010] border-[#ff6b00]/40 text-[#ffb469]"
+            }
+          `}
+        >
+          {tasks.status.replace("_", " ").toUpperCase()}
+        </span>
+      </div>
+
+      {/* MIDDLE ROW: APPLICANTS / ASSIGNEE + FILES (INLINE) */}
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+        {/* Left: applicants / assignee */}
+        {isOpen ? (
+          <p className="text-[13px] text-gray-300">
+            <span className="font-medium text-white">
+              {tasks.applicants.length}
+            </span>{" "}
+            applicants so far
+          </p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ff6b00] text-[12px] font-semibold text-black">
+              {tasks.assignedTo.name?.[0]}
+              {tasks.assignedTo.surname?.[0]}
+            </div>
+            <div className="leading-tight">
+              <p className="text-[13px] font-medium text-white">
+                {tasks.assignedTo.name} {tasks.assignedTo.surname}
+              </p>
+              <p className="text-[11px] text-gray-400">
+                {tasks.assignedTo.email}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Right: submitted files (condensed) */}
+        {hasFiles && (
+          <div className="flex items-center gap-2 rounded-lg bg-[#0b0b0b] px-3 py-2 border border-[#222]">
+            <span className="text-[12px] text-[#ffb469] font-medium">
+              Submitted Files ({tasks.submittedWork.files.length})
+            </span>
+
+            <a
+              href={tasks.submittedWork.files[0].url.replace(
+                "/upload/",
+                "/upload/fl_attachment/"
+              )}
+              rel="noopener noreferrer"
+              className="
+                ml-1 rounded-md bg-[#ff6b00] px-3 py-1
+                text-[11px] font-semibold text-black
+                hover:bg-[#ff8124] transition
+              "
+            >
+              Download
+            </a>
+          </div>
+        )}
+      </div>
+
+      {/* BOTTOM ACTIONS */}
+      <div className="mt-4 flex items-center gap-3 pt-3 border-t border-[#181818]">
+        {isOpen ? (
           <button
             onClick={() => fetchApplicants(tasks.applicants, tasks._id)}
-            className="px-3 py-2 bg-[#FF6B00] text-white rounded-md  transition"
+            className="
+              flex-1 rounded-lg bg-[#ff6b00] px-4 py-2.5
+              text-[13px] font-semibold text-black
+              shadow-[0_0_18px_rgba(255,107,0,0.45)]
+              hover:bg-[#ff8124] hover:shadow-[0_0_22px_rgba(255,129,36,0.6)]
+              transition
+            "
           >
             View Applicants
           </button>
         ) : (
           <button
-            className={`px-3 py-2 text-white rounded-md transition ${
-              tasks.status === "submitted" ? "bg-green-700" : "bg-orange-600"
-            }`}
+            className={`
+              flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-white
+              transition
+              ${
+                tasks.status === "submitted"
+                  ? "bg-[#12b981] hover:bg-[#0f9f6e]"
+                  : "bg-[#f97316] hover:bg-[#ea580c]"
+              }
+            `}
           >
-            {tasks.status === "in_progress" ? "Pending" : "Mark as Complete"}
+            {tasks.status === "in_progress" ? "Pending" : "Mark Complete"}
           </button>
         )}
 
-        <button className="px-3 py-2 bg-[#262626] text-[#C9C9C9] rounded-md hover:bg-[#333] transition">
-          Edit / Close
+        <button
+          className="
+            rounded-lg border border-[#2b2b2b] bg-[#101010]
+            px-4 py-2.5 text-[13px] font-medium text-gray-200
+            hover:border-[#ff6b00] hover:text-white hover:bg-[#151515]
+            transition
+          "
+        >
+          Edit Task
         </button>
       </div>
     </div>
   );
 }
-
-export default PostedTasksCard;

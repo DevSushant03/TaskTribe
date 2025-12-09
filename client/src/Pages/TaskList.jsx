@@ -87,12 +87,19 @@ export default function TaskList() {
         {filtered.map((task) => (
           <div
             key={task._id}
-            className="border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-lg transition bg-white"
+            className="rounded-2xl p-5 bg-[#0E0E0E] border border-[#1f1f1f]
+  shadow-[0_0_20px_rgba(255,107,0,0.05)]
+  hover:shadow-[0_0_25px_rgba(255,107,0,0.12)]
+  hover:border-[#FF6B00]/70
+  transition-all duration-300"
           >
-            <h2 className="text-xl font-semibold text-orange-700">
+            {/* Title */}
+            <h2 className="text-xl font-semibold text-white tracking-wide">
               {task.title}
             </h2>
-            <p className="text-gray-600 mt-2 line-clamp-3">
+
+            {/* Description */}
+            <p className="text-gray-300 mt-2 text-sm leading-relaxed line-clamp-3">
               {task.description}
             </p>
 
@@ -101,7 +108,8 @@ export default function TaskList() {
               {task.tags.map((tag, i) => (
                 <span
                   key={i}
-                  className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs"
+                  className="px-3 py-1 bg-[#1A1A1A] border border-[#FF6B00]/40
+        text-[#FF6B00] rounded-full text-xs font-medium"
                 >
                   {tag}
                 </span>
@@ -109,13 +117,13 @@ export default function TaskList() {
             </div>
 
             {/* Budget + Deadline */}
-            <div className="mt-4 text-sm text-gray-700">
+            <div className="mt-4 text-sm text-gray-400 space-y-1">
               <p>
-                <strong>Budget:</strong> ₹{task.budget?.min} - ₹
-                {task.budget?.max}
+                <strong className="text-white">Budget:</strong> ₹
+                {task.budget?.min} - ₹{task.budget?.max}
               </p>
               <p>
-                <strong>Deadline:</strong>{" "}
+                <strong className="text-white">Deadline:</strong>{" "}
                 {task.deadline ? task.deadline.split("T")[0] : "Not set"}
               </p>
             </div>
@@ -123,7 +131,11 @@ export default function TaskList() {
             {/* View Task Button */}
             <Link
               to={`task/${task._id}`}
-              className="block mt-5 text-center bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 transition"
+              className="block mt-5 text-center py-2 rounded-lg font-semibold
+    bg-gradient-to-r from-[#FF6B00] to-[#FF8C32] text-black
+    shadow-[0_0_10px_rgba(255,107,0,0.4)]
+    hover:shadow-[0_0_15px_rgba(255,107,0,0.7)]
+    hover:opacity-90 transition-all duration-300"
             >
               View Details
             </Link>

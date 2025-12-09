@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { task } from "../utils/api";
 
 const TaskDetails = () => {
-  const { taskId, id:userId } = useParams();
+  const { taskId, id: userId } = useParams();
   const navigate = useNavigate();
   const [detailTask, setDetailTask] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,6 +16,8 @@ const TaskDetails = () => {
       try {
         const res = await task.getTaskById(taskId);
         setDetailTask(res.data.task);
+        console.log(res.data.task);
+        
       } catch (error) {
         console.error("Error fetching task details:", error);
       } finally {
@@ -113,32 +115,6 @@ const TaskDetails = () => {
         {detailTask.description}
       </p>
 
-      {/* Attachments */}
-      {detailTask.attachments?.length > 0 && (
-        <div className="mb-10">
-          <h2 className="text-xl font-semibold text-orange-400 mb-3">
-            Attachments
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {detailTask.attachments.map((file, idx) => (
-              <a
-                key={idx}
-                href={file.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block p-4 bg-[#1a1a1a] border border-orange-500/20 rounded-xl hover:border-orange-500/60 hover:bg-[#222] transition shadow-sm"
-              >
-                <p className="text-orange-300 font-medium text-sm truncate">
-                  {file.filename}
-                </p>
-                <p className="text-gray-500 text-xs mt-1">Click to open</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Posted By */}
       <div className="border border-orange-500/30 p-5 rounded-2xl bg-[#121212] shadow-xl mb-10">
         <h2 className="text-xl font-semibold text-orange-400 mb-4">
@@ -146,7 +122,7 @@ const TaskDetails = () => {
         </h2>
         <div className="flex items-center gap-3">
           <img
-            src={detailTask.createdBy.avatar || "/user.png"}
+            src={detailTask.createdBy.photo || "/user.png"}
             alt="User"
             className="w-14 h-14 rounded-full object-cover border border-orange-500/40 shadow-lg"
           />

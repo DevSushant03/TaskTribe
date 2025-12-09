@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Bank } from "../utils/api";
 import { bankDetails } from "../Validation/BankDetails_validation";
-import {useNavigate} from "react-router-dom"
+import {useNavigate, useParams} from "react-router-dom"
 export default function BankDetailsForm() {
+  const {id}=useParams()
   const navigate = useNavigate()
   const [form, setForm] = useState({
     accountHolder: "",
@@ -35,7 +36,7 @@ export default function BankDetailsForm() {
     }
     const res = await Bank.addBankDetails(form);
     alert(res.data.message)  
-    navigate("/browse") 
+    navigate(`/user/${id}/browse`) 
 
   };
 

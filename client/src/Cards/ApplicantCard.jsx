@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { task } from "../utils/api";
-function ApplicantCard({ applicant,selectedTask }) {
+function ApplicantCard({ applicant, selectedTask, fetchApplicants, setTab }) {
   const [open, setopen] = useState(null);
   const rejectApplicant = async (applicantId, Taskid) => {
     const res = await task.rejectApplicant(applicantId, Taskid);
+    alert(res.data.message);
+    fetchApplicants();
   };
   const acceptApplicant = async (applicantId, Taskid) => {
     const res = await task.acceptApplicant(applicantId, Taskid);
+    alert(res.data.message);
+    setTab("posted")
+    fetchApplicants();
   };
 
   return (
     <div
       key={applicant._id}
-      className="p-6 mb-5 rounded-2xl border border-[#2A2A2A] bg-[#121212] 
+      className="p-6 mb-5 w-[400px] rounded-2xl border border-[#2A2A2A] bg-[#121212] 
                 hover:border-[#FF6B00] transition-all shadow-md hover:shadow-lg"
     >
       {/* Top Section */}
