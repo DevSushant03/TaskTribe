@@ -7,26 +7,27 @@ import { useParams } from "react-router-dom";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const { id } = useParams();
-  const [user, setUser] = useState(null); 
-  const [loading, setLoading] = useState(true); 
+  const [id, setid] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await users.getUser(id);        
+        const res = await users.getUser(id);
+        console.log(res);
+
         setUser(res.data?.user);
       } catch (err) {
         setUser(null);
       }
       setLoading(false);
     };
-
-    fetchProfile();
+    fetchProfile()
   }, [id]);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, setUser, loading, setid }}>
       {children}
     </AuthContext.Provider>
   );

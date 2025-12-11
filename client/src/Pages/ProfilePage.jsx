@@ -11,31 +11,6 @@ import { auth } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { AuthContext } from "../Context/AuthContext";
-// Demo user data
-const demoUser = {
-  name: "Alex",
-  surname: "Johnson",
-  email: "alex.johnson@example.com",
-  photo: "", // Empty to show initials avatar
-  bio: "Passionate full-stack developer and UI/UX enthusiast. Love creating innovative solutions and collaborating with amazing teams. Always eager to learn and share knowledge with the community.",
-  skills: [
-    "React",
-    "Node.js",
-    "MongoDB",
-    "JavaScript",
-    "TypeScript",
-    "Tailwind CSS",
-    "Express.js",
-    "Git",
-  ],
-  role: "user",
-  rating: {
-    avg: 4.7,
-    count: 23,
-  },
-  createdAt: new Date("2024-01-15"),
-  isCreatedProfile: true,
-};
 
 function ProfilePage() {
   const { user, loading } = useContext(AuthContext);
@@ -173,7 +148,7 @@ function ProfilePage() {
                   <FaEnvelope className="text-orange-500" />
                   <span className="text-sm md:text-base">{user.email}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   {user.role === "admin" ? (
                     <span className="flex items-center gap-1 bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-xs md:text-sm font-medium border border-purple-500/50">
                       <FaCheckCircle />
@@ -185,7 +160,7 @@ function ProfilePage() {
                       Member
                     </span>
                   )}
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -281,12 +256,12 @@ function ProfilePage() {
               </p>
             </div>
 
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <p className="text-gray-400 text-sm font-medium">Account Type</p>
               <p className="text-white text-lg capitalize">
                 {user.role || "user"}
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* Account Controll */}
