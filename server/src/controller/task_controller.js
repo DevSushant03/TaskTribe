@@ -15,7 +15,47 @@ export const uploadToCloudinary = (fileBuffer, folderName) => {
     upload.end(fileBuffer);
   });
 };
+export const getPublicIdFromUrl = (url) => {
+  const cleanUrl = url.split("?")[0];
 
+  const parts = cleanUrl.split("/upload/")[1];
+  if (!parts) return null;
+
+  const withoutVersion = parts.replace(/^v[0-9]+\//, "");
+
+  const publicId = withoutVersion.replace(/\.[^/.]+$/, "");
+
+  return publicId;
+};
+export const getResourceType = (url) => {
+  const extension = url.split(".").pop().toLowerCase();
+
+  if (["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(extension))
+    return "image";
+
+  if (["mp4", "mov", "avi", "mkv", "webm"].includes(extension)) return "video";
+
+  return "raw"; // pdf, doc, txt, zip, etc.
+};
+export const deleteCloudinaryFile = async (url) => {
+  try {
+    const publicId = getPublicIdFromUrl(url);
+    const resourceType = getResourceType(url);
+    console.log("\n--- Deleting File From Cloudinary ---");
+    console.log("URL:", url);
+    console.log("public_id:", publicId);
+    console.log("resource_type:", resourceType);
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
+
+    console.log("Cloudinary delete response:", result);
+    return result;
+  } catch (error) {
+    console.error("Cloudinary Delete Error:", error);
+    throw error;
+  }
+};
 export const createTask = async (req, res) => {
   const { userid } = req.user;
 
@@ -372,6 +412,41 @@ export const submitWork = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Work Not Submitted ,Server error",
+      error,
+    });
+  }
+};
+
+export const markAsComplete = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const task = await taskModel.findById(taskId);
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+    for (let file of task.attachments) {
+      await deleteCloudinaryFile(file.url);
+    }
+    for (let file of task.submittedWork.files) {
+      await deleteCloudinaryFile(file.url);
+    }
+    const deletedTask = await taskModel.findByIdAndDelete(taskId);
+
+    if (!deletedTask) {
+      return { success: false, message: "Task not found in database" };
+    }
+
+    res.json({
+      success: true,
+      message: "Task Completed & files Deleted",
+      task,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Task not Deleted , Internal Server Error",
       error,
     });
   }

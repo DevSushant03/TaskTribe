@@ -1,7 +1,15 @@
+import { task } from "../utils/api";
+
 export default function PostedTasksCard({ tasks, fetchApplicants }) {
   const isOpen = tasks.status === "open";
   const hasFiles = tasks?.submittedWork?.files?.length > 0;
 
+  const markAsComplete = async (taskId) => {
+    confirm("Are You Sure ?")
+    const res = await task.markAsComplete(taskId);
+    console.log(res.data);
+    
+  };
   return (
     <div
       key={tasks._id}
@@ -9,11 +17,11 @@ export default function PostedTasksCard({ tasks, fetchApplicants }) {
         w-full max-w-3xl
         rounded-2xl bg-[#050505]
         border border-[#1b1b1b]
-        shadow-[0_18px_45px_rgba(0,0,0,0.65)]
+        shadow-[0_15px_10px_rgba(0,0,0,0.65)]
         px-5 py-4
         transition-all duration-300
         hover:border-[#ff6b00]
-        hover:shadow-[0_22px_55px_rgba(255,107,0,0.18)]
+        hover:shadow-[0_15px_25px_rgba(255,107,0,0.18)]
       "
     >
       {/* TOP ROW */}
@@ -38,7 +46,7 @@ export default function PostedTasksCard({ tasks, fetchApplicants }) {
         {/* STATUS BADGE */}
         <span
           className={`
-            px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide
+            px-3 py-1 rounded-full text-[8px] font-semibold tracking-wide
             border
             ${
               isOpen
@@ -63,9 +71,8 @@ export default function PostedTasksCard({ tasks, fetchApplicants }) {
           </p>
         ) : (
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ff6b00] text-[12px] font-semibold text-black">
-              {tasks.assignedTo.name?.[0]}
-              {tasks.assignedTo.surname?.[0]}
+            <div className="flex h-8 w-8 overflow-hidden items-center justify-center rounded-full">
+              <img src={tasks.assignedTo.photo}/>
             </div>
             <div className="leading-tight">
               <p className="text-[13px] font-medium text-white">
@@ -119,19 +126,24 @@ export default function PostedTasksCard({ tasks, fetchApplicants }) {
             View Applicants
           </button>
         ) : (
-          <button
-            className={`
+          <>
+            {tasks.status === "in_progress" ? (
+              <p
+                className={`
               flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-white
-              transition
-              ${
-                tasks.status === "submitted"
-                  ? "bg-[#12b981] hover:bg-[#0f9f6e]"
-                  : "bg-[#f97316] hover:bg-[#ea580c]"
-              }
-            `}
-          >
-            {tasks.status === "in_progress" ? "Pending" : "Mark Complete"}
-          </button>
+              transition bg-[#f97316] hover:bg-[#ea580c]`}
+              >Pending...</p>
+            ) : (
+              <button
+                onClick={() => markAsComplete(tasks._id)}
+                className={`
+              flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-white
+              transition bg-[#12b981] hover:bg-[#0f9f6e] `}
+              >
+                Mark As Complete
+              </button>
+            )}
+          </>
         )}
 
         <button

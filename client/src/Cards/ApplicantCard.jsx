@@ -6,19 +6,19 @@ function ApplicantCard({
   open,
   setopen,
   selectedTask,
-  fetchApplicants,
+  fetchPostedTasks,
   setTab,
 }) {
   const rejectApplicant = async (applicantId, Taskid) => {
     const res = await task.rejectApplicant(applicantId, Taskid);
+    fetchPostedTasks();
     alert(res.data.message);
-    fetchApplicants();
   };
   const acceptApplicant = async (applicantId, Taskid) => {
     const res = await task.acceptApplicant(applicantId, Taskid);
     alert(res.data.message);
+    fetchPostedTasks();
     setTab("posted");
-    fetchApplicants();
   };
 
   return (

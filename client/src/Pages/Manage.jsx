@@ -22,7 +22,7 @@ const Manage = () => {
     try {
       const res = await task.getMyTask();
       setPostedTasks(res.data.tasks || []);
-      console.log(res.data.tasks );
+      console.log(res.data.tasks);
     } catch (err) {
       console.log(err);
     }
@@ -42,7 +42,7 @@ const Manage = () => {
   // Fetch Applicants
   const fetchApplicants = async (Applicants, TaskId) => {
     try {
-      setApplicants(Applicants);
+      setApplicants(Applicants || []);
       setSelectedTask(TaskId);
       setTab("applicants");
     } catch (err) {
@@ -134,7 +134,7 @@ const Manage = () => {
                 setopen={setopen}
                 setTab={setTab}
                 selectedTask={selectedTask}
-                fetchApplicants={fetchApplicants}
+                fetchPostedTasks={fetchPostedTasks}
               />
             ))
           )}

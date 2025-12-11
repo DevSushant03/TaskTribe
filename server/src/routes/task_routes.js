@@ -12,6 +12,7 @@ import {
   acceptApplicant,
   getAssignedTask,
   submitWork,
+  markAsComplete,
 } from "../controller/task_controller.js";
 const router = Router();
 
@@ -38,5 +39,6 @@ router.post(
   upload.array("workFiles"),
   submitWork
 );
+router.post("/markAsComplete/:taskId", verifyAuth, markAsComplete);
 
 export default router;

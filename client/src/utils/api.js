@@ -51,6 +51,7 @@ export const task = {
     api.post(`/task/${TaskId}/submitWork`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+    markAsComplete:(taskId)=>api.post(`/task/markAsComplete/${taskId}`)
 };
 
 export const Bank = {
