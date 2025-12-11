@@ -4,9 +4,13 @@ import { uploadToCloudinary } from "./task_controller.js";
 export const getUserData = async (req, res) => {
   try {
     const { userid } = req.user;
-    const user = await userModel.findById(userid);
+    const user = await userModel
+      .findById(userid)
+      .select(
+        "-password -verifyOtp -verifyOtpExpireAt -resetOtp -resetOtpExpireAt"
+      );
 
-    return res.json({ success: true, message: user });
+    return res.json({ success: true, user });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }

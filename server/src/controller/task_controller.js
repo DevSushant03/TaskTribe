@@ -441,7 +441,6 @@ export const markAsComplete = async (req, res) => {
     res.json({
       success: true,
       message: "Task Completed & files Deleted",
-      task,
     });
   } catch (error) {
     res.status(500).json({

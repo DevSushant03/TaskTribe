@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useContext } from "react";
 import {
   FaEdit,
   FaEnvelope,
@@ -10,6 +10,7 @@ import {
 import { auth } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { AuthContext } from "../Context/AuthContext";
 // Demo user data
 const demoUser = {
   name: "Alex",
@@ -37,8 +38,8 @@ const demoUser = {
 };
 
 function ProfilePage() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useContext(AuthContext);
+
   const navigate = useNavigate();
 
   const handleLogOut = async () => {
@@ -50,15 +51,6 @@ function ProfilePage() {
       alert(res.data.message);
     }
   };
-  useEffect(() => {
-    // Simulate loading delay
-    const timer = setTimeout(() => {
-      setUser(demoUser);
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const getInitials = (name, surname) => {
     const first = name?.charAt(0).toUpperCase() || "";
