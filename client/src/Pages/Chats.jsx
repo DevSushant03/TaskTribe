@@ -133,7 +133,7 @@ function Chats() {
         <aside
           className={` ${
             activeChat ? "hidden" : "block"
-          } md:flex w-80 flex-col mt-15 md:mt-0 border-l border-[#18181b] bg-[#0c0c0c] `}
+          } md:flex  w-screen md:w-80 flex-col mt-15 md:mt-0 border-l border-[#18181b] bg-[#0c0c0c] `}
         >
           {/* Header */}
           <div className="px-5 py-4 border-b border-[#18181b] bg-[#0c0c0c]">
