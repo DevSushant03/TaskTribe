@@ -16,7 +16,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-white shadow fixed w-full z-20">
+      <div className="md:hidden flex items-center justify-between p-4 bg-[#0c0c0c] shadow fixed w-full z-20">
         <h1 className="logoText text-xl text-orange-600 tracking-widest">TaskTribe</h1>
         <button onClick={() => setIsOpen(true)}>
           <FaBars size={24} />
