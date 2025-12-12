@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
+import { IoIosArrowBack } from "react-icons/io";
 
 const users = [
   {
@@ -30,9 +31,12 @@ const messages = [
 ];
 
 function Chats() {
-  const [activeChat, setActiveChat] = useState(1);
+  const [activeChat, setActiveChat] = useState(null);
   const [msg, setMsg] = useState("");
 
+  const openChat = (id) => {
+    setActiveChat(id);
+  };
   return (
     <>
       <Helmet>
@@ -41,7 +45,11 @@ function Chats() {
 
       <div className="flex h-screen w-screen bg-[#0c0c0c] text-gray-100 overflow-hidden">
         {/* RIGHT PANEL — CHAT */}
-        <section className="flex flex-col mt-15 md:mt-0 w-full md:flex-1 relative bg-[#0c0c0c]">
+        <section
+          className={`${
+            activeChat ? "block" : "hidden"
+          } md:flex flex-col mt-15 md:mt-0 w-full md:flex-1 relative bg-[#0c0c0c]`}
+        >
           {/* Chat Top Bar */}
           <header className="px-5 py-5 border-b border-[#18181b] bg-[#0c0c0c]/95 backdrop-blur flex items-center justify-between">
             <div className="flex items-center gap-3 ">
@@ -59,15 +67,12 @@ function Chats() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <button className="px-2 py-1 rounded-full hover:bg-[#11111a]">
-                View profile
-              </button>
-              <span className="w-px h-4 bg-[#27272f]" />
-              <button className="px-2 py-1 rounded-full hover:bg-[#11111a]">
-                More
-              </button>
-            </div>
+            <button
+              onClick={() => setActiveChat(null)}
+              className="md:hidden px-2 py-1 rounded-full hover:bg-[#11111a]"
+            >
+              <IoIosArrowBack size={30} />
+            </button>
           </header>
 
           {/* Chat Messages */}
@@ -125,7 +130,11 @@ function Chats() {
           </footer>
         </section>
         {/* LEFT PANEL — USER LIST */}
-        <aside className="hidden md:flex w-80 flex-col border-l border-[#18181b] bg-[#0c0c0c] ">
+        <aside
+          className={` ${
+            activeChat ? "hidden" : "block"
+          } md:flex w-80 flex-col mt-15 md:mt-0 border-l border-[#18181b] bg-[#0c0c0c] `}
+        >
           {/* Header */}
           <div className="px-5 py-4 border-b border-[#18181b] bg-[#0c0c0c]">
             <h2 className="text-lg font-semibold tracking-tight">Messages</h2>
@@ -150,7 +159,7 @@ function Chats() {
             {users.map((u) => (
               <button
                 key={u.id}
-                onClick={() => setActiveChat(u.id)}
+                onClick={() => openChat(u.id)}
                 className={`w-full text-left px-4 py-3 flex gap-3 items-center transition-all duration-150 border-b border-[#0b0b11] hover:bg-[#0c0c0c] ${
                   activeChat === u.id ? "bg-[#0c0c0c]" : ""
                 }`}
@@ -177,7 +186,7 @@ function Chats() {
           width: 6px;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-          background: #212122ff;
+          background: #f78c00ff;
           border-radius: 999px;
         }
         .custom-scroll::-webkit-scrollbar-track {
