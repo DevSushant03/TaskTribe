@@ -1,6 +1,7 @@
 import taskModel from "../models/task_model.js";
 import cloudinary from "../config/cloudinary.js";
 import bankModel from "../models/BankDetails_model.js";
+import { ChatRoomModel, MessageModel } from "../models/Chat_model.js";
 
 export const uploadToCloudinary = (fileBuffer, folderName) => {
   return new Promise((resolve, reject) => {
@@ -41,10 +42,6 @@ export const deleteCloudinaryFile = async (url) => {
   try {
     const publicId = getPublicIdFromUrl(url);
     const resourceType = getResourceType(url);
-    console.log("\n--- Deleting File From Cloudinary ---");
-    console.log("URL:", url);
-    console.log("public_id:", publicId);
-    console.log("resource_type:", resourceType);
     const result = await cloudinary.uploader.destroy(publicId, {
       resource_type: resourceType,
     });
@@ -286,7 +283,6 @@ export const getMyTask = async (req, res) => {
 export const acceptApplicant = async (req, res) => {
   try {
     const { applicantId, TaskId } = req.params;
-
     const task = await taskModel.findById(TaskId);
     if (!task) {
       return res
@@ -306,6 +302,15 @@ export const acceptApplicant = async (req, res) => {
     task.applicants = [];
     task.applicantsCount = 0;
     await task.save();
+
+    let chatRoom = await ChatRoomModel.findOne({ taskId: TaskId });
+
+    if (!chatRoom) {
+      chatRoom = await ChatRoomModel.create({
+        taskId: TaskId,
+        participants: [task.createdBy, task.assignedTo],
+      });
+    }
 
     res.json({
       message: "Applicant accepted",
@@ -432,11 +437,15 @@ export const markAsComplete = async (req, res) => {
     for (let file of task.submittedWork.files) {
       await deleteCloudinaryFile(file.url);
     }
-    const deletedTask = await taskModel.findByIdAndDelete(taskId);
 
-    if (!deletedTask) {
-      return { success: false, message: "Task not found in database" };
+    const chatRoom = await ChatRoomModel.findOne({ taskId });
+
+    if (chatRoom) {
+      await MessageModel.deleteMany({ chatRoomId: chatRoom._id });
+      await ChatRoomModel.findByIdAndDelete(chatRoom._id);
     }
+
+    await taskModel.findByIdAndDelete(taskId);
 
     res.json({
       success: true,
