@@ -18,7 +18,8 @@ TaskTribe is a **collaborative skill-sharing platform** where anyone with skills
 ---
 
 ## 🖥️ Screenshots / Preview
-![alt text](image.png)
+<img width="895" alt="preview" src="/client/public/preview.png" />
+
 
 ---
 
@@ -36,8 +37,3 @@ TaskTribe is a **collaborative skill-sharing platform** where anyone with skills
 - MongoDB (Mongoose)
 - JWT Authentication
 
----
-
-## 🗂️ Folder Structure
-
-![alt text](client/public/folderStructure.png)
