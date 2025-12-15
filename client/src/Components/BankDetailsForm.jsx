@@ -41,8 +41,8 @@ export default function BankDetailsForm() {
   };
 
   return (
-    <div className="w-full bg-[#121212] p-8 ">
-      <h2 className="text-3xl font-semibold text-white mb-2">
+    <div className="w-full bg-[#121212] p-8 overflow-y-auto">
+      <h2 className="text-3xl font-semibold text-white mb-2 mt-10 md:mt-0">
         Bank <span className="text-[#FF6B00]">Details</span>
       </h2>
       <p className="text-[#B5B5B5] mb-6 text-sm">

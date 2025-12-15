@@ -130,7 +130,6 @@ function Chats() {
       const res = await chatsApiRoutes.sendMessage(activeChat.room._id, msg);
       if (res.data.success) {
         setMessages((prev) => {
-          // Check if message already exists to prevent duplicates
           const exists = prev.some(
             (m) => m._id?.toString() === res.data.message._id?.toString()
           );
@@ -194,7 +193,7 @@ function Chats() {
                       </h3>
                       <p className="text-[11px] text-emerald-400 flex items-center gap-1">
                         <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        Online
+                        {/* Online */}
                       </p>
                     </div>
                   </>
@@ -282,7 +281,7 @@ function Chats() {
         <aside
           className={` ${
             activeChat ? "hidden" : "block"
-          } md:flex  w-screen md:w-80 flex-col mt-15 md:mt-0 border-l border-[#18181b] bg-[#0c0c0c] `}
+          } md:flex h-screen w-screen md:w-80 flex-col mt-15 md:mt-0 border-l border-[#18181b] bg-[#0c0c0c] `}
         >
           {/* Header */}
           <div className="px-5 py-4 border-b border-[#18181b] bg-[#0c0c0c]">
@@ -351,19 +350,6 @@ function Chats() {
         </aside>
       </div>
 
-      {/* Scrollbar Styling */}
-      <style>{`
-        .custom-scroll::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-          background: #f78c00ff;
-          border-radius: 999px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-          background: transparent;
-        }
-      `}</style>
     </>
   );
 }

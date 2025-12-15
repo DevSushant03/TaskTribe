@@ -93,7 +93,7 @@ function ProfilePage() {
           content="View and edit your TaskTribe profile. Update your bio, skills, photo, and personal details to improve your visibility and build trust."
         />
       </Helmet>
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 mt-10 md:mt-0">
         {/* Profile Header Card */}
         <div className="bg-[#111] border border-orange-500/50 rounded-2xl shadow-lg shadow-orange-500/10 mb-6 overflow-hidden">
           <div className="bg-gradient-to-r from-orange-600/20 to-orange-500/10 h-32 md:h-40"></div>

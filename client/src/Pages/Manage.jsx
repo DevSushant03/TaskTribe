@@ -65,7 +65,7 @@ const Manage = () => {
         />
       </Helmet>
       {/* Page Title */}
-      <h1 className="text-3xl font-bold mb-6 text-[#FF6B00] tracking-wide">
+      <h1 className="text-3xl font-bold mb-6 text-[#FF6B00] tracking-wide mt-10 md:mt-0">
         Manage Tasks
       </h1>
 

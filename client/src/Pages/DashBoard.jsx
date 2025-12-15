@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   FaTasks,
@@ -8,6 +8,7 @@ import {
   FaSearch,
 } from "react-icons/fa";
 import { Helmet } from "react-helmet";
+import { AuthContext } from "../Context/AuthContext";
 const stats = [
   {
     label: "Active Tasks",
@@ -54,6 +55,7 @@ const recentTasks = [
 ];
 
 function DashBoard() {
+  const { user } = useContext(AuthContext);
   const getStatusColor = (status) => {
     const colors = {
       open: "text-blue-400 bg-blue-600/20 border-blue-500/50",
@@ -72,11 +74,11 @@ function DashBoard() {
           content="Access your TaskTribe dashboard to manage tasks, track progress, communicate with clients or freelancers, and stay productive."
         />
       </Helmet>
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8">
+      <div className="max-w-7xl mx-auto px-4 mt-15 md:mt-0 md:px-8 py-6 md:py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            Welcome Back! 👋
+            Hello 👋{user ? user.name : " "}
           </h1>
           <p className="text-gray-400">
             Here's what's happening with your tasks today
