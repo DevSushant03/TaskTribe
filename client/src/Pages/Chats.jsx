@@ -8,7 +8,7 @@ function Chats() {
   const [msg, setMsg] = useState("");
   const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(null);
   const [myUserId, setMyUserId] = useState(null);
   const openChat = async (chat) => {
     setActiveChat(chat);
@@ -21,9 +21,7 @@ function Chats() {
         const uniqueMessages = res.data.messages.filter(
           (message, index, self) =>
             index ===
-            self.findIndex(
-              (m) => m._id?.toString() === message._id?.toString()
-            )
+            self.findIndex((m) => m._id?.toString() === message._id?.toString())
         );
         setMessages(uniqueMessages);
         // Join socket room for real-time updates
@@ -39,7 +37,7 @@ function Chats() {
       console.error("Error fetching messages:", error);
     }
   };
-  
+
   useEffect(() => {
     socket.connect();
 
@@ -80,7 +78,6 @@ function Chats() {
     fetchChats();
   }, []);
 
-
   useEffect(() => {
     const handler = (message) => {
       if (activeChat?.room?._id === message.chatRoomId) {
@@ -96,12 +93,12 @@ function Chats() {
       }
       // Update chats list with new message
       // Handle both populated and non-populated senderId
-      const messageSenderId = 
-        typeof message.senderId === 'object' && message.senderId?._id
+      const messageSenderId =
+        typeof message.senderId === "object" && message.senderId?._id
           ? message.senderId._id.toString()
           : message.senderId?.toString();
       const isMyMessage = messageSenderId === myUserId?.toString();
-      
+
       setChats((prevChats) =>
         prevChats.map((chat) =>
           chat.room._id === message.chatRoomId
@@ -117,11 +114,10 @@ function Chats() {
         )
       );
     };
-  
+
     socket.on("newMessage", handler);
     return () => socket.off("newMessage", handler);
   }, [activeChat?.room?._id, myUserId]);
-  
 
   const sendMessage = async () => {
     if (!msg.trim() || !activeChat) return;
@@ -158,6 +154,21 @@ function Chats() {
     }
   };
 
+
+
+  if (!chats) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0C0C0C] min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-400 text-sm">
+            You don’t have any active chats yet. Post a task or apply to get
+            started.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -174,31 +185,32 @@ function Chats() {
           {/* Chat Top Bar */}
           <header className="px-5 py-5 border-b border-[#18181b] bg-[#0c0c0c]/95 backdrop-blur flex items-center justify-between">
             <div className="flex items-center gap-3 ">
-              {activeChat && (() => {
-                const otherUser = activeChat.room.participants.find(
-                  (p) => p._id !== myUserId
-                );
-                return (
-                  <>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-xs font-semibold text-black shadow-sm">
-                      {otherUser?.name
-                        ?.split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase() || "U"}
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-semibold leading-tight">
-                        {otherUser?.name || "Unknown User"}
-                      </h3>
-                      <p className="text-[11px] text-emerald-400 flex items-center gap-1">
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        {/* Online */}
-                      </p>
-                    </div>
-                  </>
-                );
-              })()}
+              {activeChat &&
+                (() => {
+                  const otherUser = activeChat.room.participants.find(
+                    (p) => p._id !== myUserId
+                  );
+                  return (
+                    <>
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-xs font-semibold text-black shadow-sm">
+                        {otherUser?.name
+                          ?.split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase() || "U"}
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold leading-tight">
+                          {otherUser?.name || "Unknown User"}
+                        </h3>
+                        <p className="text-[11px] text-emerald-400 flex items-center gap-1">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                          {/* Online */}
+                        </p>
+                      </div>
+                    </>
+                  );
+                })()}
             </div>
 
             <button
@@ -211,16 +223,14 @@ function Chats() {
 
           {/* Chat Messages */}
           <main className="flex-1 px-4 md:px-6 py-4 md:py-5 space-y-3 overflow-y-auto custom-scroll bg-gradient-to-b from-[#050507] to-[#050507]">
-            
-
-            {messages.map((m, index) => {
+            {messages?.map((m, index) => {
               // Handle both populated (object) and non-populated (string/ObjectId) senderId
-              const senderIdStr = 
-                typeof m.senderId === 'object' && m.senderId?._id
+              const senderIdStr =
+                typeof m.senderId === "object" && m.senderId?._id
                   ? m.senderId._id.toString()
                   : m.senderId?.toString();
               const isMyMessage = senderIdStr === myUserId?.toString();
-              
+
               return (
                 <div
                   key={m._id?.toString() || `${m.createdAt}-${index}`}
@@ -238,9 +248,7 @@ function Chats() {
                     <p className="text-sm break-words">{m.text}</p>
                     <span
                       className={`mt-1 block text-[10px] ${
-                        isMyMessage
-                          ? "text-black/60"
-                          : "text-gray-500"
+                        isMyMessage ? "text-black/60" : "text-gray-500"
                       }`}
                     >
                       {new Date(m.createdAt).toLocaleTimeString([], {
@@ -257,7 +265,7 @@ function Chats() {
           {/* Message Input (Floating Bar) */}
           <footer className="px-4 md:px-6 pb-4 pt-2 bg-gradient-to-t from-[#050507] via-[#050507]/80 to-transparent">
             <div className="flex items-center gap-2 bg-[#0c0c0c] border border-[#1c1c27] shadow-[0_0_0_1px_rgba(15,23,42,0.6)] px-3 md:px-4 py-2.5 md:py-3 rounded-2xl">
-              <button className="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 hover:bg-[#0c0c0c] hover:text-gray-300 text-sm">
+              <button className="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 hover:bg-[#0c0c0c] hover:text-gray-300 text-lg">
                 +
               </button>
               <input
@@ -304,7 +312,7 @@ function Chats() {
 
           {/* User List */}
           <div className="overflow-y-auto custom-scroll flex-1">
-            {chats.map((chat) => {
+            {chats?.map((chat) => {
               // get the OTHER user (not me)
               const otherUser = chat.room.participants.find(
                 (p) => p._id !== myUserId
@@ -349,7 +357,6 @@ function Chats() {
           </div>
         </aside>
       </div>
-
     </>
   );
 }
