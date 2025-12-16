@@ -205,7 +205,7 @@ function Chats() {
                         </h3>
                         <p className="text-[11px] text-emerald-400 flex items-center gap-1">
                           <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                          {/* Online */}
+                          Online
                         </p>
                       </div>
                     </>

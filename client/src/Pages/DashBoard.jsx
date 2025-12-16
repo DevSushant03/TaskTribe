@@ -115,14 +115,14 @@ function DashBoard() {
               </h2>
               <div className="space-y-3">
                 <Link
-                  to="browse/post-task"
+                  to="../browse/post-task"
                   className="flex items-center gap-3 p-4 bg-orange-600/20 hover:bg-orange-600/30 border border-orange-500/50 rounded-lg text-white transition-colors"
                 >
                   <FaPlus className="text-orange-500" />
                   <span className="font-medium">Post New Task</span>
                 </Link>
                 <Link
-                  to="browse"
+                  to="../browse"
                   className="flex items-center gap-3 p-4 bg-[#0c0c0c] hover:bg-[#1a1a1a] border border-gray-700 rounded-lg text-white transition-colors"
                 >
                   <FaSearch className="text-gray-400" />
