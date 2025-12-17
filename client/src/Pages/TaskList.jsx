@@ -3,21 +3,27 @@ import { Link } from "react-router-dom";
 // import axios from "../utils/axiosInstance"
 import { task } from "../utils/api";
 import { Helmet } from "react-helmet";
+import BrowseSkeleton from "../Components/Skeleton";
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
-  const [filtered, setFiltered] = useState([]);
+  const [filtered, setFiltered] = useState(null);
+  const [loading, setloading] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
 
   const filters = ["all", "design", "development", "writing", "other"];
 
   useEffect(() => {
     const fetchTasks = async () => {
+      setloading(true);
       try {
         const res = await task.getAllTask();
         setTasks(res.data.tasks);
         setFiltered(res.data.tasks);
+        setloading(false);
       } catch (err) {
         console.log(err);
+      } finally {
+        setloading(false);
       }
     };
     fetchTasks();
@@ -80,17 +86,20 @@ export default function TaskList() {
 
       {/* Task Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.length === 0 && (
+        {loading && <BrowseSkeleton />}
+
+        {filtered?.length<0 && (
           <p className="text-gray-500 text-lg">No tasks available.</p>
         )}
 
-        {filtered.map((task) => (
+        {filtered?.map((task) => (
           <div
             key={task._id}
             className="rounded-2xl p-5 bg-[#0E0E0E] border border-[#1f1f1f]
   shadow-[0_0_20px_rgba(255,107,0,0.05)]
   hover:shadow-[0_0_25px_rgba(255,107,0,0.12)]
   hover:border-[#FF6B00]/70
+  hover:scale-105
   transition-all duration-300"
           >
             {/* Title */}

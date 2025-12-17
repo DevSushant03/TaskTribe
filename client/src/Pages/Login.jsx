@@ -7,11 +7,11 @@ import { auth } from "../utils/api";
 import { toast } from "react-toastify";
 import { loginSchema } from "../Validation/auth_validation.js";
 import { Helmet } from "react-helmet";
-import { AuthContext } from "../Context/AuthContext.jsx";
 import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext.jsx";
 export default function Login() {
+  const {setid}=useContext(AuthContext)
   const navigate = useNavigate();
-  const { setid } = useContext(AuthContext);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState("");
   const [formData, setFormData] = useState({
@@ -42,8 +42,8 @@ export default function Login() {
       if (data.success) {
         setloading(false);
         if (data.user) {
-          setid(data.userid);
           navigate(`/user/${data.userid}/dashboard`);
+          setid(data.userid)
         } else {
           navigate("/auth/createProfile");
         }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // import axios from "../utils/axiosInstance"; // adjust path based on your setup
 import { task } from "../utils/api";
+import CircularLoader from "../Components/CircularLoader";
 export default function PostTask() {
   const [form, setForm] = useState({
     title: "",
@@ -218,7 +219,7 @@ export default function PostTask() {
           disabled={loading}
           className="w-full bg-orange-600 text-white py-3 rounded-xl text-lg font-medium hover:bg-orange-700 transition"
         >
-          {loading ? "Posting..." : "Post Task"}
+          {loading ? <CircularLoader/> : "Post Task"}
         </button>
       </form>
     </div>

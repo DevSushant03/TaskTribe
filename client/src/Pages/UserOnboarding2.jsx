@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { users } from "../utils/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../Context/AuthContext";
 
 export default function UserOnboarding2({ onBack, userData }) {
   const Navigate = useNavigate();
+  const { setid } = useContext(AuthContext);
   const [loading, setloading] = useState(false);
   const [photo, setPhoto] = useState(userData.photo || null);
   const [skills, setSkills] = useState([]);
@@ -38,6 +40,7 @@ export default function UserOnboarding2({ onBack, userData }) {
 
     if (response.data.success) {
       Navigate(`/user/${response.data.userid}/dashboard`);
+      setid(data.userid);
     } else {
       setloading(false);
       toast.error(response.data?.message || "Unable to save profile");

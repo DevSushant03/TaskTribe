@@ -78,7 +78,7 @@ function DashBoard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            Hello 👋{user ? user.name : " "}
+            Hello 👋 {user ? user.name : " "}
           </h1>
           <p className="text-gray-400">
             Here's what's happening with your tasks today

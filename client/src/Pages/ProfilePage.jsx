@@ -14,6 +14,7 @@ import { AuthContext } from "../Context/AuthContext";
 
 function ProfilePage() {
   const { user, loading } = useContext(AuthContext);
+  console.log(user);
 
   const navigate = useNavigate();
 

@@ -2,9 +2,10 @@ import React from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { task } from "../utils/api";
 import { useState } from "react";
-function AssignedTaskCard({ tasks,key }) {
+function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
   const [open, setopen] = useState(null);
-  const [file, setfile] = useState([]);
+  const [file, setfile] = useState(null);
+  const [loading, setloading] = useState(false);
   const handleFileChange = (e) => {
     setfile([...e.target.files]);
   };
@@ -15,7 +16,19 @@ function AssignedTaskCard({ tasks,key }) {
     file.forEach((file) => {
       formData.append("workFiles", file);
     });
-    const res = await task.submitWork(formData, TaskId);
+    try {
+      setloading(true);
+      const res = await task.submitWork(formData, TaskId);
+      if(res.data.success){
+        fetchAssignedTasks();
+      }
+      alert(res.data.message);
+    } catch (error) {
+      alert(error.message);
+      console.log(error);
+    } finally {
+      setloading(false);
+    }
   };
   return (
     <div
@@ -45,7 +58,7 @@ function AssignedTaskCard({ tasks,key }) {
         <span className="text-[10px] px-2 py-[2px] rounded bg-[#FF6B00]/20 text-[#ffffff] uppercase">
           {tasks.status.replace("_", " ")}
         </span>
-        {key=== open ? (
+        {key === open ? (
           <button className="cursor:pointer" onClick={() => setopen(null)}>
             <FiChevronUp size={30} />
           </button>
@@ -55,12 +68,15 @@ function AssignedTaskCard({ tasks,key }) {
           </button>
         )}
       </div>
-        {/* Title */}
-        <h2 className="text-sm font-semibold text-white mt-3 line-clamp-1">
-          {tasks.title}
-        </h2>
-      <div className={ `transition-all duration-300 ${key === open ? "block" : "hidden"}`}>
-
+      {/* Title */}
+      <h2 className="text-sm font-semibold text-white mt-3 line-clamp-1">
+        {tasks.title}
+      </h2>
+      <div
+        className={`transition-all duration-300 ${
+          key === open ? "block" : "hidden"
+        }`}
+      >
         {/* Info List */}
         <ul className="flex mt-2 text-[12px] text-gray-300 space-x-3">
           <li>
@@ -126,9 +142,9 @@ function AssignedTaskCard({ tasks,key }) {
       <button
         disabled={tasks.status == "submitted"}
         onClick={() => uploadWork(tasks._id)}
-        className="mt-3 w-full py-2 text-[12px] rounded-md bg-[#FF6B00] disabled:cursor-not-allowed text-white hover:bg-[#ff7f2e] transition"
+        className="mt-3 w-full py-2 text-[12px]  rounded-md bg-[#FF6B00] disabled:cursor-not-allowed text-white hover:bg-[#ff7f2e] transition"
       >
-        Mark Completed
+        {loading ? "Sending..." : "Mark Completed"}
       </button>
     </div>
   );

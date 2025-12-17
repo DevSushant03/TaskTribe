@@ -7,6 +7,10 @@ import PostedTasksCard from "../Cards/PostedTasksCard";
 import ApplicantCard from "../Cards/ApplicantCard";
 import AssignedTaskCard from "../Cards/AssignedTaskCard";
 import { Helmet } from "react-helmet";
+import {
+  AssignedTaskSkeleton,
+  ManagePostedTaskSkeleton,
+} from "../Components/Skeleton";
 <ArrowLeft className="w-6 h-6" />;
 
 const Manage = () => {
@@ -16,37 +20,45 @@ const Manage = () => {
   const [assignedTasks, setAssignedTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [applicants, setApplicants] = useState([]);
+  const [loading, setloading] = useState(false);
 
   // Fetch My Posted Tasks
   const fetchPostedTasks = async () => {
     try {
+      setloading(true);
       const res = await task.getMyTask();
       setPostedTasks(res.data.tasks || []);
-      console.log(res.data.tasks);
+      setloading(false);
     } catch (err) {
       console.log(err);
+      setloading(false);
     }
   };
 
   // Fetch Tasks Assigned to Me
   const fetchAssignedTasks = async () => {
     try {
+      setloading(true);
       const res = await task.getAssignedTask();
-      console.log(res.data);
       setAssignedTasks(res.data.tasks || []);
+      setloading(false);
     } catch (err) {
       console.log(err);
+      setloading(false);
     }
   };
 
   // Fetch Applicants
   const fetchApplicants = async (Applicants, TaskId) => {
     try {
+      setloading(true);
       setApplicants(Applicants || []);
       setSelectedTask(TaskId);
       setTab("applicants");
+      setloading(false);
     } catch (err) {
       console.log(err);
+      setloading(false);
     }
   };
 
@@ -97,13 +109,14 @@ const Manage = () => {
       {/* ======================= POSTED TASKS SECTION ======================= */}
       {tab === "posted" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {postedTasks.length === 0 ? (
+          {loading && <ManagePostedTaskSkeleton />}
+          {postedTasks.length === 0 && !loading ? (
             <p className="text-[#8A8A8A] italic">
               You haven't posted any tasks yet.
             </p>
           ) : (
             postedTasks.map((task) => (
-              <PostedTasksCard tasks={task} fetchApplicants={fetchApplicants} />
+              <PostedTasksCard tasks={task}  fetchApplicants={fetchApplicants} />
             ))
           )}
         </div>
@@ -144,13 +157,14 @@ const Manage = () => {
       {/* ======================= ASSIGNED TASKS SECTION ======================= */}
       {tab === "assigned" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {assignedTasks.length === 0 ? (
+          {loading && <AssignedTaskSkeleton />}
+          {assignedTasks.length === 0 && !loading ? (
             <p className="text-[#8A8A8A] italic">
               No tasks have been assigned to you yet.
             </p>
           ) : (
             assignedTasks.map((task, key) => (
-              <AssignedTaskCard tasks={task} key={key} />
+              <AssignedTaskCard tasks={task} key={key} fetchAssignedTasks={fetchAssignedTasks} />
             ))
           )}
         </div>

@@ -1,14 +1,21 @@
+import { useState } from "react";
 import { task } from "../utils/api";
 
 export default function PostedTasksCard({ tasks, fetchApplicants }) {
   const isOpen = tasks.status === "open";
   const hasFiles = tasks?.submittedWork?.files?.length > 0;
-
+  const [loading, setloading] = useState(false);
   const markAsComplete = async (taskId) => {
-    confirm("Are You Sure ?")
-    const res = await task.markAsComplete(taskId);
-    console.log(res.data);
-    
+    confirm("Are You Sure ?");
+    try {
+      setloading(true);
+      const res = await task.markAsComplete(taskId);
+      alert(res.data.message);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setloading(falseि);
+    }
   };
   return (
     <div
@@ -72,7 +79,7 @@ export default function PostedTasksCard({ tasks, fetchApplicants }) {
         ) : (
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 overflow-hidden items-center justify-center rounded-full">
-              <img src={tasks.assignedTo.photo}/>
+              <img src={tasks.assignedTo.photo} />
             </div>
             <div className="leading-tight">
               <p className="text-[13px] font-medium text-white">
@@ -132,7 +139,9 @@ export default function PostedTasksCard({ tasks, fetchApplicants }) {
                 className={`
               flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-white
               transition bg-[#f97316] hover:bg-[#ea580c]`}
-              >Pending...</p>
+              >
+                Pending...
+              </p>
             ) : (
               <button
                 onClick={() => markAsComplete(tasks._id)}
@@ -140,7 +149,7 @@ export default function PostedTasksCard({ tasks, fetchApplicants }) {
               flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-white
               transition bg-[#12b981] hover:bg-[#0f9f6e] `}
               >
-                Mark As Complete
+                {loading ? "Wait..." : "Mark As Complete"}
               </button>
             )}
           </>
