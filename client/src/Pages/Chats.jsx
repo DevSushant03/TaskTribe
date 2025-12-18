@@ -193,7 +193,7 @@ function Chats() {
                   );
                   return (
                     <>
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold text-black shadow-sm">
+                      <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
                         <img src={otherUser?.photo} alt="profile" />
                       </div>
                       <div>
@@ -325,7 +325,7 @@ function Chats() {
       `}
                 >
                   {/* Avatar */}
-                  <div className="w-10 h-10 shrink-0 rounded-full  flex items-center justify-center shadow-sm">
+                  <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden  flex items-center justify-center shadow-sm">
                     <img src={otherUser?.photo} alt="profile" />
                   </div>
 
