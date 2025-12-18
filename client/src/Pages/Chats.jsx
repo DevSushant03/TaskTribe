@@ -220,7 +220,7 @@ function Chats() {
           </header>
 
           {/* Chat Messages */}
-          <main className="flex-1 px-4 md:px-6 py-4 md:py-5 space-y-3 overflow-y-auto custom-scroll bg-gradient-to-b from-[#050507] to-[#050507]">
+          <main className="flex-1 px-4 md:px-6 py-4 md:py-5 space-y-3 custom-scroll bg-gradient-to-b from-[#050507] to-[#050507]">
             {messages?.map((m, index) => {
               // Handle both populated (object) and non-populated (string/ObjectId) senderId
               const senderIdStr =
