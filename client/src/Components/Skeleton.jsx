@@ -30,7 +30,7 @@ export default function BrowseSkeleton() {
     </div>
   );
 }
-ManagePostedTaskSkeleton = () => {
+export const ManagePostedTaskSkeleton = () => {
   return (
     <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-5 animate-pulse">
       {/* Title */}
