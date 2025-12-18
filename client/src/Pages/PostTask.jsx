@@ -14,7 +14,7 @@ export default function PostTask() {
   });
 
   const [tagInput, setTagInput] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const addTag = () => {
     if (tagInput.trim() && !form.tags.includes(tagInput)) {
