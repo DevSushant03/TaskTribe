@@ -10,7 +10,7 @@ import { Helmet } from "react-helmet";
 import {
   AssignedTaskSkeleton,
   ManagePostedTaskSkeleton,
-} from "../Components/Skeleton";
+} from "../Components/Skeleton.jsx";
 <ArrowLeft className="w-6 h-6" />;
 
 const Manage = () => {
