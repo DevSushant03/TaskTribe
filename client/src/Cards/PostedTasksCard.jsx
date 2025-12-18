@@ -15,6 +15,7 @@ export default function PostedTasksCard({
     try {
       setloading(true);
       const res = await task.markAsComplete(taskId);
+      alert(res.data.message);
       await fetchPostedTasks();
     } catch (error) {
       console.log(error);

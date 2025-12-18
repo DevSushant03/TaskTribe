@@ -109,9 +109,6 @@ export const createTask = async (req, res) => {
   }
 };
 
-// ----------------------
-// Get All Tasks
-// ----------------------
 export const getAllTasks = async (req, res) => {
   const { userid } = req.user;
   try {
@@ -132,9 +129,7 @@ export const getAllTasks = async (req, res) => {
   }
 };
 
-// ----------------------
-// Get Single Task
-// ----------------------
+
 export const getTaskById = async (req, res) => {
   try {
     const { taskId } = req.params;
@@ -159,9 +154,7 @@ export const getTaskById = async (req, res) => {
   }
 };
 
-// ----------------------
-// Delete Task (only owner)
-// ----------------------
+
 export const deleteTask = async (req, res) => {
   try {
     const { id } = req.params;

@@ -10,7 +10,7 @@ export const getUserForSideBar = async (req, res) => {
       participants: myId,
     })
       .populate("taskId", "title budget")
-      .populate("participants", "name avatar");
+      .populate("participants", "name surname photo");
 
     const roomsWithMeta = await Promise.all(
       chatRooms.map(async (room) => {
@@ -45,7 +45,7 @@ export const getMessages = async (req, res) => {
 
     const messages = await MessageModel.find({ chatRoomId })
       .sort({ createdAt: 1 }) // Sort by oldest first (ascending)
-      .populate("senderId", "name avatar");
+      .populate("senderId", "name photo");
 
     // Mark seen
     await MessageModel.updateMany(

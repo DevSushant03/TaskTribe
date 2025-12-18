@@ -6,12 +6,13 @@ import { chatsApiRoutes } from "../utils/api";
 
 function Chats() {
   const [msg, setMsg] = useState("");
-  const [chats, setChats] = useState(null);
+  const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState(null);
   const [myUserId, setMyUserId] = useState(null);
   const openChat = async (chat) => {
     setActiveChat(chat);
+    
     setMessages([]);
 
     try {
@@ -68,8 +69,8 @@ function Chats() {
         const res = await chatsApiRoutes.getAllUsers();
         if (res.data.success) {
           setChats(res.data.chats);
-          console.log(res.data.chats);
-          
+          console.log(chats);
+
           setMyUserId(res.data.myId);
         }
       } catch (error) {
@@ -175,12 +176,12 @@ function Chats() {
         <title>Chats | TaskTribe</title>
       </Helmet>
 
-      <div className="flex h-screen w-screen bg-[#0c0c0c] text-gray-100 overflow-hidden">
+      <div className="flex h-screen w-screen bg-[#0c0c0c] text-gray-100 overflow-scroll-y">
         {/* LEFT PANEL — CHAT */}
         <section
           className={`${
             activeChat ? "block" : "hidden"
-          } md:flex flex-col mt-15 md:mt-0 w-full md:flex-1 relative bg-[#0c0c0c]`}
+          } md:flex flex-col mt-15 md:mt-0 w-full  md:flex-1 relative bg-[#0c0c0c]`}
         >
           {/* Chat Top Bar */}
           <header className="px-5 py-5 border-b border-[#18181b] bg-[#0c0c0c]/95 backdrop-blur flex items-center justify-between">
@@ -192,16 +193,13 @@ function Chats() {
                   );
                   return (
                     <>
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-xs font-semibold text-black shadow-sm">
-                        {otherUser?.name
-                          ?.split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase() || "U"}
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold text-black shadow-sm">
+                        <img src={otherUser?.photo} alt="profile" />
                       </div>
                       <div>
                         <h3 className="text-sm font-semibold leading-tight">
-                          {otherUser?.name || "Unknown User"}
+                          {otherUser?.name + " " + otherUser?.surname ||
+                            "Unknown User"}
                         </h3>
                         <p className="text-[11px] text-emerald-400 flex items-center gap-1">
                           <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
@@ -285,7 +283,7 @@ function Chats() {
             </div>
           </footer>
         </section>
-        {/* RIGHT PANEL — USER LIST */}
+        {/* //?------------RIGHT PANEL — USER LIST--------------------------  */}
         <aside
           className={` ${
             activeChat ? "hidden" : "block"
@@ -327,17 +325,14 @@ function Chats() {
       `}
                 >
                   {/* Avatar */}
-                  <div className="w-10 h-10 shrink-0 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-xs font-semibold text-black shadow-sm">
-                    {otherUser?.name
-                      ?.split(" ")
-                      .map((n) => n[0])
-                      .join("")}
+                  <div className="w-10 h-10 shrink-0 rounded-full  flex items-center justify-center shadow-sm">
+                    <img src={otherUser?.photo} alt="profile" />
                   </div>
 
                   {/* Name + last message */}
                   <div className="flex flex-col overflow-hidden flex-1">
                     <p className="font-medium text-sm truncate">
-                      {otherUser?.name}
+                      {otherUser?.name + " " + otherUser?.surname}
                     </p>
 
                     <p className="text-xs text-gray-500 truncate">
