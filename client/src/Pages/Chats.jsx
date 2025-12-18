@@ -176,7 +176,7 @@ function Chats() {
         <title>Chats | TaskTribe</title>
       </Helmet>
 
-      <div className="flex h-screen w-screen bg-[#0c0c0c] text-gray-100 overflow-scroll-y">
+      <div className="flex h-screen w-screen bg-[#0c0c0c] text-gray-100">
         {/* LEFT PANEL — CHAT */}
         <section
           className={`${
