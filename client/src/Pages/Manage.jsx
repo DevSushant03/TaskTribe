@@ -116,7 +116,7 @@ const Manage = () => {
             </p>
           ) : (
             postedTasks.map((task) => (
-              <PostedTasksCard tasks={task}  fetchApplicants={fetchApplicants} />
+              <PostedTasksCard tasks={task}  fetchPostedTasks={fetchPostedTasks}   fetchApplicants={fetchApplicants} />
             ))
           )}
         </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { task } from "../utils/api";
+import CircularLoader from "../Components/CircularLoader.jsx";
 function ApplicantCard({
   applicant,
   open,
@@ -9,16 +10,31 @@ function ApplicantCard({
   fetchPostedTasks,
   setTab,
 }) {
+  const [loading, setloading] = useState(false);
   const rejectApplicant = async (applicantId, Taskid) => {
-    const res = await task.rejectApplicant(applicantId, Taskid);
-    fetchPostedTasks();
-    alert(res.data.message);
+    try {
+      setloading(true);
+      const res = await task.rejectApplicant(applicantId, Taskid);
+      fetchPostedTasks();
+      alert(res.data.message);
+      setloading(false);
+    } catch (error) {
+      console.log(error.message);
+      setloading(false);
+    }
   };
   const acceptApplicant = async (applicantId, Taskid) => {
-    const res = await task.acceptApplicant(applicantId, Taskid);
-    alert(res.data.message);
-    fetchPostedTasks();
-    setTab("posted");
+    try {
+      setloading(true);
+      const res = await task.acceptApplicant(applicantId, Taskid);
+      alert(res.data.message);
+      fetchPostedTasks();
+      setTab("posted");
+      setloading(false);
+    } catch (error) {
+      setloading(false);
+      console.log(error.message);
+    }
   };
 
   return (

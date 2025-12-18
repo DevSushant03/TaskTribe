@@ -2,6 +2,7 @@ import React from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { task } from "../utils/api";
 import { useState } from "react";
+import CircularLoader from "../Components/CircularLoader";
 function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
   const [open, setopen] = useState(null);
   const [file, setfile] = useState(null);
@@ -144,7 +145,7 @@ function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
         onClick={() => uploadWork(tasks._id)}
         className="mt-3 w-full py-2 text-[12px]  rounded-md bg-[#FF6B00] disabled:cursor-not-allowed text-white hover:bg-[#ff7f2e] transition"
       >
-        {loading ? "Sending..." : "Mark Completed"}
+        {loading ? <CircularLoader/> : "Mark Completed"}
       </button>
     </div>
   );

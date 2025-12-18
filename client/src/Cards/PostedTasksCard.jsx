@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { task } from "../utils/api";
+import CircularLoader from "../Components/CircularLoader";
 
-export default function PostedTasksCard({ tasks, fetchApplicants }) {
+export default function PostedTasksCard({
+  tasks,
+  fetchApplicants,
+  fetchPostedTasks,
+}) {
   const isOpen = tasks.status === "open";
   const hasFiles = tasks?.submittedWork?.files?.length > 0;
   const [loading, setloading] = useState(false);
@@ -10,11 +15,11 @@ export default function PostedTasksCard({ tasks, fetchApplicants }) {
     try {
       setloading(true);
       const res = await task.markAsComplete(taskId);
-      alert(res.data.message);
+      await fetchPostedTasks();
     } catch (error) {
       console.log(error);
     } finally {
-      setloading(falseि);
+      setloading(false);
     }
   };
   return (
@@ -145,11 +150,12 @@ export default function PostedTasksCard({ tasks, fetchApplicants }) {
             ) : (
               <button
                 onClick={() => markAsComplete(tasks._id)}
+                disabled={loading}
                 className={`
-              flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-white
+              flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-black
               transition bg-[#12b981] hover:bg-[#0f9f6e] `}
               >
-                {loading ? "Wait..." : "Mark As Complete"}
+                {loading ? <CircularLoader /> : "Mark As Complete"}
               </button>
             )}
           </>

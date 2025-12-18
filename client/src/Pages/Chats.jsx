@@ -6,7 +6,7 @@ import { chatsApiRoutes } from "../utils/api";
 
 function Chats() {
   const [msg, setMsg] = useState("");
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState(null);
   const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState(null);
   const [myUserId, setMyUserId] = useState(null);
@@ -67,7 +67,9 @@ function Chats() {
       try {
         const res = await chatsApiRoutes.getAllUsers();
         if (res.data.success) {
-          setChats(res.data.chats || []);
+          setChats(res.data.chats);
+          console.log(res.data.chats);
+          
           setMyUserId(res.data.myId);
         }
       } catch (error) {
@@ -154,20 +156,18 @@ function Chats() {
     }
   };
 
-
-
-  if (!chats) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0C0C0C] min-h-screen">
-        <div className="text-center">
-          <p className="text-gray-400 text-sm">
-            You don’t have any active chats yet. Post a task or apply to get
-            started.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // if (chats) {
+  //   return (
+  //     <div className="flex-1 flex items-center justify-center bg-[#0C0C0C] min-h-screen">
+  //       <div className="text-center">
+  //         <p className="text-gray-400 text-sm">
+  //           You don’t have any active chats yet. Assigned a task or apply to get
+  //           started.
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -176,7 +176,7 @@ function Chats() {
       </Helmet>
 
       <div className="flex h-screen w-screen bg-[#0c0c0c] text-gray-100 overflow-hidden">
-        {/* RIGHT PANEL — CHAT */}
+        {/* LEFT PANEL — CHAT */}
         <section
           className={`${
             activeChat ? "block" : "hidden"
@@ -285,7 +285,7 @@ function Chats() {
             </div>
           </footer>
         </section>
-        {/* LEFT PANEL — USER LIST */}
+        {/* RIGHT PANEL — USER LIST */}
         <aside
           className={` ${
             activeChat ? "hidden" : "block"
