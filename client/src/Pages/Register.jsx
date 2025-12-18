@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../Validation/auth_validation.js";
 import { Helmet } from "react-helmet";
+import CircularLoader from "../Components/CircularLoader.jsx";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -172,7 +173,7 @@ export default function Register() {
                 className="w-full py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange hover:border-orange-500/80  focus:shadow-neumorph-orange-focus transition-all duration-300 text-lg"
                 disabled={loading}
               >
-                {loading ? "loading..." : "Join TaskTribe"}
+                {loading ? <CircularLoader/> : "Join TaskTribe"}
               </button>
             </form>
 

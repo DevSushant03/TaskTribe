@@ -9,8 +9,9 @@ import { loginSchema } from "../Validation/auth_validation.js";
 import { Helmet } from "react-helmet";
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext.jsx";
+import CircularLoader from "../Components/CircularLoader.jsx";
 export default function Login() {
-  const {setid}=useContext(AuthContext)
+  const { setid } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState("");
@@ -43,7 +44,7 @@ export default function Login() {
         setloading(false);
         if (data.user) {
           navigate(`/user/${data.userid}/dashboard`);
-          setid(data.userid)
+          setid(data.userid);
         } else {
           navigate("/auth/createProfile");
         }
@@ -55,6 +56,7 @@ export default function Login() {
     } catch (error) {
       toast.error(error.message);
       seterror(error.message);
+      setloading(false);
     }
   };
 
@@ -129,10 +131,10 @@ export default function Login() {
               </div>
               <button
                 type="submit"
-                className="w-full py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange hover:border-orange-500/80  focus:shadow-neumorph-orange-focus transition-all duration-300 text-lg"
+                className="w-full flex justify-center align-center py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange hover:border-orange-500/80  focus:shadow-neumorph-orange-focus transition-all duration-300 text-lg"
                 disabled={loading}
               >
-                {loading ? "Loading.." : "Log In"}
+                {loading ? <CircularLoader /> : "Log In"}
               </button>
             </form>
 
