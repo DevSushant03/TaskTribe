@@ -181,7 +181,7 @@ function Chats() {
         <section
           className={`${
             activeChat ? "block" : "hidden"
-          } md:flex flex-col mt-15 md:mt-0 w-full  md:flex-1 relative bg-[#0c0c0c]`}
+          } md:flex flex-col justify-between mt-15 md:mt-0 w-full h-screen md:flex-1 relative bg-[#0c0c0c]`}
         >
           {/* Chat Top Bar */}
           <header className="px-5 py-5 border-b border-[#18181b] bg-[#0c0c0c]/95 backdrop-blur flex items-center justify-between">
@@ -220,7 +220,7 @@ function Chats() {
           </header>
 
           {/* Chat Messages */}
-          <main className="flex-1 px-4 md:px-6 py-4 md:py-5 space-y-3 custom-scroll bg-gradient-to-b from-[#050507] to-[#050507]">
+          <main className="flex-1 px-4 md:px-6 py-4 md:py-5 space-y-3 overflow-scroll-y custom-scroll bg-gradient-to-b from-[#050507] to-[#050507]">
             {messages?.map((m, index) => {
               // Handle both populated (object) and non-populated (string/ObjectId) senderId
               const senderIdStr =

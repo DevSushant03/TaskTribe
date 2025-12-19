@@ -10,7 +10,7 @@ import Register from "./Pages/Register";
 import TaskList from "./Pages/TaskList";
 import TaskDetails from "./Pages/TaskDetails";
 import PostTask from "./Pages/PostTask";
-import Notification from "./Pages/Manage";
+import Manage from "./Pages/Manage";
 import ProfilePage from "./Pages/ProfilePage";
 import Authentication from "./Layout/Authentication";
 import GetUserInfo from "./Pages/GetUserInfo";
@@ -18,6 +18,7 @@ import NotFound404 from "./Pages/NoFound404";
 import AppLayout from "./Layout/AppLayout";
 import Chats from "./Pages/Chats";
 import DashBoard from "./Pages/DashBoard";
+import Notification from "./Pages/Notification"
 import BankDetailsForm from "./Components/BankDetailsForm";
 const router = createBrowserRouter([
   {
@@ -62,9 +63,10 @@ const router = createBrowserRouter([
       },
 
       // Other user pages
-      { path: "manage", element: <Notification /> },
+      { path: "manage", element: <Manage /> },
       { path: "chats", element: <Chats /> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "notification", element: <Notification /> },
       { path: "MyBankDetails", element: <BankDetailsForm /> },
 
     ],

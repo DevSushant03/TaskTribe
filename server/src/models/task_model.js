@@ -52,6 +52,7 @@ const taskSchema = new mongoose.Schema(
           ref: "user",
           required: true,
         },
+        bidAmount: { type: Number, default: 0 },
         message: { type: String },
         appliedAt: { type: Date, default: Date.now },
       },

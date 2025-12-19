@@ -166,7 +166,7 @@ export const deleteTask = async (req, res) => {
       return res.json({ success: false, message: "Task not found" });
     }
 
-    if (task.createdBy.toString() !== userId) {
+    if (task.createdBy.toString() !== userid) {
       return res.status(401).json({
         success: false,
         message: "You are not allowed to delete this task",

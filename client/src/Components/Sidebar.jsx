@@ -9,6 +9,7 @@ import {
   FaSearch,
   FaUser,
 } from "react-icons/fa";
+import { IoMdNotifications } from "react-icons/io";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,6 +67,12 @@ export default function Sidebar() {
             to="chats"
             icon={<FaComments />}
             label="Chats"
+            onClick={() => setIsOpen(false)}
+          />
+          <NavItem
+            to="notification"
+            icon={<IoMdNotifications />}
+            label="Notification"
             onClick={() => setIsOpen(false)}
           />
           <NavItem
