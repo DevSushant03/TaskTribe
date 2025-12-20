@@ -123,7 +123,7 @@ function Notification() {
               ) : (
                 <div className="h-12 w-12 rounded-full bg-gradient-to-br from-orange-600 to-orange-500 flex items-center justify-center border-2 border-orange-500/30">
                   <span className="text-white font-semibold text-lg">
-                    {n.from?.name?.charAt(0)?.toUpperCase() || "U"}
+                    {n.from?.name?.charAt(0)?.toUpperCase() || "T"}
                   </span>
                 </div>
               )}
@@ -134,7 +134,7 @@ function Notification() {
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm md:text-base font-semibold text-white truncate">
-                    {n.from?.name || "Unknown"} {n.from?.surname || ""}
+                    {n.from ? `${n.from.name || ""} ${n.from.surname || ""}`.trim() : "TaskTribe"}
                   </p>
                   <p className="text-sm text-gray-300 mt-1 line-clamp-2">
                     {n.message}

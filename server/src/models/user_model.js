@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
         from: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "user",
-          required: true,
+          required: false, // Allow null for system/tasktribe notifications
         },
         message: String,
         isRead: {

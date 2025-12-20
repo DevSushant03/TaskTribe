@@ -96,6 +96,15 @@ export const createTask = async (req, res) => {
       attachments: uploadedFiles,
     });
 
+    await userModel.findByIdAndUpdate(userid, {
+      $push: {
+        notifications: {
+          from: null, //from tasktribe
+          message: `Your task "${newTask.title}" has been posted successfully`,
+        }
+      }
+    });
+
     return res.json({
       success: true,
       message: "Task created successfully",
@@ -176,6 +185,15 @@ export const deleteTask = async (req, res) => {
 
     await taskModel.findByIdAndDelete(id);
 
+    await userModel.findByIdAndUpdate(userid, {
+      $push: {
+        notifications: {
+          from: null, //from tasktribe
+          message: `Your task "${task.title}" has been deleted successfully`,
+        }
+      }
+    });
+
     return res.json({
       success: true,
       message: "Task deleted",
@@ -232,6 +250,15 @@ export const applyForTask = async (req, res) => {
 
     task.applicantsCount += 1;
     await task.save();
+
+    await userModel.findByIdAndUpdate(userid, {
+      $push: {
+        notifications: {
+          from: null, //from tasktribe
+          message: `Your proposal for "${task.title}" has been submitted successfully`,
+        }
+      }
+    });
 
     return res.status(200).json({
       success: true,
@@ -444,6 +471,15 @@ export const submitWork = async (req, res) => {
     };
     task.status = "submitted";
     await task.save();
+
+    await userModel.findByIdAndUpdate(task.createdBy, {
+      $push: {
+        notifications: {
+          from: task.assignedTo,
+          message: `Your task "${task.title}" workfiles is submitted `,
+        }
+      }
+    })
     res.json({
       success: true,
       message: "Work Submitted Successfully",
@@ -482,6 +518,24 @@ export const markAsComplete = async (req, res) => {
     }
 
     await taskModel.findByIdAndDelete(taskId);
+
+    await userModel.findByIdAndUpdate(task.createdBy, {
+      $push: {
+        notifications: {
+          from: null, //from tasktribe
+          message: `Your task "${task.title}" has been completed successfully`,
+        }
+      }
+    });
+
+    await userModel.findByIdAndUpdate(task.assignedTo, {
+      $push: {
+        notifications: {
+          from: null, //from tasktribe
+          message: `Your task "${task.title}" has been completed successfully. Your Payment will be credited to your account within 2-3 business days. If your payment is not credited, you can contact us`,
+        }
+      }
+    });
 
     res.json({
       success: true,
