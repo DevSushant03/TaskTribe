@@ -69,4 +69,10 @@ export const chatsApiRoutes ={
   markMessageAsUnread:(chatRoomId)=>api.post(`/chats/markMessageAsUnread/${chatRoomId}`),
   markMessageAsRead:(chatRoomId)=>api.post(`/chats/markMessageAsRead/${chatRoomId}`),
 }
+
+export const notificationApiRoutes = {
+  getNotifications: () => api.get("/notification/getAllNotification"),
+  markAsRead: (notificationId) => api.post(`/notification/markAsRead/${notificationId}`),
+  markAllAsRead: () => api.post("/notification/markAllAsRead"),
+};
 export default api;

@@ -38,7 +38,9 @@ const userSchema = new mongoose.Schema({
     type: [
       {
         from: {
-          type: String,
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+          required: true,
         },
         message: String,
         isRead: {
