@@ -252,7 +252,7 @@ export const getMyTask = async (req, res) => {
 
     const tasks = await taskModel
       .find({ createdBy: userid })
-      .populate("applicants.user", "name surname skills bio email photo")
+      .populate("applicants.user", "name surname skills bio email photo review rating")
       .populate("assignedTo", "name surname email photo");
 
     if (!tasks) {

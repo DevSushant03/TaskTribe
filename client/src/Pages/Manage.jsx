@@ -142,10 +142,8 @@ const Manage = () => {
           ) : (
             applicants.map((applicant, key) => (
               <ApplicantCard
+              setTab={setTab}
                 applicant={applicant}
-                open={open}
-                setopen={setopen}
-                setTab={setTab}
                 selectedTask={selectedTask}
                 fetchPostedTasks={fetchPostedTasks}
               />
@@ -169,6 +167,7 @@ const Manage = () => {
           )}
         </div>
       )}
+      
     </div>
   );
 };
