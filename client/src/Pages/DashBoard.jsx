@@ -138,7 +138,7 @@ function DashBoard() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-white">Recent Tasks</h2>
                 <Link
-                  to="browse"
+                  to="../browse"
                   className="text-orange-500 hover:text-orange-400 text-sm font-medium"
                 >
                   View All →
@@ -155,13 +155,7 @@ function DashBoard() {
                         {task.title}
                       </h3>
                       <div className="flex items-center gap-3">
-                        <span
-                          className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(
-                            task.status
-                          )}`}
-                        >
-                          {task.status.replace("_", " ")}
-                        </span>
+                        
                         <span className="text-gray-400 text-sm">
                           {task.budget}
                         </span>

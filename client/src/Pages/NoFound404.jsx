@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function NotFound404() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-100 p-6 text-center">
       {/* Funny Illustration */}
@@ -20,7 +22,7 @@ export default function NotFound404() {
       {/* Buttons */}
       <div className="flex gap-4">
         <button className="px-5 py-3 rounded-lg bg-orange-500 text-white font-semibold shadow hover:bg-orange-600 transition">
-           <Link to="/">Back to home</Link>
+           <button onClick={() => navigate(-1)}>Back to previous page</button>
         </button>
         <button className="px-5 py-3 rounded-lg bg-white border border-gray-300 font-semibold shadow hover:bg-gray-50 transition">
           Report Issue

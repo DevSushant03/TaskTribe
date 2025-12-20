@@ -55,7 +55,7 @@ function ApplicantCard({
   return (
     <div
       key={applicant._id}
-      className="flex justify-between align-center md:flex-col p-6 mb-5 rounded-2xl border border-[#2A2A2A] bg-[#121212] 
+      className="flex justify-between align-center flex-col md:flex-row p-6 mb-5 rounded-2xl border border-[#2A2A2A] bg-[#121212] 
                 hover:border-[#FF6B00] transition-all shadow-md hover:shadow-lg"
     >
       {/* Top Section */}
