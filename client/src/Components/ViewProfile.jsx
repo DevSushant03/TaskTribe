@@ -1,7 +1,7 @@
 import React from "react";
-import { FaStar, FaEnvelope, FaUser, FaCalendarAlt, FaAward } from "react-icons/fa";
+import { FaStar, FaEnvelope, FaUser, FaCalendarAlt, FaAward, FaRupeeSign } from "react-icons/fa";
 
-export default function ViewProfile({ UserProfile }) {
+export default function ViewProfile({ UserProfile, bidAmount }) {
   const {
     photo,
     name,
@@ -77,6 +77,14 @@ export default function ViewProfile({ UserProfile }) {
               <p className="text-sm break-all">{email || "No email provided"}</p>
             </div>
 
+            {/* Bid Amount */}
+            {bidAmount && (
+              <div className="flex items-center gap-2 text-orange-400 mb-3 font-semibold">
+                <FaRupeeSign size={14} className="text-orange-500" />
+                <p className="text-sm">Bid Amount: ₹{bidAmount.toLocaleString()}</p>
+              </div>
+            )}
+
             {/* Rating */}
             <div className="flex items-center gap-3">
               {renderStars(rating?.avg || 0)}
@@ -93,6 +101,19 @@ export default function ViewProfile({ UserProfile }) {
 
       {/* Body Content */}
       <div className="px-6 md:px-8 pb-6 md:pb-8 space-y-6">
+        {/* Bid Amount Section */}
+        {bidAmount && (
+          <section className="bg-[#0c0c0c] border border-orange-500/50 rounded-lg p-4 md:p-5">
+            <h2 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <FaRupeeSign className="text-orange-500" size={16} />
+              Bid Amount
+            </h2>
+            <p className="text-2xl font-bold text-orange-400">
+              ₹{bidAmount.toLocaleString()}
+            </p>
+          </section>
+        )}
+
         {/* About Section */}
         <section className="bg-[#0c0c0c] border border-gray-800 rounded-lg p-4 md:p-5">
           <h2 className="text-lg font-bold text-white mb-3 flex items-center gap-2">

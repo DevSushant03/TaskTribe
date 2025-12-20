@@ -2,6 +2,7 @@ import taskModel from "../models/task_model.js";
 import cloudinary from "../config/cloudinary.js";
 import bankModel from "../models/BankDetails_model.js";
 import { ChatRoomModel, MessageModel } from "../models/Chat_model.js";
+import userModel from "../models/user_model.js";
 
 export const uploadToCloudinary = (fileBuffer, folderName) => {
   return new Promise((resolve, reject) => {
@@ -291,7 +292,8 @@ export const acceptApplicant = async (req, res) => {
         .status(400)
         .json({ message: "Applicant not found in this task" });
     }
-    const rejectedApplicant = task.applicants.find(
+    // Get all rejected applicants before clearing the array
+    const rejectedApplicants = task.applicants.filter(
       (a) => a.user.toString() !== applicantId
     );
 
@@ -301,27 +303,29 @@ export const acceptApplicant = async (req, res) => {
     task.applicantsCount = 0;
     await task.save();
 
-    await userModel.findByIdAndUpdate(applicantId,{
-      $push:{
-        notifications:{
-         from:task.createdBy,
-         message: `🎉 Your proposal was accepted for "${task.title}"`,
+    // Send notification to accepted applicant
+    await userModel.findByIdAndUpdate(applicantId, {
+      $push: {
+        notifications: {
+          from: task.createdBy,
+          message: `🎉 Your proposal was accepted for "${task.title}"`,
         }
       }
-    })
+    });
      
-    const rejectPromises = rejectedApplicant.map((rej)=>{
-      userModel.findByIdAndUpdate(rej.user,{
-        $push:{
-          notifications:{
-            from:task.createdBy,
+    // Send notifications to all rejected applicants
+    const rejectPromises = rejectedApplicants.map((rej) => {
+      return userModel.findByIdAndUpdate(rej.user, {
+        $push: {
+          notifications: {
+            from: task.createdBy,
             message: `Your proposal was not selected for "${task.title}"`,
-           }
+          }
         }
-      })
-    })
+      });
+    });
 
-    await Promise.all(rejectPromises)
+    await Promise.all(rejectPromises);
 
     let chatRoom = await ChatRoomModel.findOne({ taskId: TaskId });
 
@@ -365,14 +369,14 @@ export const rejectApplicant = async (req, res) => {
     await task.save();
 
     
-    await userModel.findByIdAndUpdate(applicantId,{
-      $push:{
-        notifications:{
-          from:task.createdBy,
-          message:`Your proposal was not selected for "${task.title}"`,
+    await userModel.findByIdAndUpdate(applicantId, {
+      $push: {
+        notifications: {
+          from: task.createdBy,
+          message: `Your proposal was not selected for "${task.title}"`,
         }
       }
-    })
+    });
 
     res.json({
       message: "Applicant rejected",

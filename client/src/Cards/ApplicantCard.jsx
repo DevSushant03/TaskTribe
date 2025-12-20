@@ -9,6 +9,7 @@ function ApplicantCard({
 }) {
   const [loading, setloading] = useState(false);
   const [UserProfile, setUserProfile] = useState(null);
+  const [bidAmount, setBidAmount] = useState(null);
   
   const rejectApplicant = async (applicantId, Taskid) => {
     try {
@@ -41,13 +42,16 @@ function ApplicantCard({
     return (
       <div className="p-6">
         <button
-          onClick={() => setUserProfile(null)}
+          onClick={() => {
+            setUserProfile(null);
+            setBidAmount(null);
+          }}
           className="mb-4 px-4 py-2 rounded-lg bg-zinc-800 text-white hover:bg-zinc-700"
         >
           ← Back
         </button>
 
-        <ViewProfile UserProfile={UserProfile} />
+        <ViewProfile UserProfile={UserProfile} bidAmount={bidAmount} />
       </div>
     );
   }
@@ -85,6 +89,11 @@ function ApplicantCard({
           </h3>
 
           <p className="text-sm text-[#B5B5B5]">{applicant.user.email}</p>
+          {applicant.bidAmount && (
+            <p className="text-sm text-orange-400 font-medium mt-1">
+              Bid Amount: ₹{applicant.bidAmount.toLocaleString()}
+            </p>
+          )}
         </div>
       </div>
 
@@ -110,7 +119,10 @@ function ApplicantCard({
           Reject Applicant
         </button>
         <button
-          onClick={() => setUserProfile(applicant.user)}
+          onClick={() => {
+            setUserProfile(applicant.user);
+            setBidAmount(applicant.bidAmount);
+          }}
           className="px-4 py-2 rounded-lg font-medium
                     bg-transparent text-green-400 border border-green-400
                     hover:bg-green-500 hover:text-white hover:border-green-500
