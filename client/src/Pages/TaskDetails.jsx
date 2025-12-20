@@ -10,6 +10,7 @@ const TaskDetails = () => {
   const [applyLoading, setApplyLoading] = useState(false);
   const [requestBox, setRequestBox] = useState(false);
   const [message, setMessage] = useState("");
+  const [bidAmount, setbidAmount] = useState("");
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -45,10 +46,12 @@ const TaskDetails = () => {
 
   const handleApply = async () => {
     if (!message.trim()) return alert("Please write a message.");
-
-    try {
+    if (!bidAmount || Number(bidAmount) <= 0) {
+      return alert("Please enter a valid bid amount.");
+    }
+     try {
       setApplyLoading(true);
-      const res = await task.applyTask(taskId, message);
+      const res = await task.applyTask(taskId, message,bidAmount);
       if (res.data.action === "ADD_BANK_DETAILS") {
         alert(res.data.message);
 
@@ -160,6 +163,17 @@ const TaskDetails = () => {
             <h2 className="text-xl font-semibold text-orange-400 mb-4 text-center">
               Send Request to Task Creator
             </h2>
+            <label className="text-sm text-gray-400 mb-1 block">
+  Bid Amount (₹)
+</label>
+            <input
+  value={bidAmount}
+  type="number"
+  onChange={(e) => setbidAmount(e.target.value)}
+  placeholder="eg: (1000)"
+  className="w-full px-4 py-2 rounded-lg bg-black/40 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4"
+/>
+
 
             <textarea
               value={message}

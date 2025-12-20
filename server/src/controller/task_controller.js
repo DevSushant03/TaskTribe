@@ -190,7 +190,7 @@ export const applyForTask = async (req, res) => {
   try {
     const { taskId } = req.params;
     const { userid } = req.user;
-    const { message } = req.body;
+    const { message,bidAmount } = req.body;
 
     const bankAccount = await bankModel.findOne({ userId: userid });
 
@@ -226,6 +226,7 @@ export const applyForTask = async (req, res) => {
     task.applicants.push({
       user: userid,
       message,
+      bidAmount
     });
 
     task.applicantsCount += 1;
@@ -282,19 +283,45 @@ export const acceptApplicant = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Task not found" });
     }
-    const applicant = task.applicants.find(
+    const acceptsApplicant = task.applicants.find(
       (a) => a.user.toString() === applicantId
     );
-    if (!applicant) {
+    if (!acceptsApplicant) {
       return res
         .status(400)
         .json({ message: "Applicant not found in this task" });
     }
+    const rejectedApplicant = task.applicants.find(
+      (a) => a.user.toString() !== applicantId
+    );
+
     task.assignedTo = applicantId;
     task.status = "in_progress";
     task.applicants = [];
     task.applicantsCount = 0;
     await task.save();
+
+    await userModel.findByIdAndUpdate(applicantId,{
+      $push:{
+        notifications:{
+         from:task.createdBy,
+         message: `🎉 Your proposal was accepted for "${task.title}"`,
+        }
+      }
+    })
+     
+    const rejectPromises = rejectedApplicant.map((rej)=>{
+      userModel.findByIdAndUpdate(rej.user,{
+        $push:{
+          notifications:{
+            from:task.createdBy,
+            message: `Your proposal was not selected for "${task.title}"`,
+           }
+        }
+      })
+    })
+
+    await Promise.all(rejectPromises)
 
     let chatRoom = await ChatRoomModel.findOne({ taskId: TaskId });
 
@@ -317,6 +344,8 @@ export const acceptApplicant = async (req, res) => {
     });
   }
 };
+
+
 export const rejectApplicant = async (req, res) => {
   try {
     const { applicantId, TaskId } = req.params;
@@ -334,6 +363,16 @@ export const rejectApplicant = async (req, res) => {
     task.applicants = updatedApplicants;
     task.applicantsCount = updatedApplicants.length;
     await task.save();
+
+    
+    await userModel.findByIdAndUpdate(applicantId,{
+      $push:{
+        notifications:{
+          from:task.createdBy,
+          message:`Your proposal was not selected for "${task.title}"`,
+        }
+      }
+    })
 
     res.json({
       message: "Applicant rejected",

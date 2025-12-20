@@ -14,8 +14,8 @@ function ApplicantCard({
     try {
       setloading(true);
       const res = await task.rejectApplicant(applicantId, Taskid);
-      fetchPostedTasks();
       alert(res.data.message);
+      fetchPostedTasks();
       setloading(false);
     } catch (error) {
       console.log(error.message);
@@ -50,6 +50,13 @@ function ApplicantCard({
         <ViewProfile UserProfile={UserProfile} />
       </div>
     );
+  }
+  if(loading){
+    return(
+      <div className="h-full w-full flex justify-center align-center">
+          <span className="w-15 h-15 rounded-full border-t border-gray-300 spin"></span>
+      </div>
+    )
   }
 
   return (

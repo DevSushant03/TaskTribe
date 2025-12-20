@@ -37,9 +37,9 @@ export const task = {
     }),
   getAllTask: () => api.get("/task/getAllTask"),
   getTaskById: (taskId) => api.get(`/task/getTask/${taskId}`),
-  applyTask: (taskId, message) =>
+  applyTask: (taskId, message,bidAmount) =>
     api.post(`/task/apply/${taskId}`, {
-      message,
+      message,bidAmount
     }),
   getMyTask: () => api.get("/task/myTask"),
   getAssignedTask: () => api.get("/task/assignedToMe"),
