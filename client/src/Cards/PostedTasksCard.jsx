@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { task } from "../utils/api";
 import CircularLoader from "../Components/CircularLoader";
-import { toast } from "react-toastify";
+import EditTaskModal from "../Components/EditTaskModal";
 
 export default function PostedTasksCard({
   tasks,
@@ -11,22 +11,16 @@ export default function PostedTasksCard({
   const isOpen = tasks.status === "open";
   const hasFiles = tasks?.submittedWork?.files?.length > 0;
   const [loading, setloading] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const markAsComplete = async (taskId) => {
-    if (!window.confirm("Are you sure you want to mark this task as complete? This action cannot be undone.")) {
-      return;
-    }
+    confirm("Are You Sure ?");
     try {
       setloading(true);
       const res = await task.markAsComplete(taskId);
-      if (res.data.success) {
-        toast.success(res.data.message || "Task marked as complete successfully!");
-        await fetchPostedTasks();
-      } else {
-        toast.error(res.data.message || "Failed to mark task as complete");
-      }
+      alert(res.data.message);
+      await fetchPostedTasks();
     } catch (error) {
       console.log(error);
-      toast.error(error.response?.data?.message || "Error marking task as complete. Please try again.");
     } finally {
       setloading(false);
     }
@@ -170,17 +164,27 @@ export default function PostedTasksCard({
           </>
         )}
 
-        <button
-          className="
-            rounded-lg border border-[#2b2b2b] bg-[#101010]
-            px-4 py-2.5 text-[13px] font-medium text-gray-200
-            hover:border-[#ff6b00] hover:text-white hover:bg-[#151515]
-            transition
-          "
-        >
-          Edit Task
-        </button>
+        {isOpen && (
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="
+              rounded-lg border border-[#2b2b2b] bg-[#101010]
+              px-4 py-2.5 text-[13px] font-medium text-gray-200
+              hover:border-[#ff6b00] hover:text-white hover:bg-[#151515]
+              transition
+            "
+          >
+            Edit Task
+          </button>
+        )}
       </div>
+
+      <EditTaskModal
+        task={tasks}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSuccess={fetchPostedTasks}
+      />
     </div>
   );
 }

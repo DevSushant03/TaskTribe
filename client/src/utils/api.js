@@ -39,6 +39,10 @@ export const task = {
     api.post("/task/createTask", data, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  editTask: (TaskId, data) =>
+    api.post(`/task/${TaskId}/editTask`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
   getAllTask: () => api.get("/task/getAllTask"),
   getTaskById: (taskId) => api.get(`/task/getTask/${taskId}`),
   applyTask: (taskId, message,bidAmount) =>

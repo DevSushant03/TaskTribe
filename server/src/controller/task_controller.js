@@ -119,6 +119,116 @@ export const createTask = async (req, res) => {
   }
 };
 
+export const editTask = async (req, res) => {
+  const { userid } = req.user;
+
+  try {
+    const { TaskId } = req.params;
+    const { title, description, tags, budgetMin, budgetMax, deadline, deleteAttachments } =
+      req.body;
+
+    // Find the task
+    const task = await taskModel.findById(TaskId);
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    // Check if user is the creator
+    if (task.createdBy.toString() !== userid) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to edit this task",
+      });
+    }
+
+    // Check if task is open
+    if (task.status !== "open") {
+      return res.status(400).json({
+        success: false,
+        message: "You can only edit tasks that are open",
+      });
+    }
+
+    // Handle file deletions if specified
+    if (deleteAttachments) {
+      const deleteUrls = JSON.parse(deleteAttachments);
+      for (const url of deleteUrls) {
+        try {
+          await deleteCloudinaryFile(url);
+        } catch (error) {
+          console.error("Error deleting file:", error);
+        }
+      }
+      // Remove deleted files from attachments
+      task.attachments = task.attachments.filter(
+        (att) => !deleteUrls.includes(att.url)
+      );
+    }
+
+    // Upload new files if present
+    let newFiles = [];
+    if (req.files && req.files.length > 0) {
+      for (let file of req.files) {
+        try {
+          const result = await uploadToCloudinary(file.buffer, "tasks");
+          newFiles.push({
+            url: result.secure_url,
+            filename: result.original_filename,
+          });
+        } catch (error) {
+          return res.status(400).json({
+            success: false,
+            message: error.message,
+          });
+        }
+      }
+    }
+
+    // Update task fields
+    if (title) task.title = title;
+    if (description) task.description = description;
+    if (tags) task.tags = JSON.parse(tags || "[]");
+    if (budgetMin !== undefined) task.budget.min = budgetMin ? Number(budgetMin) : undefined;
+    if (budgetMax !== undefined) task.budget.max = budgetMax ? Number(budgetMax) : undefined;
+    if (deadline !== undefined) task.deadline = deadline || null;
+    if (newFiles.length > 0) {
+      task.attachments = [...task.attachments, ...newFiles];
+    }
+
+    await task.save();
+
+    // Notify all applicants if there are any
+    if (task.applicants && task.applicants.length > 0) {
+      const notificationPromises = task.applicants.map((applicant) => {
+        return userModel.findByIdAndUpdate(applicant.user, {
+          $push: {
+            notifications: {
+              from: task.createdBy,
+              message: `The task "${task.title}" has been updated. Please review the changes.`,
+            }
+          }
+        });
+      });
+      await Promise.all(notificationPromises);
+    }
+
+    return res.json({
+      success: true,
+      message: "Task updated successfully",
+      task: task,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
 export const getAllTasks = async (req, res) => {
   const { userid } = req.user;
   try {

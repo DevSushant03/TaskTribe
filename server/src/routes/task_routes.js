@@ -13,10 +13,12 @@ import {
   getAssignedTask,
   submitWork,
   markAsComplete,
+  editTask,
 } from "../controller/task_controller.js";
 const router = Router();
 
 router.post("/createTask", verifyAuth, upload.array("files"), createTask);
+router.post("/:TaskId/editTask", verifyAuth, upload.array("files"), editTask);
 router.get("/getAllTask", verifyAuth, getAllTasks);
 router.get("/getTask/:taskId", verifyAuth, getTaskById);
 router.get("/deleteTask/:taskId", verifyAuth, deleteTask);

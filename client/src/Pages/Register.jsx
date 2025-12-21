@@ -33,7 +33,6 @@ export default function Register() {
 
       if (response.data.success) {
         setloading(false);
-        toast.success("Account created successfully! Please login to continue.");
         navigate("/auth");
       } else {
         setloading(false);
