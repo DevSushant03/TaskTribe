@@ -2,7 +2,7 @@ import { useState } from "react";
 import { task } from "../utils/api";
 import CircularLoader from "../Components/CircularLoader";
 import EditTaskModal from "../Components/EditTaskModal";
-
+import RatingAndReviewCard from "../Cards/RatingAndReviewCard"
 export default function PostedTasksCard({
   tasks,
   fetchApplicants,
@@ -11,21 +11,18 @@ export default function PostedTasksCard({
   const isOpen = tasks.status === "open";
   const hasFiles = tasks?.submittedWork?.files?.length > 0;
   const [loading, setloading] = useState(false);
+  const [isCompleting, setisCompleting] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const markAsComplete = async (taskId) => {
-    confirm("Are You Sure ?");
-    try {
-      setloading(true);
-      const res = await task.markAsComplete(taskId);
-      alert(res.data.message);
-      await fetchPostedTasks();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setloading(false);
-    }
-  };
+
   return (
+    <>
+      {isCompleting && (
+        <RatingAndReviewCard
+          taskId={tasks._id}
+          onClose={() => setisCompleting(false)}
+          onSuccess={fetchPostedTasks}
+        />
+      )}
     <div
       key={tasks._id}
       className="
@@ -152,7 +149,7 @@ export default function PostedTasksCard({
               </p>
             ) : (
               <button
-                onClick={() => markAsComplete(tasks._id)}
+                onClick={() => setisCompleting(true)}
                 disabled={loading}
                 className={`
               flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-black
@@ -186,5 +183,6 @@ export default function PostedTasksCard({
         onSuccess={fetchPostedTasks}
       />
     </div>
+    </>
   );
 }

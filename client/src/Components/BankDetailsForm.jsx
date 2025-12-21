@@ -35,7 +35,7 @@ export default function BankDetailsForm() {
       return;
     }
     const res = await Bank.addBankDetails(form);
-    alert(res.data.message)  
+    toast.success(res.data.message)  
     navigate(`/user/${id}/browse`) 
 
   };

@@ -49,10 +49,10 @@ export default function Footer() {
             <a href="#Community" className="hover:text-orange-500 transition">
               Community
             </a>
-            <a href="#Privacy" className="hover:text-orange-500 transition">
+            <a href="/PrivacyPolicy" className="hover:text-orange-500 transition">
               Privacy
             </a>
-            <a href="#Terms" className="hover:text-orange-500 transition">
+            <a href="/termsAndConditions" className="hover:text-orange-500 transition">
               Terms
             </a>
           </div>

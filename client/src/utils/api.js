@@ -45,9 +45,10 @@ export const task = {
     }),
   getAllTask: () => api.get("/task/getAllTask"),
   getTaskById: (taskId) => api.get(`/task/getTask/${taskId}`),
-  applyTask: (taskId, message,bidAmount) =>
+  applyTask: (taskId, message, bidAmount) =>
     api.post(`/task/apply/${taskId}`, {
-      message,bidAmount
+      message,
+      bidAmount,
     }),
   getMyTask: () => api.get("/task/myTask"),
   getAssignedTask: () => api.get("/task/assignedToMe"),
@@ -59,28 +60,35 @@ export const task = {
     api.post(`/task/${TaskId}/submitWork`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
-    markAsComplete:(taskId)=>api.post(`/task/markAsComplete/${taskId}`)
+  markAsComplete: (taskId, review, rating) =>
+    api.post(`/task/markAsComplete/${taskId}`, { rating, review }),
 };
 
 export const Bank = {
   addBankDetails: (BankDetails) => api.post("/bank/addDetails", BankDetails),
 };
 
-
-export const chatsApiRoutes ={
-  getAllUsers:()=>api.get("/chats/getAllUsers"),
-  getMessages:(chatRoomId)=>api.get(`/chats/getMessage/${chatRoomId}`),
-  sendMessage:(chatRoomId,text)=>api.post(`/chats/sendMessage/${chatRoomId}`,{text}),
-  markMessageAsSeen:(chatRoomId)=>api.post(`/chats/markMessageAsSeen/${chatRoomId}`),
-  markMessageAsUnseen:(chatRoomId)=>api.post(`/chats/markMessageAsUnseen/${chatRoomId}`),
-  markMessageAsRead:(chatRoomId)=>api.post(`/chats/markMessageAsRead/${chatRoomId}`),
-  markMessageAsUnread:(chatRoomId)=>api.post(`/chats/markMessageAsUnread/${chatRoomId}`),
-  markMessageAsRead:(chatRoomId)=>api.post(`/chats/markMessageAsRead/${chatRoomId}`),
-}
+export const chatsApiRoutes = {
+  getAllUsers: () => api.get("/chats/getAllUsers"),
+  getMessages: (chatRoomId) => api.get(`/chats/getMessage/${chatRoomId}`),
+  sendMessage: (chatRoomId, text) =>
+    api.post(`/chats/sendMessage/${chatRoomId}`, { text }),
+  markMessageAsSeen: (chatRoomId) =>
+    api.post(`/chats/markMessageAsSeen/${chatRoomId}`),
+  markMessageAsUnseen: (chatRoomId) =>
+    api.post(`/chats/markMessageAsUnseen/${chatRoomId}`),
+  markMessageAsRead: (chatRoomId) =>
+    api.post(`/chats/markMessageAsRead/${chatRoomId}`),
+  markMessageAsUnread: (chatRoomId) =>
+    api.post(`/chats/markMessageAsUnread/${chatRoomId}`),
+  markMessageAsRead: (chatRoomId) =>
+    api.post(`/chats/markMessageAsRead/${chatRoomId}`),
+};
 
 export const notificationApiRoutes = {
   getNotifications: () => api.get("/notification/getAllNotification"),
-  markAsRead: (notificationId) => api.post(`/notification/markAsRead/${notificationId}`),
+  markAsRead: (notificationId) =>
+    api.post(`/notification/markAsRead/${notificationId}`),
   markAllAsRead: () => api.post("/notification/markAllAsRead"),
 };
 export default api;

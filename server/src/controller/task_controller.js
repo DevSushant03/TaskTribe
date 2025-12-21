@@ -101,8 +101,8 @@ export const createTask = async (req, res) => {
         notifications: {
           from: null, //from tasktribe
           message: `Your task "${newTask.title}" has been posted successfully`,
-        }
-      }
+        },
+      },
     });
 
     return res.json({
@@ -124,8 +124,15 @@ export const editTask = async (req, res) => {
 
   try {
     const { TaskId } = req.params;
-    const { title, description, tags, budgetMin, budgetMax, deadline, deleteAttachments } =
-      req.body;
+    const {
+      title,
+      description,
+      tags,
+      budgetMin,
+      budgetMax,
+      deadline,
+      deleteAttachments,
+    } = req.body;
 
     // Find the task
     const task = await taskModel.findById(TaskId);
@@ -191,8 +198,10 @@ export const editTask = async (req, res) => {
     if (title) task.title = title;
     if (description) task.description = description;
     if (tags) task.tags = JSON.parse(tags || "[]");
-    if (budgetMin !== undefined) task.budget.min = budgetMin ? Number(budgetMin) : undefined;
-    if (budgetMax !== undefined) task.budget.max = budgetMax ? Number(budgetMax) : undefined;
+    if (budgetMin !== undefined)
+      task.budget.min = budgetMin ? Number(budgetMin) : undefined;
+    if (budgetMax !== undefined)
+      task.budget.max = budgetMax ? Number(budgetMax) : undefined;
     if (deadline !== undefined) task.deadline = deadline || null;
     if (newFiles.length > 0) {
       task.attachments = [...task.attachments, ...newFiles];
@@ -208,8 +217,8 @@ export const editTask = async (req, res) => {
             notifications: {
               from: task.createdBy,
               message: `The task "${task.title}" has been updated. Please review the changes.`,
-            }
-          }
+            },
+          },
         });
       });
       await Promise.all(notificationPromises);
@@ -249,7 +258,6 @@ export const getAllTasks = async (req, res) => {
   }
 };
 
-
 export const getTaskById = async (req, res) => {
   try {
     const { taskId } = req.params;
@@ -273,7 +281,6 @@ export const getTaskById = async (req, res) => {
     });
   }
 };
-
 
 export const deleteTask = async (req, res) => {
   try {
@@ -300,8 +307,8 @@ export const deleteTask = async (req, res) => {
         notifications: {
           from: null, //from tasktribe
           message: `Your task "${task.title}" has been deleted successfully`,
-        }
-      }
+        },
+      },
     });
 
     return res.json({
@@ -319,7 +326,7 @@ export const applyForTask = async (req, res) => {
   try {
     const { taskId } = req.params;
     const { userid } = req.user;
-    const { message,bidAmount } = req.body;
+    const { message, bidAmount } = req.body;
 
     const bankAccount = await bankModel.findOne({ userId: userid });
 
@@ -355,7 +362,7 @@ export const applyForTask = async (req, res) => {
     task.applicants.push({
       user: userid,
       message,
-      bidAmount
+      bidAmount,
     });
 
     task.applicantsCount += 1;
@@ -366,8 +373,8 @@ export const applyForTask = async (req, res) => {
         notifications: {
           from: null, //from tasktribe
           message: `Your proposal for "${task.title}" has been submitted successfully`,
-        }
-      }
+        },
+      },
     });
 
     return res.status(200).json({
@@ -391,7 +398,10 @@ export const getMyTask = async (req, res) => {
 
     const tasks = await taskModel
       .find({ createdBy: userid })
-      .populate("applicants.user", "name surname skills bio email photo review rating")
+      .populate(
+        "applicants.user",
+        "name surname skills bio email photo review rating"
+      )
       .populate("assignedTo", "name surname email photo");
 
     if (!tasks) {
@@ -446,10 +456,10 @@ export const acceptApplicant = async (req, res) => {
         notifications: {
           from: task.createdBy,
           message: `🎉 Your proposal was accepted for "${task.title}"`,
-        }
-      }
+        },
+      },
     });
-     
+
     // Send notifications to all rejected applicants
     const rejectPromises = rejectedApplicants.map((rej) => {
       return userModel.findByIdAndUpdate(rej.user, {
@@ -457,8 +467,8 @@ export const acceptApplicant = async (req, res) => {
           notifications: {
             from: task.createdBy,
             message: `Your proposal was not selected for "${task.title}"`,
-          }
-        }
+          },
+        },
       });
     });
 
@@ -486,7 +496,6 @@ export const acceptApplicant = async (req, res) => {
   }
 };
 
-
 export const rejectApplicant = async (req, res) => {
   try {
     const { applicantId, TaskId } = req.params;
@@ -505,14 +514,13 @@ export const rejectApplicant = async (req, res) => {
     task.applicantsCount = updatedApplicants.length;
     await task.save();
 
-    
     await userModel.findByIdAndUpdate(applicantId, {
       $push: {
         notifications: {
           from: task.createdBy,
           message: `Your proposal was not selected for "${task.title}"`,
-        }
-      }
+        },
+      },
     });
 
     res.json({
@@ -587,9 +595,9 @@ export const submitWork = async (req, res) => {
         notifications: {
           from: task.assignedTo,
           message: `Your task "${task.title}" workfiles is submitted `,
-        }
-      }
-    })
+        },
+      },
+    });
     res.json({
       success: true,
       message: "Work Submitted Successfully",
@@ -607,6 +615,7 @@ export const submitWork = async (req, res) => {
 export const markAsComplete = async (req, res) => {
   try {
     const { taskId } = req.params;
+    const { rating, review } = req.body;
     const task = await taskModel.findById(taskId);
     if (!task) {
       return res
@@ -629,13 +638,43 @@ export const markAsComplete = async (req, res) => {
 
     await taskModel.findByIdAndDelete(taskId);
 
+    // Get the assigned user to calculate new rating average
+    const assignedUser = await userModel.findById(task.assignedTo);
+    if (!assignedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Assigned user not found",
+      });
+    }
+
+    // Calculate new rating average
+    const currentAvg = assignedUser.rating?.avg || 0;
+    const currentCount = assignedUser.rating?.count || 0;
+    const newCount = currentCount + 1;
+    const newAvg = (currentAvg * currentCount + rating) / newCount;
+
+    // Update rating (object) and push review (array)
+    await userModel.findByIdAndUpdate(task.assignedTo, {
+      $set: {
+        "rating.avg": newAvg,
+        "rating.count": newCount,
+      },
+      $push: {
+        review: {
+          from: task.createdBy,
+          message: review,
+          createdAt: new Date(),
+        },
+      },
+    });
+
     await userModel.findByIdAndUpdate(task.createdBy, {
       $push: {
         notifications: {
           from: null, //from tasktribe
           message: `Your task "${task.title}" has been completed successfully`,
-        }
-      }
+        },
+      },
     });
 
     await userModel.findByIdAndUpdate(task.assignedTo, {
@@ -643,8 +682,8 @@ export const markAsComplete = async (req, res) => {
         notifications: {
           from: null, //from tasktribe
           message: `Your task "${task.title}" has been completed successfully. Your Payment will be credited to your account within 2-3 business days. If your payment is not credited, you can contact us`,
-        }
-      }
+        },
+      },
     });
 
     res.json({

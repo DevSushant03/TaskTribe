@@ -15,10 +15,7 @@ export const AuthProvider = ({ children }) => {
   const fetchProfile = async () => {
     try {
       const res = await users.getUser(id);
-      setUser(res.data?.user);
-
-    
-      
+      setUser(res.data?.user); 
     } catch (err) {
       setUser(null);
     }
