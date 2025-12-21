@@ -33,14 +33,17 @@ export default function UserOnboarding2({ onBack, userData }) {
   const handleSubmit = async () => {
     setloading(true);
     const fd = new FormData();
-    fd.append("skills", skills);
+    // Convert skills array to JSON string for proper parsing on backend
+    fd.append("skills", JSON.stringify(skills));
     fd.append("bio", bio);
-    fd.append("photo", photo);
+    if (photo) {
+      fd.append("photo", photo);
+    }
     const response = await users.setUserData(fd);
 
     if (response.data.success) {
       Navigate(`/user/${response.data.userid}/dashboard`);
-      setid(data.userid);
+      setid(response.data.userid);
     } else {
       setloading(false);
       toast.error(response.data?.message || "Unable to save profile");
