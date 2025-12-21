@@ -152,14 +152,18 @@ export default function Register() {
                 <span className="text-gray-600">
                   I agree to the{" "}
                   <a
-                    href="#"
+                    href="/TermsAndConditions"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-orange-600 hover:text-orange-700 hover:underline font-medium transition-colors"
                   >
                     User Agreement
                   </a>{" "}
                   and{" "}
                   <a
-                    href="#"
+                    href="/PrivacyPolicy"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-orange-600 hover:text-orange-700 hover:underline font-medium transition-colors"
                   >
                     Privacy Policy
@@ -173,7 +177,7 @@ export default function Register() {
                 className="w-full py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange hover:border-orange-500/80  focus:shadow-neumorph-orange-focus transition-all duration-300 text-lg"
                 disabled={loading}
               >
-                {loading ? <CircularLoader/> : "Join TaskTribe"}
+                {loading ? <CircularLoader /> : "Join TaskTribe"}
               </button>
             </form>
 
@@ -187,8 +191,6 @@ export default function Register() {
                 Sign In
               </Link>
             </p>
-
-           
           </div>
         </div>
 

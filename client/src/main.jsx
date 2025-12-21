@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { AuthProvider } from "./Context/AuthContext"
+import { AuthProvider } from "./Context/AuthContext";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,8 +20,10 @@ import NotFound404 from "./Pages/NoFound404";
 import AppLayout from "./Layout/AppLayout";
 import Chats from "./Pages/Chats";
 import DashBoard from "./Pages/DashBoard";
-import Notification from "./Pages/Notification"
+import Notification from "./Pages/Notification";
 import BankDetailsForm from "./Components/BankDetailsForm";
+import TermsAndConditions from "./Pages/TermsAndConditions";
+import PrivacyPolicy from "./Pages/PrivacyPolicy";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +42,8 @@ const router = createBrowserRouter([
     ],
   },
 
+  { path: "TermsAndConditions", element: <TermsAndConditions /> },
+  { path: "PrivacyPolicy", element: <PrivacyPolicy /> },
   {
     path: "/user/:id",
     element: <AppLayout />,
@@ -47,7 +51,7 @@ const router = createBrowserRouter([
       // Browse tasks page
       {
         path: "dashboard",
-        element: <DashBoard/>,
+        element: <DashBoard />,
       },
       {
         path: "browse",
@@ -70,23 +74,23 @@ const router = createBrowserRouter([
       { path: "profile", element: <ProfilePage /> },
       { path: "notification", element: <Notification /> },
       { path: "MyBankDetails", element: <BankDetailsForm /> },
-
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-     <AuthProvider>
+    <AuthProvider>
       <RouterProvider router={router} />
-      <ToastContainer 
-      position="top-right"
-      autoClose={3000}
-      hideProgressBar={false}
-      closeOnClick
-      pauseOnHover
-      draggable
-      theme="dark"/>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
     </AuthProvider>
   </React.StrictMode>
 );
