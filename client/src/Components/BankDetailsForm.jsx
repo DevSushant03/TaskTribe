@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Bank } from "../utils/api";
 import { bankDetails } from "../Validation/BankDetails_validation";
-import {useNavigate, useParams} from "react-router-dom"
+import {useNavigate, useParams} from "react-router-dom";
+import { toast } from "react-toastify";
 export default function BankDetailsForm() {
   const {id}=useParams()
   const navigate = useNavigate()
@@ -27,16 +28,26 @@ export default function BankDetailsForm() {
     if (!validation.success) {
       const firstError = validation.error.issues[0].message;
       seterror(firstError);
+      toast.error(firstError);
       return;
     }
 
     if (form.accountNumber !== form.confirmAccountNumber) {
       seterror("Account numbers do not match");
+      toast.error("Account numbers do not match");
       return;
     }
-    const res = await Bank.addBankDetails(form);
-    alert(res.data.message)  
-    navigate(`/user/${id}/browse`) 
+    try {
+      const res = await Bank.addBankDetails(form);
+      if (res.data.success) {
+        toast.success(res.data.message || "Bank details saved successfully!");
+        navigate(`/user/${id}/browse`);
+      } else {
+        toast.error(res.data.message || "Failed to save bank details");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error saving bank details. Please try again.");
+    } 
 
   };
 

@@ -12,6 +12,7 @@ import { auth, users } from "../utils/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { AuthContext } from "../Context/AuthContext";
+import { toast } from "react-toastify";
 
 function ProfilePage() {
   const { user, loading, setUser } = useContext(AuthContext);
@@ -26,12 +27,16 @@ function ProfilePage() {
   const navigate = useNavigate();
 
   const handleLogOut = async () => {
-    const res = await auth.logout();
-    if (res.data.success) {
-      alert(res.data.message);
-      navigate("/");
-    } else {
-      alert(res.data.message);
+    try {
+      const res = await auth.logout();
+      if (res.data.success) {
+        toast.success(res.data.message || "Logged out successfully!");
+        navigate("/");
+      } else {
+        toast.error(res.data.message || "Failed to logout");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error logging out. Please try again.");
     }
   };
 
@@ -97,7 +102,7 @@ function ProfilePage() {
   const saveProfileData = async () => {
     const userId = user?._id || id;
     if (!userId) {
-      alert("User ID not found");
+      toast.error("User ID not found");
       return;
     }
 
@@ -117,12 +122,12 @@ function ProfilePage() {
       if (res.data.success) {
         setUser(res.data.user);
         setIsEditUser(false);
-        alert("Profile updated successfully!");
+        toast.success("Profile updated successfully!");
       } else {
-        alert(res.data.message || "Failed to update profile");
+        toast.error(res.data.message || "Failed to update profile");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Error updating profile");
+      toast.error(error.response?.data?.message || "Error updating profile. Please try again.");
     } finally {
       setSavingProfile(false);
     }
@@ -136,7 +141,7 @@ function ProfilePage() {
     }
 
     if (!selectedFile) {
-      alert("Please select a file");
+      toast.error("Please select a file");
       return;
     }
 
@@ -151,12 +156,12 @@ function ProfilePage() {
         setUser(res.data.user);
         setIsEditAvatar(false);
         setSelectedFile(null);
-        alert("Profile picture updated successfully!");
+        toast.success("Profile picture updated successfully!");
       } else {
-        alert(res.data.message || "Failed to update profile picture");
+        toast.error(res.data.message || "Failed to update profile picture");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Error updating profile picture");
+      toast.error(error.response?.data?.message || "Error updating profile picture. Please try again.");
     } finally {
       setSavingProfilePic(false);
     }
@@ -184,12 +189,12 @@ function ProfilePage() {
     if (file) {
       // Validate file type
       if (!file.type.startsWith("image/")) {
-        alert("Please select an image file");
+        toast.error("Please select an image file");
         return;
       }
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert("File size should be less than 5MB");
+        toast.error("File size should be less than 5MB");
         return;
       }
       setSelectedFile(file);

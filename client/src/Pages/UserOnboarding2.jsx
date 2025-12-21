@@ -42,6 +42,7 @@ export default function UserOnboarding2({ onBack, userData }) {
     const response = await users.setUserData(fd);
 
     if (response.data.success) {
+      toast.success("Profile created successfully! Welcome to TaskTribe!");
       Navigate(`/user/${response.data.userid}/dashboard`);
       setid(response.data.userid);
     } else {

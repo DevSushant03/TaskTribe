@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { task } from "../utils/api";
 import CircularLoader from "../Components/CircularLoader";
+import { toast } from "react-toastify";
 
 export default function PostedTasksCard({
   tasks,
@@ -11,14 +12,21 @@ export default function PostedTasksCard({
   const hasFiles = tasks?.submittedWork?.files?.length > 0;
   const [loading, setloading] = useState(false);
   const markAsComplete = async (taskId) => {
-    confirm("Are You Sure ?");
+    if (!window.confirm("Are you sure you want to mark this task as complete? This action cannot be undone.")) {
+      return;
+    }
     try {
       setloading(true);
       const res = await task.markAsComplete(taskId);
-      alert(res.data.message);
-      await fetchPostedTasks();
+      if (res.data.success) {
+        toast.success(res.data.message || "Task marked as complete successfully!");
+        await fetchPostedTasks();
+      } else {
+        toast.error(res.data.message || "Failed to mark task as complete");
+      }
     } catch (error) {
       console.log(error);
+      toast.error(error.response?.data?.message || "Error marking task as complete. Please try again.");
     } finally {
       setloading(false);
     }

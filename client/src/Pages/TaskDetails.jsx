@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { task } from "../utils/api";
+import { toast } from "react-toastify";
 
 const TaskDetails = () => {
   const { taskId, id: userId } = useParams();
@@ -45,29 +46,41 @@ const TaskDetails = () => {
   }, [requestBox]);
 
   const handleApply = async () => {
-    if (!message.trim()) return alert("Please write a message.");
+    if (!message.trim()) {
+      toast.error("Please write a message.");
+      return;
+    }
     if (!bidAmount || Number(bidAmount) <= 0) {
-      return alert("Please enter a valid bid amount.");
+      toast.error("Please enter a valid bid amount.");
+      return;
     }
      try {
       setApplyLoading(true);
       const res = await task.applyTask(taskId, message,bidAmount);
       if (res.data.action === "ADD_BANK_DETAILS") {
-        alert(res.data.message);
-
+        toast.info(res.data.message);
         return navigate(`/user/${userId}/MyBankDetails`);
       }
 
       if (res.data.action === "ALREADY_APPLIED") {
-        alert(res.data.message);
-        toast.error("You already applied!");
+        toast.warning(res.data.message || "You already applied for this task!");
+        setRequestBox(false);
+        setMessage("");
+        setbidAmount("");
+        return;
       }
 
-      alert(res.data.message);
-      setRequestBox(false);
-      setMessage("");
+      if (res.data.success) {
+        toast.success(res.data.message || "Application submitted successfully!");
+        setRequestBox(false);
+        setMessage("");
+        setbidAmount("");
+      } else {
+        toast.error(res.data.message || "Failed to apply for task.");
+      }
     } catch (error) {
       console.log(error);
+      toast.error(error.response?.data?.message || "Error applying for task. Please try again.");
     } finally {
       setApplyLoading(false);
     }

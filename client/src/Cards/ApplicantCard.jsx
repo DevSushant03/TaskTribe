@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { task } from "../utils/api";
 import ViewProfile from "../Components/ViewProfile";
+import { toast } from "react-toastify";
 function ApplicantCard({
   applicant,
   selectedTask,
@@ -15,11 +16,16 @@ function ApplicantCard({
     try {
       setloading(true);
       const res = await task.rejectApplicant(applicantId, Taskid);
-      alert(res.data.message);
-      fetchPostedTasks();
+      if (res.data.success) {
+        toast.success(res.data.message || "Applicant rejected successfully");
+        fetchPostedTasks();
+      } else {
+        toast.error(res.data.message || "Failed to reject applicant");
+      }
       setloading(false);
     } catch (error) {
       console.log(error.message);
+      toast.error(error.response?.data?.message || "Error rejecting applicant. Please try again.");
       setloading(false);
     }
   };
@@ -27,13 +33,18 @@ function ApplicantCard({
     try {
       setloading(true);
       const res = await task.acceptApplicant(applicantId, Taskid);
-      alert(res.data.message);
-      fetchPostedTasks();
-      setTab("posted");
+      if (res.data.success) {
+        toast.success(res.data.message || "Applicant accepted successfully!");
+        fetchPostedTasks();
+        setTab("posted");
+      } else {
+        toast.error(res.data.message || "Failed to accept applicant");
+      }
       setloading(false);
     } catch (error) {
       setloading(false);
       console.log(error.message);
+      toast.error(error.response?.data?.message || "Error accepting applicant. Please try again.");
     }
   };
   

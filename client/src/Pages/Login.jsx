@@ -42,6 +42,7 @@ export default function Login() {
 
       if (data.success) {
         setloading(false);
+        toast.success("Login successful! Welcome back.");
         if (data.user) {
           navigate(`/user/${data.userid}/dashboard`);
           setid(data.userid);

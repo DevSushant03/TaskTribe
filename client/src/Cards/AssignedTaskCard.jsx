@@ -3,6 +3,7 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { task } from "../utils/api";
 import { useState } from "react";
 import CircularLoader from "../Components/CircularLoader";
+import { toast } from "react-toastify";
 function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
   const [open, setopen] = useState(null);
   const [file, setfile] = useState(null);
@@ -11,7 +12,10 @@ function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
     setfile([...e.target.files]);
   };
   const uploadWork = async (TaskId) => {
-    if (!file) return alert("Files not found");
+    if (!file) {
+      toast.error("Please select files to upload");
+      return;
+    }
 
     const formData = new FormData();
     file.forEach((file) => {
@@ -21,11 +25,14 @@ function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
       setloading(true);
       const res = await task.submitWork(formData, TaskId);
       if(res.data.success){
+        toast.success(res.data.message || "Work submitted successfully!");
         fetchAssignedTasks();
+        setfile(null);
+      } else {
+        toast.error(res.data.message || "Failed to submit work");
       }
-      alert(res.data.message);
     } catch (error) {
-      alert(error.message);
+      toast.error(error.response?.data?.message || error.message || "Error submitting work. Please try again.");
       console.log(error);
     } finally {
       setloading(false);

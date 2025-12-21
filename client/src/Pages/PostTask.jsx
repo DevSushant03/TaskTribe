@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // import axios from "../utils/axiosInstance"; // adjust path based on your setup
 import { task } from "../utils/api";
 import CircularLoader from "../Components/CircularLoader";
+import { toast } from "react-toastify";
 export default function PostTask() {
   const [form, setForm] = useState({
     title: "",
@@ -59,24 +60,23 @@ export default function PostTask() {
       const res = await task.createTask(fd);
 
       if (res.data.success) {
-        alert("Task created successfully!");
+        toast.success("Task created successfully!");
+        // Reset form
+        setForm({
+          title: "",
+          description: "",
+          tags: [],
+          budgetMin: "",
+          budgetMax: "",
+          deadline: "",
+          attachments: [],
+        });
       } else {
-        alert("Failed to post task!");
+        toast.error(res.data.message || "Failed to post task!");
       }
-
-      // Reset form
-      setForm({
-        title: "",
-        description: "",
-        tags: [],
-        budgetMin: "",
-        budgetMax: "",
-        deadline: "",
-        attachments: [],
-      });
     } catch (err) {
       console.error(err);
-      alert("Error creating task");
+      toast.error(err.response?.data?.message || "Error creating task. Please try again.");
     }
 
     setLoading(false);
