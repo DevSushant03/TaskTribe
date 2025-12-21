@@ -102,6 +102,22 @@ export const editProfile = async (req, res) => {
       { new: true, runValidators: true }
     ).select("-password -verifyOtp -verifyOtpExpireAt -resetOtp -resetOtpExpireAt");
     
+    await userModel.findByIdAndUpdate(
+      userid,
+      {
+        $push: {
+          notifications: {
+            from: null,
+            message: "Your profile information has been successfully updated.",
+            isRead: false,
+            createdAt: new Date(),
+          },
+        },
+      },
+      { runValidators: true }
+    );
+    
+
     return res.json({
       success: true,
       message: "Profile updated successfully",
@@ -143,6 +159,23 @@ export const editProfilePic = async (req, res) => {
       { new: true, runValidators: true }
     ).select("-password -verifyOtp -verifyOtpExpireAt -resetOtp -resetOtpExpireAt");
     
+
+    await userModel.findByIdAndUpdate(
+      userid,
+      {
+        $push: {
+          notifications: {
+            from: null,
+            message: "Your profile picture has been successfully updated.",
+            isRead: false,
+            createdAt: new Date(),
+          },
+        },
+      },
+      { runValidators: true }
+    );
+    
+
     return res.json({
       success: true,
       message: "Profile picture updated successfully",

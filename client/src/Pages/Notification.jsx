@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { notificationApiRoutes } from "../utils/api";
-
+import logo from "../assets/icon.jpeg"
 function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -114,7 +114,13 @@ function Notification() {
           >
             {/* Avatar */}
             <div className="flex-shrink-0">
-              {n.from?.photo ? (
+              {n.from === null || !n.from ? (
+                <img
+                  src={logo}
+                  alt="tasktribe"
+                  className="h-12 w-12 rounded-full object-cover border-2 border-orange-500/30"
+                />
+              ) : n.from.photo ? (
                 <img
                   src={n.from.photo}
                   alt={n.from.name + " " + n.from.surname}
