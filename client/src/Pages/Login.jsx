@@ -43,9 +43,11 @@ export default function Login() {
       if (data.success) {
         setloading(false);
         if (data.user) {
+          toast.success("Welcome Back")
           navigate(`/user/${data.userid}/dashboard`);
           setid(data.userid);
         } else {
+          toast.success("Login Successfully")
           navigate("/auth/createProfile");
         }
       } else {

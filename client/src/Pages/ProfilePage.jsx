@@ -12,9 +12,11 @@ import { auth, users } from "../utils/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { AuthContext } from "../Context/AuthContext";
+import { toast } from "react-toastify";
 
 function ProfilePage() {
   const { user, loading, setUser } = useContext(AuthContext);
+  const [islogout, setislogout] = useState(false);
   const [isEditUser, setIsEditUser] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
   const [editBio, setEditBio] = useState("");
@@ -28,14 +30,12 @@ function ProfilePage() {
   const handleLogOut = async () => {
     const res = await auth.logout();
     if (res.data.success) {
-      alert(res.data.message);
+      toast.success(res.data.message);
       navigate("/");
     } else {
-      alert(res.data.message);
+      toast.error(res.data.message);
     }
   };
-
-  
 
   const getInitials = (name, surname) => {
     const first = name?.charAt(0).toUpperCase() || "";
@@ -195,10 +195,6 @@ function ProfilePage() {
       setSelectedFile(file);
     }
   };
-
-
-  
-
 
   return (
     <div className="flex-1 bg-[#0C0C0C] min-h-screen overflow-y-auto">
@@ -369,7 +365,6 @@ function ProfilePage() {
                   <FaEnvelope className="text-orange-500" />
                   <span className="text-sm md:text-base">{user.email}</span>
                 </div>
-                
               </div>
             </div>
           </div>
@@ -415,10 +410,14 @@ function ProfilePage() {
                   {(() => {
                     if (!user.skills) return 0;
                     if (Array.isArray(user.skills)) {
-                      return user.skills.filter(s => s && String(s).trim().length > 0).length;
+                      return user.skills.filter(
+                        (s) => s && String(s).trim().length > 0
+                      ).length;
                     }
-                    if (typeof user.skills === 'string') {
-                      return user.skills.split(',').filter(s => s.trim().length > 0).length;
+                    if (typeof user.skills === "string") {
+                      return user.skills
+                        .split(",")
+                        .filter((s) => s.trim().length > 0).length;
                     }
                     return 0;
                   })()}
@@ -430,13 +429,18 @@ function ProfilePage() {
               let skillsArray = [];
               if (user.skills) {
                 if (Array.isArray(user.skills)) {
-                  skillsArray = user.skills.filter(skill => skill && String(skill).trim().length > 0);
-                } else if (typeof user.skills === 'string') {
+                  skillsArray = user.skills.filter(
+                    (skill) => skill && String(skill).trim().length > 0
+                  );
+                } else if (typeof user.skills === "string") {
                   // Handle case where skills might be stored as comma-separated string
-                  skillsArray = user.skills.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                  skillsArray = user.skills
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter((s) => s.length > 0);
                 }
               }
-              
+
               return skillsArray.length > 0 ? (
                 <div className="flex flex-wrap gap-2 mt-4">
                   {skillsArray.map((skill, index) => (
@@ -449,7 +453,9 @@ function ProfilePage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500 text-sm mt-4">No skills added yet</p>
+                <p className="text-gray-500 text-sm mt-4">
+                  No skills added yet
+                </p>
               );
             })()}
           </div>
@@ -500,7 +506,7 @@ function ProfilePage() {
           <div className="mt-8 flex flex-col md:flex-row md:items-center gap-4">
             <button
               className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400 flex items-center gap-2 shadow"
-              onClick={handleLogOut}
+              onClick={() => setislogout(true)}
             >
               <svg
                 className="w-5 h-5"
@@ -520,6 +526,45 @@ function ProfilePage() {
             <span className="text-gray-500 text-sm">
               Manage your account securely.
             </span>
+          </div>
+        </div>
+      </div>
+      <div
+        className={`${
+          islogout ? "flex" : "hidden"
+        } fixed inset-0 z-50 items-center justify-center bg-black/80`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-task-title"
+      >
+        <div className="w-full max-w-sm rounded-lg bg-zinc-900 p-6 shadow-xl border border-zinc-800">
+          <h2
+            id="delete-task-title"
+            className="text-lg font-semibold text-zinc-100 mb-2"
+          >
+            Log Out ?
+          </h2>
+
+          <p className="text-sm text-zinc-400 mb-6">
+            Are you sure you want to logout from Task Tribe? This
+            action cannot be undone.
+          </p>
+
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setislogout(false)}
+              className="px-4 py-2 text-sm rounded-md border border-zinc-600 text-zinc-200 hover:bg-zinc-800 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLogOut()}
+              className="px-4 py-2 text-sm rounded-md bg-red-600 text-white hover:bg-red-700 transition"
+            >
+              logout
+            </button>
           </div>
         </div>
       </div>
