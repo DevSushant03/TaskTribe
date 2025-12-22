@@ -284,10 +284,10 @@ export const getTaskById = async (req, res) => {
 
 export const deleteTask = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { TaskId } = req.params;
     const { userid } = req.user;
 
-    const task = await taskModel.findById(id);
+    const task = await taskModel.findById(TaskId);
 
     if (!task) {
       return res.json({ success: false, message: "Task not found" });
@@ -300,7 +300,27 @@ export const deleteTask = async (req, res) => {
       });
     }
 
-    await taskModel.findByIdAndDelete(id);
+    if (task.attachments && task.attachments.length > 0) {
+      for (let file of task.attachments) {
+        await deleteCloudinaryFile(file.url);
+      }
+    }
+
+    if (task.applicants && task.applicants.length > 0) {
+      const notificationPromises = task.applicants.map((applicant) => {
+        return userModel.findByIdAndUpdate(applicant.user, {
+          $push: {
+            notifications: {
+              from: null,
+              message: `The task "${task.title}" has been deleted by creator.`,
+            },
+          },
+        });
+      });
+      await Promise.all(notificationPromises);
+    }
+
+    await taskModel.findByIdAndDelete(TaskId);
 
     await userModel.findByIdAndUpdate(userid, {
       $push: {

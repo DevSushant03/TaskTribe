@@ -43,6 +43,7 @@ export const task = {
     api.post(`/task/${TaskId}/editTask`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  deleteTask:(TaskId)=>api.post(`/task/${TaskId}/deleteTask`),
   getAllTask: () => api.get("/task/getAllTask"),
   getTaskById: (taskId) => api.get(`/task/getTask/${taskId}`),
   applyTask: (taskId, message, bidAmount) =>
