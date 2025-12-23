@@ -492,13 +492,6 @@ function ProfilePage() {
                   : "N/A"}
               </p>
             </div>
-
-            {/* <div className="space-y-1">
-              <p className="text-gray-400 text-sm font-medium">Account Type</p>
-              <p className="text-white text-lg capitalize">
-                {user.role || "user"}
-              </p>
-            </div> */}
           </div>
         </div>
         {/* Account Controll */}

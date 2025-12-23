@@ -71,7 +71,6 @@ const taskSchema = new mongoose.Schema(
     ],
 
     submittedWork: {
-      message: { type: String, default: "" },
       files: [
         {
           url: { type: String },

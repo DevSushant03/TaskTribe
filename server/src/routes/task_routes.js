@@ -14,6 +14,7 @@ import {
   submitWork,
   markAsComplete,
   editTask,
+  rejectSubmitedWork,
 } from "../controller/task_controller.js";
 const router = Router();
 
@@ -22,6 +23,7 @@ router.post("/:TaskId/editTask", verifyAuth, upload.array("files"), editTask);
 router.get("/getAllTask", verifyAuth, getAllTasks);
 router.get("/getTask/:taskId", verifyAuth, getTaskById);
 router.post("/:TaskId/deleteTask", verifyAuth, deleteTask);
+router.post("/:TaskId/rejectSubmitedWork", verifyAuth, rejectSubmitedWork);
 router.post("/apply/:taskId", verifyAuth, applyForTask);
 router.get("/myTask", verifyAuth, getMyTask);
 router.get("/assignedToMe", verifyAuth, getAssignedTask);

@@ -29,6 +29,25 @@ export default function PostedTasksCard({
       setdeleteTask(false);
     }
   };
+  const rejectSubmitedWork = async (RejectedTaskId) => {
+    try {
+      setloading(true);
+      const res = await task.rejectSubmitedWork(RejectedTaskId);
+      if (res.data.success) {
+        toast.success(res.data.message);
+      } else if (res.data.message) {
+        toast.error(res.data.message);
+      }
+      await fetchPostedTasks();
+    } catch (error) {
+      console.log(error.message);
+      toast.error("Failed to reject submission. Please try again.");
+    } finally {
+      setloading(false);
+    }
+  };
+
+
   return (
     <>
       {isCompleting && (
@@ -163,6 +182,7 @@ export default function PostedTasksCard({
                   Pending...
                 </p>
               ) : (
+                <>
                 <button
                   onClick={() => setisCompleting(true)}
                   disabled={loading}
@@ -172,6 +192,16 @@ export default function PostedTasksCard({
                 >
                   {loading ? <CircularLoader /> : "Mark As Complete"}
                 </button>
+                <button
+                  onClick={() => rejectSubmitedWork(tasks._id)}
+                  disabled={loading}
+                  className={`
+              flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-black
+              transition bg-red-600 hover:bg-red-400`}
+                >
+                  Reject
+                </button>
+                  </>
               )}
             </>
           )}

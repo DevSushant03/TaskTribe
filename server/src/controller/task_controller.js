@@ -342,6 +342,77 @@ export const deleteTask = async (req, res) => {
     });
   }
 };
+
+export const rejectSubmitedWork = async (req, res) => {
+  try {
+    const { TaskId } = req.params;
+    const { userid } = req.user;
+
+    const task = await taskModel.findById(TaskId);
+
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+
+    // Only the creator can reject submitted work
+    if (task.createdBy.toString() !== userid) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to reject this submission",
+      });
+    }
+
+    // Can only reject if work is actually submitted
+    if (task.status !== "submitted") {
+      return res.status(400).json({
+        success: false,
+        message: "Only submitted work can be rejected",
+      });
+    }
+
+    // Delete submitted work files from Cloudinary (if any)
+    if (task.submittedWork && task.submittedWork.files.length > 0) {
+      for (let file of task.submittedWork.files) {
+        try {
+          await deleteCloudinaryFile(file.url);
+        } catch (error) {
+          console.error("Error deleting submitted work file:", error);
+        }
+      }
+    }
+
+    task.status = "in_progress";
+    task.submittedWork = {
+      files: [],
+      submittedAt: null,
+    };
+    await task.save();
+
+    // Notify the assigned user that changes are requested
+    await userModel.findByIdAndUpdate(task.assignedTo, {
+      $push: {
+        notifications: {
+          from: task.createdBy,
+          message:
+            "Your submitted work was reviewed. The task creator requested changes. Please update and resubmit your work.",
+        },
+      },
+    });
+
+    return res.json({
+      success: true,
+      message: "Submission rejected successfully",
+    });
+  } catch (error) {
+    console.error("Reject submitted work error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to reject submitted work",
+    });
+  }
+};
 export const applyForTask = async (req, res) => {
   try {
     const { taskId } = req.params;
