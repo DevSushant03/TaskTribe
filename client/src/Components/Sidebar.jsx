@@ -8,6 +8,8 @@ import {
   FaComments,
   FaSearch,
   FaUser,
+  FaHandsHelping,
+  FaAssistiveListeningSystems,
 } from "react-icons/fa";
 import { IoMdNotifications } from "react-icons/io";
 
@@ -79,6 +81,18 @@ export default function Sidebar() {
             to="profile"
             icon={<FaUser />}
             label="Profile"
+            onClick={() => setIsOpen(false)}
+          />
+          <NavItem
+            to="help"
+            icon={<FaHandsHelping />}
+            label="Help"
+            onClick={() => setIsOpen(false)}
+          />
+          <NavItem
+            to="setting"
+            icon={<FaAssistiveListeningSystems />}
+            label="Setting"
             onClick={() => setIsOpen(false)}
           />
         </nav>

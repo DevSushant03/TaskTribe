@@ -23,7 +23,9 @@ import DashBoard from "./Pages/DashBoard";
 import Notification from "./Pages/Notification";
 import BankDetailsForm from "./Components/BankDetailsForm";
 import TermsAndConditions from "./Pages/TermsAndConditions";
+import HelpAndSupport from "./Pages/HelpAndSupport"
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
+import Settings from "./Pages/Setting";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -73,6 +75,8 @@ const router = createBrowserRouter([
       { path: "chats", element: <Chats /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "notification", element: <Notification /> },
+      { path: "help", element: <HelpAndSupport /> },
+      { path: "setting", element: <Settings /> },
       { path: "MyBankDetails", element: <BankDetailsForm /> },
     ],
   },
