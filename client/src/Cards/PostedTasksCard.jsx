@@ -15,6 +15,7 @@ export default function PostedTasksCard({
   const [isCompleting, setisCompleting] = useState(false);
   const [deleteTask, setdeleteTask] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [RejectedTaskId, setRejectedTaskId] = useState(null);
 
   const handleDeleteTask = async (deleteTaskId) => {
     try {
@@ -23,13 +24,13 @@ export default function PostedTasksCard({
         toast.success("Task Deleted Successfully");
       }
       setdeleteTask(false);
-      await fetchPostedTasks()
+      await fetchPostedTasks();
     } catch (error) {
       console.log(error.message);
       setdeleteTask(false);
     }
   };
-  const rejectSubmitedWork = async (RejectedTaskId) => {
+  const handleRejectWork = async (RejectedTaskId) => {
     try {
       setloading(true);
       const res = await task.rejectSubmitedWork(RejectedTaskId);
@@ -39,14 +40,58 @@ export default function PostedTasksCard({
         toast.error(res.data.message);
       }
       await fetchPostedTasks();
+      setRejectedTaskId(null);
     } catch (error) {
       console.log(error.message);
       toast.error("Failed to reject submission. Please try again.");
     } finally {
       setloading(false);
+      setRejectedTaskId(null);
     }
   };
 
+  if (RejectedTaskId) {
+    return (
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/80`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-task-title"
+      >
+        <div className="w-full max-w-sm rounded-lg bg-zinc-900 p-6 shadow-xl border border-zinc-800">
+          <h2
+            id="delete-task-title"
+            className="text-lg font-semibold text-zinc-100 mb-2"
+          >
+            Reject Submission?
+          </h2>
+
+          <p className="text-sm text-zinc-400 mb-6">
+            Are you sure you want to reject this submission? Please save the
+            submitted files before continuing, as they will be permanently
+            deleted from TaskTribe after rejection.
+          </p>
+
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setRejectedTaskId(null)}
+              className="px-4 py-2 text-sm rounded-md border border-zinc-600 text-zinc-200 hover:bg-zinc-800 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRejectWork(RejectedTaskId)}
+              className="px-4 py-2 text-sm rounded-md bg-red-600 text-white hover:bg-red-700 transition"
+            >
+              {loading ? "Processing.." : "Confirm"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -183,25 +228,24 @@ export default function PostedTasksCard({
                 </p>
               ) : (
                 <>
-                <button
-                  onClick={() => setisCompleting(true)}
-                  disabled={loading}
-                  className={`
+                  <button
+                    onClick={() => setisCompleting(true)}
+                    disabled={loading}
+                    className={`
               flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-black
               transition bg-[#12b981] hover:bg-[#0f9f6e] `}
-                >
-                  {loading ? <CircularLoader /> : "Mark As Complete"}
-                </button>
-                <button
-                  onClick={() => rejectSubmitedWork(tasks._id)}
-                  disabled={loading}
-                  className={`
+                  >
+                    {loading ? <CircularLoader /> : "Mark As Complete"}
+                  </button>
+                  <button
+                    onClick={() => setRejectedTaskId(tasks._id)}
+                    className={`
               flex-1 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-black
               transition bg-red-600 hover:bg-red-400`}
-                >
-                  Reject
-                </button>
-                  </>
+                  >
+                    Reject
+                  </button>
+                </>
               )}
             </>
           )}
