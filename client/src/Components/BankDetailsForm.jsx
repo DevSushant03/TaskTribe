@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Bank } from "../utils/api";
 import { bankDetails } from "../Validation/BankDetails_validation";
-import {useNavigate, useParams} from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom";
 export default function BankDetailsForm() {
-  const {id}=useParams()
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     accountHolder: "",
     accountNumber: "",
@@ -35,9 +35,11 @@ export default function BankDetailsForm() {
       return;
     }
     const res = await Bank.addBankDetails(form);
-    toast.success(res.data.message)  
-    navigate(`/user/${id}/browse`) 
-
+    if (!res.data.success) {
+      toast.error(res.data.message);
+    }
+    toast.success(res.data.message);
+    navigate(`/user/${id}/browse`);
   };
 
   return (
@@ -45,9 +47,22 @@ export default function BankDetailsForm() {
       <h2 className="text-3xl font-semibold text-white mb-2 mt-10 md:mt-0">
         Bank <span className="text-[#FF6B00]">Details</span>
       </h2>
-      <p className="text-[#B5B5B5] mb-6 text-sm">
-        Enter your bank details carefully. These details will be used for
-        payout.
+      <p className="text-[#B5B5B5] mb-6 text-sm leading-relaxed">
+        Your bank information is{" "}
+        <span className="text-green-400 font-medium">
+          encrypted and stored securely
+        </span>
+        . We use your bank details only for verified payouts — never for any
+        other purpose. Learn more about our 
+        <a
+          className="text-green-500 italic underline"
+          href="/PrivacyPolicy"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+         {" "}Security Policy
+        </a>
+        .
       </p>
 
       <form className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">

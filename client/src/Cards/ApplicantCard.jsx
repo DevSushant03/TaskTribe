@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { task } from "../utils/api";
 import ViewProfile from "../Components/ViewProfile";
+import { toast } from "react-toastify";
 function ApplicantCard({ applicant, selectedTask, fetchPostedTasks, setTab }) {
   const [loading, setloading] = useState(false);
   const [UserProfile, setUserProfile] = useState(null);
@@ -15,11 +16,18 @@ function ApplicantCard({ applicant, selectedTask, fetchPostedTasks, setTab }) {
 
       if (actionType === "accept") {
         const res = await task.acceptApplicant(actionUserId, selectedTask);
-        alert(res.data.message);
+        if (!res.data.success) {
+          return toast.error("Sommething went wrong , try again later");
+        }
+        toast.success(res.data.message);
         setTab("posted");
       } else if (actionType === "reject") {
         const res = await task.rejectApplicant(actionUserId, selectedTask);
-        alert(res.data.message);
+        if (!res.data.success) {
+          return toast.error("Sommething went wrong , try again later");
+        }
+        toast.success(res.data.message);
+        setTab("posted");
       }
 
       fetchPostedTasks();
@@ -50,7 +58,6 @@ function ApplicantCard({ applicant, selectedTask, fetchPostedTasks, setTab }) {
       </div>
     );
   }
-  
 
   return (
     <div

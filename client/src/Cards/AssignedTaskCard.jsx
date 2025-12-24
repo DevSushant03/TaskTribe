@@ -3,6 +3,7 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { task } from "../utils/api";
 import { useState } from "react";
 import CircularLoader from "../Components/CircularLoader";
+import { toast } from "react-toastify";
 function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
   const [open, setopen] = useState(null);
   const [file, setfile] = useState(null);
@@ -21,11 +22,11 @@ function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
       setloading(true);
       const res = await task.submitWork(formData, TaskId);
       if(res.data.success){
+        toast.success(res.data.message);
         fetchAssignedTasks();
       }
-      alert(res.data.message);
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
       console.log(error);
     } finally {
       setloading(false);
