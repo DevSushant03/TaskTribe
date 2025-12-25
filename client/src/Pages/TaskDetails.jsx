@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { task } from "../utils/api";
+import { toast } from "react-toastify";
 
 const TaskDetails = () => {
   const { taskId, id: userId } = useParams();
@@ -11,6 +12,7 @@ const TaskDetails = () => {
   const [requestBox, setRequestBox] = useState(false);
   const [message, setMessage] = useState("");
   const [bidAmount, setbidAmount] = useState("");
+  const [agreedToRules, setAgreedToRules] = useState(false);
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -34,7 +36,10 @@ const TaskDetails = () => {
     document.body.style.overflow = requestBox ? "hidden" : "auto";
 
     const handleEsc = (e) => {
-      if (e.key === "Escape") setRequestBox(false);
+      if (e.key === "Escape") {
+        setRequestBox(false);
+        setAgreedToRules(false);
+      }
     };
 
     window.addEventListener("keydown", handleEsc);
@@ -45,15 +50,18 @@ const TaskDetails = () => {
   }, [requestBox]);
 
   const handleApply = async () => {
+    if (!agreedToRules) {
+      return toast.warning("Please read and agree to the application guidelines before applying.");
+    }
     if (!message.trim()) return alert("Please write a message.");
     if (!bidAmount || Number(bidAmount) <= 0) {
-      return alert("Please enter a valid bid amount.");
+      return toast.warning("Please enter a valid bid amount.");
     }
      try {
       setApplyLoading(true);
       const res = await task.applyTask(taskId, message,bidAmount);
       if (res.data.action === "ADD_BANK_DETAILS") {
-        alert(res.data.message);
+        toast.info(res.data.message);
 
         return navigate(`/user/${userId}/MyBankDetails`);
       }
@@ -63,9 +71,10 @@ const TaskDetails = () => {
         toast.error("You already applied!");
       }
 
-      alert(res.data.message);
+      toast.success(res.data.message);
       setRequestBox(false);
       setMessage("");
+      setAgreedToRules(false);
     } catch (error) {
       console.log(error);
     } finally {
@@ -151,10 +160,13 @@ const TaskDetails = () => {
       {/* ---------- APPLY MODAL ---------- */}
       {requestBox && (
         <div className="fixed inset-0 z-50 flex justify-center items-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-[#1a1a1a] p-6 rounded-2xl shadow-2xl max-w-md w-full border border-orange-500/20 relative">
+          <div className="bg-[#1a1a1a] p-6 rounded-2xl shadow-2xl max-w-lg w-full border border-orange-500/20 relative">
             {/* Close Button */}
             <button
-              onClick={() => setRequestBox(false)}
+              onClick={() => {
+                setRequestBox(false);
+                setAgreedToRules(false);
+              }}
               className="absolute -right-3 -top-3 bg-orange-500 text-black w-8 h-8 rounded-full flex items-center justify-center font-bold hover:bg-orange-600 transition"
             >
               ✕
@@ -163,6 +175,36 @@ const TaskDetails = () => {
             <h2 className="text-xl font-semibold text-orange-400 mb-4 text-center">
               Send Request to Task Creator
             </h2>
+
+            {/* Application Guidelines */}
+            <div className="mb-4 p-4 bg-[#0d0d0d] border border-orange-500/30 rounded-lg max-h-48 overflow-y-auto">
+              <h3 className="text-sm font-semibold text-orange-400 mb-3">
+                Application Guidelines (Show before applying):
+              </h3>
+              <ul className="text-xs text-gray-300 space-y-2 list-disc list-inside">
+                <li>Apply only if you have relevant skills for the task.</li>
+                <li>Read the task description carefully before applying.</li>
+                <li>Your application should be professional and honest.</li>
+                <li>Do not apply to multiple tasks if you cannot manage deadlines.</li>
+                <li>Once assigned, you are expected to complete the task responsibly.</li>
+                <li>Repeated rejection or poor submissions may affect your profile visibility.</li>
+              </ul>
+            </div>
+
+            {/* Agreement Checkbox */}
+            <div className="mb-4 flex items-start gap-2">
+              <input
+                type="checkbox"
+                id="agreeRules"
+                checked={agreedToRules}
+                onChange={(e) => setAgreedToRules(e.target.checked)}
+                className="mt-1 w-4 h-4 text-orange-500 bg-black/40 border-orange-500/40 rounded focus:ring-orange-500 focus:ring-2"
+              />
+              <label htmlFor="agreeRules" className="text-sm text-gray-300 cursor-pointer">
+                I have read and agree to the application guidelines above
+              </label>
+            </div>
+
             <label className="text-sm text-gray-400 mb-1 block">
   Bid Amount (₹)
 </label>
@@ -184,8 +226,8 @@ const TaskDetails = () => {
 
             <button
               onClick={handleApply}
-              disabled={applyLoading}
-              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-black font-semibold py-3 rounded-lg shadow-lg disabled:opacity-50"
+              disabled={applyLoading || !agreedToRules}
+              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-black font-semibold py-3 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {applyLoading ? "Sending..." : "Send Request"}
             </button>
