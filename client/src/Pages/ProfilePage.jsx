@@ -7,6 +7,8 @@ import {
   FaCheckCircle,
   FaSpinner,
   FaTimes,
+  FaCog,
+  FaQuestionCircle,
 } from "react-icons/fa";
 import { auth, users } from "../utils/api";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,15 +29,6 @@ function ProfilePage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const handleLogOut = async () => {
-    const res = await auth.logout();
-    if (res.data.success) {
-      toast.success(res.data.message);
-      navigate("/");
-    } else {
-      toast.error(res.data.message);
-    }
-  };
 
   const getInitials = (name, surname) => {
     const first = name?.charAt(0).toUpperCase() || "";
@@ -461,106 +454,44 @@ function ProfilePage() {
           </div>
         </div>
 
-        {/* Activity Summary */}
-        <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 md:p-8 shadow-lg shadow-orange-500/10">
-          <h2 className="text-2xl font-bold text-white mb-6">
-            Profile Information
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-1">
-              <p className="text-gray-400 text-sm font-medium">Full Name</p>
-              <p className="text-white text-lg">
-                {user.name || "Not set"} {user.surname || ""}
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-gray-400 text-sm font-medium">Email Address</p>
-              <p className="text-white text-lg">{user.email}</p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-gray-400 text-sm font-medium">Member Since</p>
-              <p className="text-white text-lg">
-                {user.createdAt
-                  ? new Date(user.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "N/A"}
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* Account Controll */}
-        <div>
-          <div className="mt-8 flex flex-col md:flex-row md:items-center gap-4">
+        {/* Help & Settings Section */}
+        <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 mb-6">
+          <h3 className="text-xl font-semibold text-white mb-4">Account & Support</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
-              className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400 flex items-center gap-2 shadow"
-              onClick={() => setislogout(true)}
+              onClick={() => navigate(`/user/${id}/help`)}
+              className="flex items-center gap-4 p-4 bg-[#222] border border-orange-500/30 rounded-lg hover:bg-[#2a2a2a] hover:border-orange-500/50 transition-all duration-200 group"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"
-                />
-              </svg>
-              Log Out
+              <div className="bg-orange-600/20 p-3 rounded-lg group-hover:bg-orange-600/30 transition-colors">
+                <FaQuestionCircle className="text-orange-500" size={24} />
+              </div>
+              <div className="flex-1 text-left">
+                <h4 className="text-white font-medium mb-1">Help & Support</h4>
+                <p className="text-gray-400 text-sm">
+                  Get assistance with your account or tasks
+                </p>
+              </div>
             </button>
-            <span className="text-gray-500 text-sm">
-              Manage your account securely.
-            </span>
+
+            <button
+              onClick={() => navigate(`/user/${id}/setting`)}
+              className="flex items-center gap-4 p-4 bg-[#222] border border-orange-500/30 rounded-lg hover:bg-[#2a2a2a] hover:border-orange-500/50 transition-all duration-200 group"
+            >
+              <div className="bg-orange-600/20 p-3 rounded-lg group-hover:bg-orange-600/30 transition-colors">
+                <FaCog className="text-orange-500" size={24} />
+              </div>
+              <div className="flex-1 text-left">
+                <h4 className="text-white font-medium mb-1">Settings</h4>
+                <p className="text-gray-400 text-sm">
+                  Manage your account preferences and privacy
+                </p>
+              </div>
+            </button>
           </div>
         </div>
+
       </div>
-      <div
-        className={`${
-          islogout ? "flex" : "hidden"
-        } fixed inset-0 z-50 items-center justify-center bg-black/80`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="delete-task-title"
-      >
-        <div className="w-full max-w-sm rounded-lg bg-zinc-900 p-6 shadow-xl border border-zinc-800">
-          <h2
-            id="delete-task-title"
-            className="text-lg font-semibold text-zinc-100 mb-2"
-          >
-            Log Out ?
-          </h2>
 
-          <p className="text-sm text-zinc-400 mb-6">
-            Are you sure you want to logout from Task Tribe? This
-            action cannot be undone.
-          </p>
-
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={() => setislogout(false)}
-              className="px-4 py-2 text-sm rounded-md border border-zinc-600 text-zinc-200 hover:bg-zinc-800 transition"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={() => handleLogOut()}
-              className="px-4 py-2 text-sm rounded-md bg-red-600 text-white hover:bg-red-700 transition"
-            >
-              logout
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
