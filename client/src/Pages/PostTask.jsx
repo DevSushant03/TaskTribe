@@ -33,78 +33,15 @@ export default function PostTask() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-  const validateField = (fieldName, value) => {
-    try {
-      // Create a partial validation object with current form values
-      const validationData = {
-        title: form.title,
-        description: form.description,
-        tags: form.tags,
-        budgetMin: form.budgetMin,
-        budgetMax: form.budgetMax,
-        deadline: form.deadline,
-        agreedRules: form.agreedRules,
-        [fieldName]: value, // Override with the new value
-      };
-
-      // Validate the entire schema to catch cross-field validations
-      TaskValidationSchema.parse(validationData);
-      return null; // No error
-    } catch (error) {
-      if (error.errors && error.errors.length > 0) {
-        // Find error for this specific field
-        const fieldError = error.errors.find((err) => err.path[0] === fieldName);
-        if (fieldError) {
-          return fieldError.message;
-        }
-      }
-      return null;
-    }
-  };
-
-  const handleFieldBlur = (fieldName) => {
-    setTouched({ ...touched, [fieldName]: true });
-    const value = form[fieldName];
-    const error = validateField(fieldName, value);
-    if (error) {
-      setErrors({ ...errors, [fieldName]: error });
-    } else {
-      const newErrors = { ...errors };
-      delete newErrors[fieldName];
-      setErrors(newErrors);
-    }
-  };
-
   const addTag = () => {
-    const trimmedTag = tagInput.trim();
-    
-    if (!trimmedTag) {
-      toast.warning("Tag cannot be empty.");
-      return;
-    }
+    if (!tagInput.trim()) return;
 
-    if (trimmedTag.length > 30) {
-      toast.warning("Tag cannot exceed 30 characters.");
-      return;
-    }
+    setForm((prev) => ({
+      ...prev,
+      tags: [...prev.tags, tagInput.trim()],
+    }));
 
-    if (form.tags.length >= 10) {
-      toast.warning("Maximum 10 tags allowed.");
-      return;
-    }
-
-    if (form.tags.includes(trimmedTag)) {
-      toast.warning("Tag already exists.");
-      return;
-    }
-
-    setForm({ ...form, tags: [...form.tags, trimmedTag] });
     setTagInput("");
-    
-    // Clear tag-related errors
-    const newErrors = { ...errors };
-    delete newErrors.tags;
-    setErrors(newErrors);
   };
 
   const handleTagInputKeyPress = (e) => {
@@ -163,7 +100,15 @@ export default function PostTask() {
     setLoading(true);
 
     // Mark all fields as touched
-    const allFields = ["title", "description", "tags", "budgetMin", "budgetMax", "deadline", "agreedRules"];
+    const allFields = [
+      "title",
+      "description",
+      "tags",
+      "budgetMin",
+      "budgetMax",
+      "deadline",
+      "agreedRules",
+    ];
     const newTouched = {};
     allFields.forEach((field) => {
       newTouched[field] = true;
@@ -184,15 +129,19 @@ export default function PostTask() {
 
       if (!validationResult.success) {
         const validationErrors = {};
-        validationResult.error.errors.forEach((error) => {
-          const field = error.path[0];
-          validationErrors[field] = error.message;
+        const issues = validationResult.error.issues || [];
+
+        issues.forEach((err) => {
+          const field = err.path?.[0] || "form";
+          validationErrors[field] = err.message;
         });
+
         setErrors(validationErrors);
-        
-        // Show first error in toast
-        const firstError = validationResult.error.errors[0];
-        toast.error(firstError.message);
+
+        const firstMessage =
+          issues.length > 0 ? issues[0].message : "Validation failed";
+
+        toast.error(firstMessage);
         setLoading(false);
         return;
       }
@@ -219,7 +168,7 @@ export default function PostTask() {
 
       if (res.data.success) {
         toast.success("Task created successfully!");
-        
+
         // Reset form
         setForm({
           title: "",
@@ -239,7 +188,8 @@ export default function PostTask() {
       }
     } catch (err) {
       console.error(err);
-      const errorMessage = err.response?.data?.message || err.message || "Error creating task";
+      const errorMessage =
+        err.response?.data?.message || err.message || "Error creating task";
       toast.error(errorMessage);
     }
 
@@ -268,20 +218,7 @@ export default function PostTask() {
             }`}
             placeholder="Enter task title"
             value={form.title}
-            onChange={(e) => {
-              setForm({ ...form, title: e.target.value });
-              if (touched.title && errors.title) {
-                const error = validateField("title", e.target.value);
-                if (error) {
-                  setErrors({ ...errors, title: error });
-                } else {
-                  const newErrors = { ...errors };
-                  delete newErrors.title;
-                  setErrors(newErrors);
-                }
-              }
-            }}
-            onBlur={() => handleFieldBlur("title")}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
             required
           />
           {touched.title && errors.title && (
@@ -306,20 +243,7 @@ export default function PostTask() {
             }`}
             placeholder="Describe the task…"
             value={form.description}
-            onChange={(e) => {
-              setForm({ ...form, description: e.target.value });
-              if (touched.description && errors.description) {
-                const error = validateField("description", e.target.value);
-                if (error) {
-                  setErrors({ ...errors, description: error });
-                } else {
-                  const newErrors = { ...errors };
-                  delete newErrors.description;
-                  setErrors(newErrors);
-                }
-              }
-            }}
-            onBlur={() => handleFieldBlur("description")}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
             required
           ></textarea>
           {touched.description && errors.description && (
@@ -333,7 +257,7 @@ export default function PostTask() {
         {/* Tags */}
         <div>
           <label className="block text-white-700 font-medium mb-2">
-            Tags <span className="text-gray-400 text-sm">(Optional, max 10)</span>
+            Tags <span className="text-red-500">*</span>
           </label>
           <div className="flex gap-3">
             <input
@@ -384,7 +308,7 @@ export default function PostTask() {
         {/* Budget */}
         <div>
           <label className="block text-white-700 font-medium mb-1">
-            Budget (₹) <span className="text-gray-400 text-sm">(Optional)</span>
+            Budget (₹)  <span className="text-red-500">*</span>
           </label>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -399,20 +323,9 @@ export default function PostTask() {
                 }`}
                 placeholder="Min"
                 value={form.budgetMin}
-                onChange={(e) => {
-                  setForm({ ...form, budgetMin: e.target.value });
-                  if (touched.budgetMin && errors.budgetMin) {
-                    const error = validateField("budgetMin", e.target.value);
-                    if (error) {
-                      setErrors({ ...errors, budgetMin: error });
-                    } else {
-                      const newErrors = { ...errors };
-                      delete newErrors.budgetMin;
-                      setErrors(newErrors);
-                    }
-                  }
-                }}
-                onBlur={() => handleFieldBlur("budgetMin")}
+                onChange={(e) =>
+                  setForm({ ...form, budgetMin: e.target.value })
+                }
               />
               {touched.budgetMin && errors.budgetMin && (
                 <p className="text-red-500 text-sm mt-1">{errors.budgetMin}</p>
@@ -430,20 +343,9 @@ export default function PostTask() {
                 }`}
                 placeholder="Max"
                 value={form.budgetMax}
-                onChange={(e) => {
-                  setForm({ ...form, budgetMax: e.target.value });
-                  if (touched.budgetMax && errors.budgetMax) {
-                    const error = validateField("budgetMax", e.target.value);
-                    if (error) {
-                      setErrors({ ...errors, budgetMax: error });
-                    } else {
-                      const newErrors = { ...errors };
-                      delete newErrors.budgetMax;
-                      setErrors(newErrors);
-                    }
-                  }
-                }}
-                onBlur={() => handleFieldBlur("budgetMax")}
+                onChange={(e) =>
+                  setForm({ ...form, budgetMax: e.target.value })
+                }
               />
               {touched.budgetMax && errors.budgetMax && (
                 <p className="text-red-500 text-sm mt-1">{errors.budgetMax}</p>
@@ -455,7 +357,7 @@ export default function PostTask() {
         {/* Deadline */}
         <div>
           <label className="block text-white-700 font-medium mb-1">
-            Deadline <span className="text-gray-400 text-sm">(Optional)</span>
+            Deadline  <span className="text-red-500">*</span>
           </label>
           <input
             type="date"
@@ -466,20 +368,7 @@ export default function PostTask() {
                 : "border-white-300"
             }`}
             value={form.deadline}
-            onChange={(e) => {
-              setForm({ ...form, deadline: e.target.value });
-              if (touched.deadline && errors.deadline) {
-                const error = validateField("deadline", e.target.value);
-                if (error) {
-                  setErrors({ ...errors, deadline: error });
-                } else {
-                  const newErrors = { ...errors };
-                  delete newErrors.deadline;
-                  setErrors(newErrors);
-                }
-              }
-            }}
-            onBlur={() => handleFieldBlur("deadline")}
+            onChange={(e) => setForm({ ...form, deadline: e.target.value })}
           />
           {touched.deadline && errors.deadline && (
             <p className="text-red-500 text-sm mt-1">{errors.deadline}</p>
@@ -489,7 +378,10 @@ export default function PostTask() {
         {/* Attachments */}
         <div>
           <label className="block text-white-700 font-medium mb-1">
-            Attachments <span className="text-gray-400 text-sm">(Optional, max 10MB per file)</span>
+            Attachments{" "}
+            <span className="text-gray-400 text-sm">
+              (Optional, max 10MB per file)
+            </span>
           </label>
           <input
             type="file"
@@ -532,40 +424,40 @@ export default function PostTask() {
                 type="checkbox"
                 id="agreeRules"
                 checked={form.agreedRules || false}
-                onChange={(e) => {
-                  setForm({ ...form, agreedRules: e.target.checked });
-                  if (touched.agreedRules && errors.agreedRules) {
-                    const error = validateField("agreedRules", e.target.checked);
-                    if (error) {
-                      setErrors({ ...errors, agreedRules: error });
-                    } else {
-                      const newErrors = { ...errors };
-                      delete newErrors.agreedRules;
-                      setErrors(newErrors);
-                    }
-                  }
-                }}
-                onBlur={() => handleFieldBlur("agreedRules")}
+                onChange={(e) =>
+                  setForm({ ...form, agreedRules: e.target.value })
+                }
                 className={`w-4 h-4 mr-2 accent-orange-600 ${
                   touched.agreedRules && errors.agreedRules
                     ? "ring-2 ring-red-500"
                     : ""
                 }`}
               />
-              <label htmlFor="agreeRules" className="text-sm text-gray-300 select-none cursor-pointer">
+              <label
+                htmlFor="agreeRules"
+                className="text-sm text-gray-300 select-none cursor-pointer"
+              >
                 I have read and agree to the above rules and regulations.{" "}
                 <span className="text-red-500">*</span>
               </label>
             </summary>
             <ul className="mt-3 ml-7 text-white text-sm space-y-2 list-disc">
               <li>Provide a clear and accurate task description.</li>
-              <li>Mention expected deliverables, deadline, and budget (if applicable).</li>
-              <li>Do not post illegal, unethical, or misleading tasks.</li>
-              <li>Avoid sharing personal contact details in task description.</li>
-              <li>Once a freelancer is assigned, editing the task may be restricted.</li>
               <li>
-                TaskTribe is not responsible for disputes—clear instructions reduce
-                conflicts.
+                Mention expected deliverables, deadline, and budget (if
+                applicable).
+              </li>
+              <li>Do not post illegal, unethical, or misleading tasks.</li>
+              <li>
+                Avoid sharing personal contact details in task description.
+              </li>
+              <li>
+                Once a freelancer is assigned, editing the task may be
+                restricted.
+              </li>
+              <li>
+                TaskTribe is not responsible for disputes—clear instructions
+                reduce conflicts.
               </li>
             </ul>
           </details>
@@ -573,7 +465,6 @@ export default function PostTask() {
             <p className="text-red-500 text-sm mt-1">{errors.agreedRules}</p>
           )}
         </div>
-
 
         <button
           type="submit"

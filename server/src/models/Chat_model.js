@@ -4,7 +4,7 @@ const ChatRoomSchema = new mongoose.Schema(
     taskId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "task",
-      required: true,
+      required: false, // Optional: one chat room can handle multiple tasks
     },
     participants: [
       {
@@ -15,6 +15,9 @@ const ChatRoomSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Index for faster lookup by participants
+ChatRoomSchema.index({ participants: 1 });
 
 export const ChatRoomModel = mongoose.model("ChatRoom", ChatRoomSchema);
 
@@ -32,6 +35,10 @@ const MessageSchema = new mongoose.Schema(
     },
     text: String,
     file: String,
+    taskkId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "task",
+    },
     seenBy: [
       {
         type: mongoose.Schema.Types.ObjectId,

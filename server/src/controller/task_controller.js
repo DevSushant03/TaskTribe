@@ -565,12 +565,17 @@ export const acceptApplicant = async (req, res) => {
 
     await Promise.all(rejectPromises);
 
-    let chatRoom = await ChatRoomModel.findOne({ taskId: TaskId });
+    // Check if chat room already exists between these two participants
+    // Use $all to check if the participants array contains both users
+    let chatRoom = await ChatRoomModel.findOne({
+      participants: { $all: [task.createdBy, task.assignedTo] }
+    });
 
+    // If no chat room exists, create a new one
     if (!chatRoom) {
       chatRoom = await ChatRoomModel.create({
-        taskId: TaskId,
         participants: [task.createdBy, task.assignedTo],
+        // taskId is optional now - one chat room handles multiple tasks
       });
     }
 
@@ -720,11 +725,35 @@ export const markAsComplete = async (req, res) => {
       await deleteCloudinaryFile(file.url);
     }
 
-    const chatRoom = await ChatRoomModel.findOne({ taskId });
+    // Find the chat room between the two users
+    const chatRoom = await ChatRoomModel.findOne({
+      participants: { $all: [task.createdBy, task.assignedTo] }
+    });
 
     if (chatRoom) {
-      await MessageModel.deleteMany({ chatRoomId: chatRoom._id });
-      await ChatRoomModel.findByIdAndDelete(chatRoom._id);
+      // Delete messages related to this specific completed task
+      await MessageModel.deleteMany({
+        chatRoomId: chatRoom._id,
+        taskkId: taskId
+      });
+
+      // Check if there are any other active tasks between these two users
+      // Active tasks are those not completed or cancelled
+      const otherTasks = await taskModel.find({
+        $or: [
+          { createdBy: task.createdBy, assignedTo: task.assignedTo },
+          { createdBy: task.assignedTo, assignedTo: task.createdBy }
+        ],
+        _id: { $ne: taskId },
+        status: { $nin: ["completed", "cancelled"] }
+      });
+
+      // If no other active tasks exist, delete the chat room and all remaining messages
+      if (otherTasks.length === 0) {
+        await MessageModel.deleteMany({ chatRoomId: chatRoom._id });
+        await ChatRoomModel.findByIdAndDelete(chatRoom._id);
+      }
+      // If other tasks exist, keep the chat room (we already deleted task-specific messages)
     }
 
     await taskModel.findByIdAndDelete(taskId);
