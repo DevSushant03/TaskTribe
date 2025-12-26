@@ -15,6 +15,9 @@ import {
   markAsComplete,
   editTask,
   rejectSubmitedWork,
+  getTaskApplyByMe,
+  cancelTaskApplyByMe,
+  updateTaskApplication,
 } from "../controller/task_controller.js";
 const router = Router();
 
@@ -22,6 +25,9 @@ router.post("/createTask", verifyAuth, upload.array("files"), createTask);
 router.post("/:TaskId/editTask", verifyAuth, upload.array("files"), editTask);
 router.get("/getAllTask", verifyAuth, getAllTasks);
 router.get("/getTask/:taskId", verifyAuth, getTaskById);
+router.get("/getTaskApplyByMe", verifyAuth, getTaskApplyByMe);
+router.post("/cancelTaskApplyByMe/:TaskId", verifyAuth, cancelTaskApplyByMe);
+router.post("/updateTaskApplication/:TaskId", verifyAuth, updateTaskApplication);
 router.post("/:TaskId/deleteTask", verifyAuth, deleteTask);
 router.post("/:TaskId/rejectSubmitedWork", verifyAuth, rejectSubmitedWork);
 router.post("/apply/:taskId", verifyAuth, applyForTask);

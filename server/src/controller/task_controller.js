@@ -282,6 +282,112 @@ export const getTaskById = async (req, res) => {
   }
 };
 
+export const getTaskApplyByMe = async (req, res) => {
+  try {
+    const { userid } = req.user;
+
+    const tasks = await taskModel
+      .find({
+        status: "open",
+        "applicants.user": userid,
+      })
+      .select("title description budget deadline")
+      .populate("createdBy", "name surname photo email")
+      .sort({ createdAt: -1 });
+
+    if (tasks.length === 0) {
+      return res.status(200).json({
+        success: false,
+        message: "You have not applied to any tasks yet or rejected",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      tasks,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
+export const cancelTaskApplyByMe = async (req, res) => {
+  try {
+    const { TaskId } = req.params;
+    const { userid } = req.user;
+
+    const task = await taskModel.findById(TaskId);
+
+    if (!task) {
+      return res.json({ success: false, message: "Task not found" });
+    }
+
+    task.applicants = task.applicants.filter(
+      (applicant) => applicant.user.toString() !== userid
+    );
+    task.applicantsCount = task.applicants.length;
+    await task.save();
+
+    return res.json({
+      success: true,
+      message: "Application cancel successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
+export const updateTaskApplication = async (req, res) => {
+  try {
+    const { TaskId } = req.params;
+    const { userid } = req.user;
+    const { message, bidAmount } = req.body;
+
+    const task = await taskModel.findById(TaskId);
+
+    if (!task) {
+      return res.json({ success: false, message: "Task not found" });
+    }
+
+    const applicantIndex = task.applicants.findIndex(
+      (a) => a.user.toString() === userid
+    );
+
+    if (applicantIndex === -1) {
+      return res.status(400).json({
+        success: false,
+        message: "You have not applied to this task",
+      });
+    }
+    if (message !== undefined) {
+      task.applicants[applicantIndex].message = message;
+    }
+    if (bidAmount !== undefined) {
+      task.applicants[applicantIndex].bidAmount = bidAmount;
+    }
+    await task.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Application updated successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
 export const deleteTask = async (req, res) => {
   try {
     const { TaskId } = req.params;
@@ -325,7 +431,7 @@ export const deleteTask = async (req, res) => {
     await userModel.findByIdAndUpdate(userid, {
       $push: {
         notifications: {
-          from: null, //from tasktribe
+          from: null,
           message: `Your task "${task.title}" has been deleted successfully`,
         },
       },
@@ -568,7 +674,7 @@ export const acceptApplicant = async (req, res) => {
     // Check if chat room already exists between these two participants
     // Use $all to check if the participants array contains both users
     let chatRoom = await ChatRoomModel.findOne({
-      participants: { $all: [task.createdBy, task.assignedTo] }
+      participants: { $all: [task.createdBy, task.assignedTo] },
     });
 
     // If no chat room exists, create a new one
@@ -727,14 +833,14 @@ export const markAsComplete = async (req, res) => {
 
     // Find the chat room between the two users
     const chatRoom = await ChatRoomModel.findOne({
-      participants: { $all: [task.createdBy, task.assignedTo] }
+      participants: { $all: [task.createdBy, task.assignedTo] },
     });
 
     if (chatRoom) {
       // Delete messages related to this specific completed task
       await MessageModel.deleteMany({
         chatRoomId: chatRoom._id,
-        taskkId: taskId
+        taskkId: taskId,
       });
 
       // Check if there are any other active tasks between these two users
@@ -742,10 +848,10 @@ export const markAsComplete = async (req, res) => {
       const otherTasks = await taskModel.find({
         $or: [
           { createdBy: task.createdBy, assignedTo: task.assignedTo },
-          { createdBy: task.assignedTo, assignedTo: task.createdBy }
+          { createdBy: task.assignedTo, assignedTo: task.createdBy },
         ],
         _id: { $ne: taskId },
-        status: { $nin: ["completed", "cancelled"] }
+        status: { $nin: ["completed", "cancelled"] },
       });
 
       // If no other active tasks exist, delete the chat room and all remaining messages

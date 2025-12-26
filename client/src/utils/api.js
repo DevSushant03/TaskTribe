@@ -43,8 +43,9 @@ export const task = {
     api.post(`/task/${TaskId}/editTask`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
-  deleteTask:(TaskId)=>api.post(`/task/${TaskId}/deleteTask`),
-  rejectSubmitedWork:(TaskId)=>api.post(`/task/${TaskId}/rejectSubmitedWork`),
+  deleteTask: (TaskId) => api.post(`/task/${TaskId}/deleteTask`),
+  rejectSubmitedWork: (TaskId) =>
+    api.post(`/task/${TaskId}/rejectSubmitedWork`),
   getAllTask: () => api.get("/task/getAllTask"),
   getTaskById: (taskId) => api.get(`/task/getTask/${taskId}`),
   applyTask: (taskId, message, bidAmount) =>
@@ -52,6 +53,11 @@ export const task = {
       message,
       bidAmount,
     }),
+  getTaskApplyByMe: () => api.get("/task/getTaskApplyByMe"),
+  cancelTaskApplyByMe: (taskId) =>
+    api.post(`/task/cancelTaskApplyByMe/${taskId}`),
+  updateTaskApplication: (taskId, message, bidAmount) =>
+    api.post(`/task/updateTaskApplication/${taskId}`, { message, bidAmount }),
   getMyTask: () => api.get("/task/myTask"),
   getAssignedTask: () => api.get("/task/assignedToMe"),
   rejectApplicant: (applicantId, TaskId) =>
