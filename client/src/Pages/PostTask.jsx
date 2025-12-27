@@ -28,6 +28,8 @@ export default function PostTask() {
     agreedRules: false, // Checkbox for agreeing to rules & regulations
   });
 
+  
+
   const [tagInput, setTagInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -423,9 +425,9 @@ export default function PostTask() {
               <input
                 type="checkbox"
                 id="agreeRules"
-                checked={form.agreedRules || false}
+                checked={form.agreedRules}
                 onChange={(e) =>
-                  setForm({ ...form, agreedRules: e.target.value })
+                  setForm({ ...form, agreedRules: e.target.checked })
                 }
                 className={`w-4 h-4 mr-2 accent-orange-600 ${
                   touched.agreedRules && errors.agreedRules

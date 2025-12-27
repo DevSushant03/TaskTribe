@@ -11,6 +11,7 @@ import {
   AssignedTaskSkeleton,
   ManagePostedTaskSkeleton,
 } from "../Components/Skeleton.jsx";
+import TaskApplyByMe from "../Components/TaskApplyByMe.jsx";
 <ArrowLeft className="w-6 h-6" />;
 
 const Manage = () => {
@@ -82,10 +83,10 @@ const Manage = () => {
       </h1>
 
       {/* Tabs */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex gap-4 mb-6 overflow-x-auto hide-scrollbar">
         <button
           onClick={() => setTab("posted")}
-          className={`px-4 py-2 rounded-md border transition ${
+          className={`px-4 py-2 rounded-md border text-sm whitespace-nowrap  transition ${
             tab === "posted"
               ? "bg-[#FF6B00] text-white border-[#FF6B00]"
               : "bg-[#1A1A1A] text-[#C9C9C9] border-[#262626] hover:border-[#FF6B00]"
@@ -96,13 +97,24 @@ const Manage = () => {
 
         <button
           onClick={() => setTab("assigned")}
-          className={`px-4 py-2 rounded-md border transition ${
+          className={`px-4 py-2 rounded-md border text-sm whitespace-nowrap  transition ${
             tab === "assigned"
               ? "bg-[#FF6B00] text-white border-[#FF6B00]"
               : "bg-[#1A1A1A] text-[#C9C9C9] border-[#262626] hover:border-[#FF6B00]"
           }`}
         >
           Assigned to Me
+        </button>
+
+        <button
+          onClick={() => setTab("applyByMe")}
+          className={`px-4 py-2 rounded-md border text-sm whitespace-nowrap  transition ${
+            tab === "applyByMe"
+              ? "bg-[#FF6B00] text-white border-[#FF6B00]"
+              : "bg-[#1A1A1A] text-[#C9C9C9] border-[#262626] hover:border-[#FF6B00]"
+          }`}
+        >
+          Applied by Me
         </button>
       </div>
 
@@ -116,7 +128,11 @@ const Manage = () => {
             </p>
           ) : (
             postedTasks.map((task) => (
-              <PostedTasksCard tasks={task}  fetchPostedTasks={fetchPostedTasks}   fetchApplicants={fetchApplicants} />
+              <PostedTasksCard
+                tasks={task}
+                fetchPostedTasks={fetchPostedTasks}
+                fetchApplicants={fetchApplicants}
+              />
             ))
           )}
         </div>
@@ -142,7 +158,7 @@ const Manage = () => {
           ) : (
             applicants.map((applicant, key) => (
               <ApplicantCard
-              setTab={setTab}
+                setTab={setTab}
                 applicant={applicant}
                 selectedTask={selectedTask}
                 fetchPostedTasks={fetchPostedTasks}
@@ -162,12 +178,21 @@ const Manage = () => {
             </p>
           ) : (
             assignedTasks.map((task, key) => (
-              <AssignedTaskCard tasks={task} key={key} fetchAssignedTasks={fetchAssignedTasks} />
+              <AssignedTaskCard
+                tasks={task}
+                key={key}
+                fetchAssignedTasks={fetchAssignedTasks}
+              />
             ))
           )}
         </div>
       )}
-      
+      {/* ======================= APPLY TASKS SECTION ======================= */}
+      {tab === "applyByMe" && (
+        <TaskApplyByMe/>
+      )}
+
+
     </div>
   );
 };

@@ -291,7 +291,7 @@ export const getTaskApplyByMe = async (req, res) => {
         status: "open",
         "applicants.user": userid,
       })
-      .select("title description budget deadline")
+      .select("title description budget deadline applicants.bidAmount applicants.message")
       .populate("createdBy", "name surname photo email")
       .sort({ createdAt: -1 });
 
