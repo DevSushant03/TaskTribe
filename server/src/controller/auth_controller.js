@@ -8,6 +8,7 @@ import userModel from "../models/user_model.js";
 import {
   createAccessToken,
   deleteAccessToken,
+  getOtpEmailHtml,
   setNewPassword,
 } from "../services/auth_services.js";
 import OtpModel from "../models/VerifyOtp_model.js";
@@ -61,10 +62,10 @@ export const register = async (req, res) => {
   try {
     const record = await OtpModel.findOne({ email });
 
-    if (!record) return res.status(400).json({ message: "OTP expired" });
+    if (!record) return res.json({success:false, message: "OTP expired" });
 
     const isValid = await bcrypt.compare(otp, record.otpHash);
-    if (!isValid) return res.status(400).json({ message: "Invalid OTP" });
+    if (!isValid) return res.json({ success:false, message: "Invalid OTP" });
 
     await OtpModel.deleteOne({ email });
 
@@ -135,12 +136,7 @@ export const sendOtpToVerifyEmail = async (req, res) => {
       from: "TaskTribe <onboarding@resend.dev>",
       to: email,
       subject: "Your OTP Verification Code",
-      html: `
-      <h2>OTP Verification</h2>
-      <p>Your OTP is:</p>
-      <h1>${otp}</h1>
-      <p>This OTP is valid for 5 minutes.</p>
-    `,
+      html: getOtpEmailHtml(otp),
     });
 
     return res.json({

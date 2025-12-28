@@ -46,7 +46,7 @@ export default function Register() {
   };
 
   const sendOtpToVerifyEmail = async () => {
-    setloading(true);
+    setisOpen(true);
 
     const validation = registerSchema.safeParse(formData);
     if (!validation.success) {
@@ -56,14 +56,11 @@ export default function Register() {
     }
 
     try {
-      setisOpen(true);
       await auth.sendOtpToVerifyEmail(formData.email);
       toast.success("OTP sent to your email");
     } catch (err) {
       toast.error("Failed to send OTP");
-    } finally {
-      setloading(false);
-    }
+    } 
   };
 
   const handleChange = (e) => {
@@ -90,8 +87,7 @@ export default function Register() {
         navigate("/auth");
       } else {
         setloading(false);
-        seterror(response.data.message);
-        toast.error(response.data.message || "Something went wrong!");
+        toast.error(response.data.message);
       }
     } catch (error) {
       setloading(false);
@@ -267,7 +263,7 @@ export default function Register() {
                 onClick={handleOtpVerify}
                 className="w-full py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange transition-all duration-300 text-lg"
               >
-                Verify OTP
+                {loading?"Verifying....":"Verify OTP"}
               </button>
 
               <p className="text-xs text-center text-gray-500 mt-4">
