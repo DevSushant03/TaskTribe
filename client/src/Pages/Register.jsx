@@ -9,10 +9,12 @@ import { useNavigate } from "react-router-dom";
 import { registerSchema } from "../Validation/auth_validation.js";
 import { Helmet } from "react-helmet";
 import CircularLoader from "../Components/CircularLoader.jsx";
+import emailjs from "@emailjs/browser";
 
 export default function Register() {
   const navigate = useNavigate();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [VerifyOtp, setVerifyOtp] = useState(null);
   const [isOpen, setisOpen] = useState(false);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState("");
@@ -36,17 +38,25 @@ export default function Register() {
   };
 
   const handleOtpVerify = async () => {
+    setloading(true);
     const enteredOtp = otp.join("");
+
     if (enteredOtp.length !== 6) {
       toast.error("Please enter valid 6-digit OTP");
       return;
     }
 
-    handleSubmit(enteredOtp);
+    const res = await auth.verifyOtp(enteredOtp, formData.email);
+
+    if (!res.data.success) {
+      return toast.error(res.data.message);
+    }
+
+    await handleSubmit();
   };
 
   const sendOtpToVerifyEmail = async () => {
-    setisOpen(true);
+    setloading(true);
 
     const validation = registerSchema.safeParse(formData);
     if (!validation.success) {
@@ -54,21 +64,53 @@ export default function Register() {
       toast.error(validation.error.issues[0].message);
       return;
     }
-
     try {
-      await auth.sendOtpToVerifyEmail(formData.email);
-      toast.success("OTP sent to your email");
+      const res = await auth.generateAndStoreOtp(formData.email);
+
+      if (!res.data.success) {
+        return toast.info(res.data.message);
+      }
+
+      const expiryTime = new Date(
+        Date.now() + 15 * 60 * 1000
+      ).toLocaleTimeString();
+
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          email: formData.email,
+          title: "OTP Verification",
+          message:
+            "Use the following One-Time Password to verify your account:",
+          highlight: res.data.otp,
+          footer_note: `This OTP is valid for 15 minutes till ${expiryTime}.
+        Do not share this OTP with anyone.`,
+          year: new Date().getFullYear(),
+          company_name: "TaskTribe",
+          website_url: "https://tasktribe-plum.vercel.app",
+          logo_url: "https://tasktribe-plum.vercel.app/icon.jpeg",
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
+      toast.success("OTP sent successfully");
+      setisOpen(true);
     } catch (err) {
+      console.log(err);
       toast.error("Failed to send OTP");
-    } 
+    } finally {
+      setloading(false);
+    }
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (otp) => {
+  const handleSubmit = async () => {
     setloading(true);
+
     try {
       const validation = registerSchema.safeParse(formData);
 
@@ -83,7 +125,7 @@ export default function Register() {
 
       if (response.data.success) {
         setloading(false);
-        toast.success(response.data.message)
+        toast.success(response.data.message);
         navigate("/auth");
       } else {
         setloading(false);
@@ -263,7 +305,7 @@ export default function Register() {
                 onClick={handleOtpVerify}
                 className="w-full py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange transition-all duration-300 text-lg"
               >
-                {loading?"Verifying....":"Verify OTP"}
+                {loading ? "Verifying...." : "Verify OTP"}
               </button>
 
               <p className="text-xs text-center text-gray-500 mt-4">

@@ -1,17 +1,14 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { Resend } from "resend";
+import OtpModel from "../models/VerifyOtp_model.js"
 import dotenv from "dotenv";
 dotenv.config();
-const resend = new Resend(process.env.RESEND_API_KEY);
 import userModel from "../models/user_model.js";
 import {
   createAccessToken,
   deleteAccessToken,
-  getOtpEmailHtml,
   setNewPassword,
 } from "../services/auth_services.js";
-import OtpModel from "../models/VerifyOtp_model.js";
 
 //! Login functionality---------------------------------------
 export const login = async (req, res) => {
@@ -54,21 +51,12 @@ export const login = async (req, res) => {
 
 //! Register functionality------------------------------------
 export const register = async (req, res) => {
-  const { name, surname, email, password, otp } = req.body;
+  const { name, surname, email, password } = req.body;
   if (!name || !surname || !email || !password) {
     return res.json({ success: false, message: "Missing Details" });
   }
 
   try {
-    const record = await OtpModel.findOne({ email });
-
-    if (!record) return res.json({success:false, message: "OTP expired" });
-
-    const isValid = await bcrypt.compare(otp, record.otpHash);
-    if (!isValid) return res.json({ success:false, message: "Invalid OTP" });
-
-    await OtpModel.deleteOne({ email });
-
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.json({
@@ -86,9 +74,9 @@ export const register = async (req, res) => {
     });
     await user.save();
 
-    return res.json({ success: true });
+    return res.json({ success: true, message:"Registration Successfull" });
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    res.json({ success: false, message: "Internal Server Problem" });
   }
 };
 
@@ -115,49 +103,109 @@ export const deleteAccount = async (req, res) => {
   }
 };
 
-//! Reset password functionality---------------------------------
-export const sendOtpToVerifyEmail = async (req, res) => {
-  const { email } = req.body;
-  if (!email) {
-    return res.json({ success: false, message: "Email is required" });
-  }
+export const generateAndStoreOtp = async (req, res) => {
   try {
-    const otp = String(Math.floor(100000 + Math.random() * 900000));
-    const otpHash = await bcrypt.hash(otp, 10);
-    await OtpModel.findOneAndUpdate(
-      { email },
-      {
-        otpHash,
-        expiresAt: new Date(Date.now() + 5 * 60 * 1000),
-      },
-      { upsert: true }
-    );
-    await resend.emails.send({
-      from: "TaskTribe <onboarding@resend.dev>",
-      to: email,
-      subject: "Your OTP Verification Code",
-      html: getOtpEmailHtml(otp),
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+      return res.json({
+        success: false,
+        message:
+          "An account with this email already exists. Please log in instead.",
+      });
+    }
+
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    const salt = await bcrypt.genSalt(10);
+    const otpHash = await bcrypt.hash(otp, salt);
+
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+    await OtpModel.deleteMany({ email });
+
+    await OtpModel.create({
+      email,
+      otpHash,
+      expiresAt,
     });
 
-    return res.json({
+    return res.status(200).json({
       success: true,
-      message: "OTP sent if email is valid",
+      message: "OTP generated successfully",
+      otp, //
     });
   } catch (error) {
-    return res.json({ success: false, message: error.message });
+    console.error("Send OTP Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 
 export const verifyOtp = async (req, res) => {
-  const { otpString, email } = req.body;
+  const { otp, email } = req.body;
 
   try {
-    return res.json({
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and OTP are required",
+      });
+    }
+
+    const otpRecord = await OtpModel.findOne({ email });
+
+    if (!otpRecord) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP not found or already used",
+      });
+    }
+
+    if (otpRecord.expiresAt < new Date()) {
+      await OtpModel.deleteOne({ _id: otpRecord._id });
+
+      return res.status(400).json({
+        success: false,
+        message: "OTP expired",
+      });
+    }
+
+    const isOtpValid = await bcrypt.compare(
+      otp.toString(),
+      otpRecord.otpHash
+    );
+
+    if (!isOtpValid) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid OTP",
+      });
+    }
+
+    await OtpModel.deleteOne({ _id: otpRecord._id });
+
+    return res.status(200).json({
       success: true,
-      message: "Otp verified successfully",
+      message: "OTP verified successfully",
     });
   } catch (error) {
-    return res.json({ success: false, message: error.message });
+    console.error("Verify OTP Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 

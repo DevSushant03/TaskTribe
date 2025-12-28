@@ -16,10 +16,13 @@ const api = axios.create({
 // });
 
 export const auth = {
-  register: (data, otp) => api.post("/register", { ...data, otp }),
+  register: (data) => api.post("/register", data),
   login: (data) => api.post("/login", data),
   logout: () => api.post("/logout"),
-  sendOtpToVerifyEmail: (email) => api.post("/sendOtpToVerifyEmail", { email }),
+  generateAndStoreOtp: (email) =>
+    api.post("/generateAndStoreOtp", { email }),
+  verifyOtp: (otp, email) =>
+    api.post("/verifyOtp", { otp, email }),
 };
 
 export const users = {
