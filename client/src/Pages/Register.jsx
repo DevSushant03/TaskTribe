@@ -1,38 +1,92 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebookF } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import team_meating from "/src/assets/team_meating.jpg";
 import { auth } from "../utils/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../Validation/auth_validation.js";
 import { Helmet } from "react-helmet";
 import CircularLoader from "../Components/CircularLoader.jsx";
 
 export default function Register() {
   const navigate = useNavigate();
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [isOpen, setisOpen] = useState(false);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState("");
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(registerSchema),
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    password: "",
   });
 
-  const onSubmit = async (data) => {
+  const handleOtpChange = (value, index) => {
+    if (!/^[0-9]?$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < 5) {
+      document.getElementById(`otp-${index + 1}`).focus();
+    }
+  };
+
+  const handleOtpVerify = async () => {
+    const enteredOtp = otp.join("");
+    if (enteredOtp.length !== 6) {
+      toast.error("Please enter valid 6-digit OTP");
+      return;
+    }
+
+    handleSubmit(enteredOtp);
+  };
+
+  const sendOtpToVerifyEmail = async () => {
+    setloading(true);
+
+    const validation = registerSchema.safeParse(formData);
+    if (!validation.success) {
+      setloading(false);
+      toast.error(validation.error.issues[0].message);
+      return;
+    }
+
+    try {
+      setisOpen(true);
+      await auth.sendOtpToVerifyEmail(formData.email);
+      toast.success("OTP sent to your email");
+    } catch (err) {
+      toast.error("Failed to send OTP");
+    } finally {
+      setloading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (otp) => {
     setloading(true);
     try {
-      const response = await auth.register(data);
+      const validation = registerSchema.safeParse(formData);
+
+      if (!validation.success) {
+        setloading(false);
+        const firstError = validation.error.issues[0].message;
+        seterror(firstError);
+        toast.error(firstError);
+        return;
+      }
+      const response = await auth.register(formData, otp);
 
       if (response.data.success) {
         setloading(false);
+        toast.success(response.data.message)
         navigate("/auth");
       } else {
         setloading(false);
@@ -58,7 +112,9 @@ export default function Register() {
 
       <div className="min-h-screen flex flex-col md:flex-row">
         <div className="flex-1 flex flex-col justify-center px-8 py-8 min-h-screen bg-gradient-to-br from-orange-50 to-white">
-          <div className="max-w-md mx-auto w-full mt-10">
+          <div
+            className={`${isOpen && "hidden"} max-w-md mx-auto w-full mt-10`}
+          >
             {/* Social Login */}
             <button className="w-full flex items-center justify-center bg-white/70 backdrop-blur-sm border-2 border-orange-200/60 rounded-2xl py-3 mb-3 hover:shadow-neumorph-hover hover:border-orange-300/80 hover:bg-orange-50/80 transition-all duration-300 shadow-neumorph h-5 w-5">
               <FcGoogle className="h-5 w-5 mr-2" /> Continue with Google
@@ -74,68 +130,53 @@ export default function Register() {
             </div>
 
             {/* Login Form */}
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-orange-200/50 shadow-neumorph-inset"
-            >
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-orange-200/50 shadow-neumorph-inset">
               <div className="flex space-x-3 mb-4">
                 <div className="w-1/2">
                   <input
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     placeholder="First Name"
-                    {...register("name")}
                     className="w-full py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
                   />
-                  {errors.name && (
-                    <p className="text-red-600 text-sm mt-1 font-medium bg-orange-50/80 border border-orange-200/60 px-2 py-1 rounded-lg shadow-neumorph-orange-sm">
-                      {errors.name.message}
-                    </p>
-                  )}
                 </div>
 
                 <div className="w-1/2">
                   <input
                     type="text"
+                    name="surname"
+                    value={formData.surname}
+                    onChange={handleChange}
                     placeholder="Last Name"
-                    {...register("surname")}
                     className="w-full py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
                   />
-                  {errors.surname && (
-                    <p className="text-red-600 text-sm mt-1 font-medium bg-orange-50/80 border border-orange-200/60 px-2 py-1 rounded-lg shadow-neumorph-orange-sm">
-                      {errors.surname.message}
-                    </p>
-                  )}
                 </div>
               </div>
 
               <div className="mb-4">
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="Email"
-                  {...register("email")}
                   className="w-full py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
                 />
-                {errors.email && (
-                  <p className="text-red-600 text-sm mt-1 font-medium bg-orange-50/80 border border-orange-200/60 px-2 py-1 rounded-lg shadow-neumorph-orange-sm">
-                    {errors.email.message}
-                  </p>
-                )}
               </div>
 
               {/* Password */}
               <div className="relative mb-4">
                 <input
                   type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder="Password"
-                  {...register("password")}
                   className="w-full py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm pr-10"
                 />
                 <FaRegEyeSlash className="absolute right-4 top-4 text-gray-400 h-5 w-5" />
-                {errors.password && (
-                  <p className="text-red-600 text-sm mt-1 font-medium bg-orange-50/80 border border-orange-200/60 px-2 py-1 rounded-lg shadow-neumorph-orange-sm">
-                    {errors.password.message}
-                  </p>
-                )}
               </div>
 
               {error && (
@@ -173,13 +214,13 @@ export default function Register() {
               </div>
 
               <button
-                type="submit"
                 className="w-full py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange hover:border-orange-500/80  focus:shadow-neumorph-orange-focus transition-all duration-300 text-lg"
                 disabled={loading}
+                onClick={() => sendOtpToVerifyEmail()}
               >
                 {loading ? <CircularLoader /> : "Join TaskTribe"}
               </button>
-            </form>
+            </div>
 
             {/* Login link */}
             <p className="mt-6 text-center text-sm text-gray-700 bg-white/70 backdrop-blur-sm px-4 py-3 rounded-2xl border border-orange-200/50 shadow-neumorph-sm">
@@ -191,6 +232,48 @@ export default function Register() {
                 Sign In
               </Link>
             </p>
+          </div>
+
+          <div
+            className={`${
+              isOpen ? "block" : "hidden"
+            } max-w-md mx-auto w-full mt-16`}
+          >
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-orange-200/50 shadow-neumorph-inset">
+              <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
+                Verify Your Email
+              </h2>
+
+              <p className="text-sm text-center text-gray-600 mb-6">
+                Enter the 6-digit OTP sent to <br />
+                <span className="font-semibold">{formData.email}</span>
+              </p>
+
+              <div className="flex justify-center gap-3 mb-6">
+                {otp.map((digit, index) => (
+                  <input
+                    key={index}
+                    id={`otp-${index}`}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleOtpChange(e.target.value, index)}
+                    className="w-12 h-12 text-center text-lg font-bold bg-white/90 border-2 border-orange-200/70 rounded-xl focus:border-orange-400 focus:outline-none shadow-neumorph-sm"
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={handleOtpVerify}
+                className="w-full py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 border-2 border-orange-400/60 hover:shadow-neumorph-orange transition-all duration-300 text-lg"
+              >
+                Verify OTP
+              </button>
+
+              <p className="text-xs text-center text-gray-500 mt-4">
+                OTP valid for 5 minutes
+              </p>
+            </div>
           </div>
         </div>
 

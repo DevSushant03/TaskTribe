@@ -1,10 +1,16 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { Resend } from "resend";
+import dotenv from "dotenv";
+dotenv.config();
+const resend = new Resend(process.env.RESEND_API_KEY);
 import userModel from "../models/user_model.js";
 import {
   createAccessToken,
-  deleteAccessToken
+  deleteAccessToken,
+  setNewPassword,
 } from "../services/auth_services.js";
+import OtpModel from "../models/VerifyOtp_model.js";
 
 //! Login functionality---------------------------------------
 export const login = async (req, res) => {
@@ -35,8 +41,11 @@ export const login = async (req, res) => {
     }
     createAccessToken(jwt, user, res);
 
-    return res.json({ success: true, user: user.isCreatedProfile,userid:user._id });
-
+    return res.json({
+      success: true,
+      user: user.isCreatedProfile,
+      userid: user._id,
+    });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
@@ -44,17 +53,21 @@ export const login = async (req, res) => {
 
 //! Register functionality------------------------------------
 export const register = async (req, res) => {
-  const { name, surname, email, password } = req.body;
-  if (
-    !name ||
-    !surname ||
-    !email ||
-    !password
-  ) {
+  const { name, surname, email, password, otp } = req.body;
+  if (!name || !surname || !email || !password) {
     return res.json({ success: false, message: "Missing Details" });
   }
 
   try {
+    const record = await OtpModel.findOne({ email });
+
+    if (!record) return res.status(400).json({ message: "OTP expired" });
+
+    const isValid = await bcrypt.compare(otp, record.otpHash);
+    if (!isValid) return res.status(400).json({ message: "Invalid OTP" });
+
+    await OtpModel.deleteOne({ email });
+
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.json({
@@ -101,27 +114,38 @@ export const deleteAccount = async (req, res) => {
   }
 };
 
-
 //! Reset password functionality---------------------------------
-export const sendResetotp = async (req, res) => {
+export const sendOtpToVerifyEmail = async (req, res) => {
   const { email } = req.body;
   if (!email) {
     return res.json({ success: false, message: "Email is required" });
   }
   try {
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.json({ success: false, message: "User not found" });
-    }
     const otp = String(Math.floor(100000 + Math.random() * 900000));
-    user.resetOtp = otp;
-    user.resetOtpExpireAt = Date.now() + 15 * 60 * 10000;
-    await user.save();
+    const otpHash = await bcrypt.hash(otp, 10);
+    await OtpModel.findOneAndUpdate(
+      { email },
+      {
+        otpHash,
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      },
+      { upsert: true }
+    );
+    await resend.emails.send({
+      from: "TaskTribe <onboarding@resend.dev>",
+      to: email,
+      subject: "Your OTP Verification Code",
+      html: `
+      <h2>OTP Verification</h2>
+      <p>Your OTP is:</p>
+      <h1>${otp}</h1>
+      <p>This OTP is valid for 5 minutes.</p>
+    `,
+    });
 
     return res.json({
       success: true,
-      otp,
-      message: "Reset otp send on your registered email",
+      message: "OTP sent if email is valid",
     });
   } catch (error) {
     return res.json({ success: false, message: error.message });
@@ -132,17 +156,6 @@ export const verifyOtp = async (req, res) => {
   const { otpString, email } = req.body;
 
   try {
-    const user = await userModel.findOne({ email });
-    if (user.resetOtp === "" || user.resetOtp !== otpString) {
-      return res.json({ success: false, message: "Invalid OTP" });
-    }
-    if (user.resetOtpExpireAt < Date.now()) {
-      return res.json({ success: false, message: "Otp is expired" });
-    }
-
-    user.resetOtp = "";
-    user.resetOtpExpireAt = 0;
-    user.save();
     return res.json({
       success: true,
       message: "Otp verified successfully",

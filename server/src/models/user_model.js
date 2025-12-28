@@ -58,8 +58,6 @@ const userSchema = new mongoose.Schema({
 
   verifyOtp: { type: String, default: "" },
   verifyOtpExpireAt: { type: Number, default: 0 },
-  resetOtp: { type: String, default: "" },
-  resetOtpExpireAt: { type: Number, default: 0 },
   isCreatedProfile: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
