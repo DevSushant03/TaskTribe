@@ -18,6 +18,12 @@ export const registerSchema = z.object({
     .string()
     .min(6, "Password must be at least 6 characters.")
     .max(100, "Password too long."),
+  agreedRules: z
+      .boolean()
+      .refine(
+        (val) => val === true,
+        "You must agree to the rules and regulations to post a task."
+      ),  
 
 })
 

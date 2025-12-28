@@ -23,6 +23,7 @@ export default function Register() {
     surname: "",
     email: "",
     password: "",
+    agreedRules:false
   });
 
   const handleOtpChange = (value, index) => {
@@ -226,6 +227,8 @@ export default function Register() {
               <div className="flex items-center mb-4 text-sm text-gray-700">
                 <input
                   type="checkbox"
+                  checked={formData.agreedRules}
+                  onChange={(e)=>setFormData({...formData,agreedRules:e.target.checked})}
                   className="mr-2 w-4 h-4 border-2 border-orange-300 rounded focus:border-orange-500 focus:ring-orange-400 shadow-neumorph-checkbox"
                 />
                 <span className="text-gray-600">
