@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { auth } from "../utils/api";
 import { toast } from "react-toastify";
 
-export default function OtpVarificationForm({setemail, email, nextStep }) {
+export default function OtpVarificationForm({ setemail, email, nextStep }) {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [loading, setloading] = useState(false);
 
@@ -19,25 +19,30 @@ export default function OtpVarificationForm({setemail, email, nextStep }) {
   };
 
   const handleOtpVerify = async () => {
-    setloading(true);
-    const enteredOtp = otp.join("");
+    try {
+      setloading(true);
+      const enteredOtp = otp.join("");
 
-    if (enteredOtp.length !== 6) {
-      toast.error("Please enter valid 6-digit OTP");
-      return;
-    }
+      if (enteredOtp.length !== 6) {
+        toast.error("Please enter valid 6-digit OTP");
+        return;
+      }
 
-    const res = await auth.verifyOtp(enteredOtp, email);
+      const res = await auth.verifyOtp(enteredOtp, email);
 
-    if (!res.data.success) {
-      toast.error(res.data.message);
+      if (!res.data.success) {
+        toast.error(res.data.message);
+        return;
+      }
+
+      toast.success(res.data.message);
+      setemail(email);
+      nextStep();
+    } catch (err) {
+      toast.error("Something went wrong");
+    } finally {
       setloading(false);
-      return;
     }
-    toast.success(res.data.message);
-    setloading(false);
-    nextStep();
-    setemail(email)
   };
   return (
     <div className={`max-w-md mx-auto w-full mt-16`}>

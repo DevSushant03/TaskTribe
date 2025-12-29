@@ -232,7 +232,7 @@ export const verifyOtp = async (req, res) => {
     const isOtpValid = await bcrypt.compare(otp.toString(), otpRecord.otpHash);
 
     if (!isOtpValid) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "Invalid OTP",
       });
