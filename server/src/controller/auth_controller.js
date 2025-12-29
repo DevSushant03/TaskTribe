@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import OtpModel from "../models/VerifyOtp_model.js"
+import OtpModel from "../models/VerifyOtp_model.js";
 import dotenv from "dotenv";
 dotenv.config();
 import userModel from "../models/user_model.js";
@@ -74,7 +74,7 @@ export const register = async (req, res) => {
     });
     await user.save();
 
-    return res.json({ success: true, message:"Registration Successfull" });
+    return res.json({ success: true, message: "Registration Successfull" });
   } catch (error) {
     res.json({ success: false, message: "Internal Server Problem" });
   }
@@ -103,7 +103,7 @@ export const deleteAccount = async (req, res) => {
   }
 };
 
-export const generateAndStoreOtp = async (req, res) => {
+export const generateAndStoreOtpForRegister = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -122,7 +122,6 @@ export const generateAndStoreOtp = async (req, res) => {
           "An account with this email already exists. Please log in instead.",
       });
     }
-
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -153,12 +152,60 @@ export const generateAndStoreOtp = async (req, res) => {
   }
 };
 
+export const generateAndStoreOtpForForgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const existingUser = await userModel.findOne({ email });
+    if (!existingUser) {
+      return res.json({
+        success: false,
+        message: "This email is not registered with us.",
+      });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    const salt = await bcrypt.genSalt(10);
+    const otpHash = await bcrypt.hash(otp, salt);
+
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    await OtpModel.deleteMany({ email });
+
+    await OtpModel.create({
+      email,
+      otpHash,
+      expiresAt,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP generated successfully",
+      otp,
+    });
+  } catch (error) {
+    console.error("Send OTP Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 export const verifyOtp = async (req, res) => {
   const { otp, email } = req.body;
 
   try {
     if (!email || !otp) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "Email and OTP are required",
       });
@@ -167,7 +214,7 @@ export const verifyOtp = async (req, res) => {
     const otpRecord = await OtpModel.findOne({ email });
 
     if (!otpRecord) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "OTP not found or already used",
       });
@@ -176,16 +223,13 @@ export const verifyOtp = async (req, res) => {
     if (otpRecord.expiresAt < new Date()) {
       await OtpModel.deleteOne({ _id: otpRecord._id });
 
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "OTP expired",
       });
     }
 
-    const isOtpValid = await bcrypt.compare(
-      otp.toString(),
-      otpRecord.otpHash
-    );
+    const isOtpValid = await bcrypt.compare(otp.toString(), otpRecord.otpHash);
 
     if (!isOtpValid) {
       return res.status(400).json({
@@ -209,12 +253,18 @@ export const verifyOtp = async (req, res) => {
   }
 };
 
-export const resetPassword = async (req, res) => {
-  const { confirmPassword, email } = req.body;
+export const resetpassword = async (req, res) => {
+  const { newPassword, email } = req.body;
 
   try {
     const user = await userModel.findOne({ email });
-    setNewPassword(confirmPassword, bcrypt, user);
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "This email is not registered with us.",
+      });
+    }
+    setNewPassword(newPassword, bcrypt, user);
 
     return res.json({
       success: true,

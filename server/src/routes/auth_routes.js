@@ -1,11 +1,12 @@
 import { Router } from "express";
 import {
   deleteAccount,
-  generateAndStoreOtp,
+  generateAndStoreOtpForForgetPassword,
+  generateAndStoreOtpForRegister,
   login,
   logout,
   register,
-  resetPassword,
+  resetpassword,
   verifyOtp,
 } from "../controller/auth_controller.js";
 import { verifyAuth } from "../middleware/auth.js";
@@ -16,8 +17,9 @@ router.post("/register", register);
 router.post("/logout", verifyAuth, logout);
 router.post("/deleteAccount", verifyAuth, deleteAccount);
 //! Reset password and verify email
-router.post("/generateAndStoreOtp", generateAndStoreOtp);
+router.post("/generateAndStoreOtpForRegister", generateAndStoreOtpForRegister);
+router.post("/generateAndStoreOtpForForgetPassword", generateAndStoreOtpForForgetPassword);
 router.post("/verifyOtp", verifyOtp);
-router.post("/resetPassword",verifyAuth, resetPassword);
+router.post("/reset-password", resetpassword);
 
 export default router;

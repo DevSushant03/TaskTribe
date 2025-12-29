@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
+import { auth } from "../utils/api";
+import { toast } from "react-toastify";
 
-export default function OtpVarificationForm({ isOpen }) {
+export default function OtpVarificationForm({setemail, email, nextStep }) {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  
+  const [loading, setloading] = useState(false);
+
   const handleOtpChange = (value, index) => {
     if (!/^[0-9]?$/.test(value)) return;
 
@@ -24,16 +27,20 @@ export default function OtpVarificationForm({ isOpen }) {
       return;
     }
 
-    const res = await auth.verifyOtp(enteredOtp, formData.email);
+    const res = await auth.verifyOtp(enteredOtp, email);
 
     if (!res.data.success) {
-      return toast.error(res.data.message);
+      toast.error(res.data.message);
+      setloading(false);
+      return;
     }
+    toast.success(res.data.message);
+    setloading(false);
+    nextStep();
+    setemail(email)
   };
   return (
-    <div
-      className={`${isOpen ? "block" : "hidden"} max-w-md mx-auto w-full mt-16`}
-    >
+    <div className={`max-w-md mx-auto w-full mt-16`}>
       <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-orange-200/50 shadow-neumorph-inset">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
           Verify Your Email
@@ -41,7 +48,7 @@ export default function OtpVarificationForm({ isOpen }) {
 
         <p className="text-sm text-center text-gray-600 mb-6">
           Enter the 6-digit OTP sent to <br />
-          <span className="font-semibold">{email}</span>
+          <span className="font-semibold">email</span>
         </p>
 
         <div className="flex justify-center gap-3 mb-6">

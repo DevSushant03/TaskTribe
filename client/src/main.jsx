@@ -25,6 +25,7 @@ import BankDetailsForm from "./Components/BankDetailsForm";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 import HelpAndSupport from "./Pages/HelpAndSupport"
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
+import ForgotPasswordOnboarding from "./Pages/ForgotPasswordOnboarding";
 import Settings from "./Pages/Setting";
 const router = createBrowserRouter([
   {
@@ -41,6 +42,8 @@ const router = createBrowserRouter([
       { index: true, element: <Login /> },
       { path: "register", element: <Register /> },
       { path: "createProfile", element: <GetUserInfo /> },
+      { path: "forgot-password", element: <ForgotPasswordOnboarding /> },
+
     ],
   },
 

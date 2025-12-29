@@ -14,7 +14,6 @@ export default function Login() {
   const { setid } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setloading] = useState(false);
-  const [isOpen, setisOpen] = useState(false)
   const [error, seterror] = useState("");
   const [formData, setFormData] = useState({
     email: "",
@@ -125,12 +124,12 @@ export default function Login() {
                   />
                   Remember me
                 </label>
-                <button
-                  onClick={()=>setisOpen(true)}
+                <a
+                  href="/auth/forgot-password"
                   className="text-orange-600 hover:text-orange-700 hover:underline font-medium transition-colors"
                 >
                   Forgot Password?
-                </button>
+                </a>
               </div>
               <button
                 type="submit"

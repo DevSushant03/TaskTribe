@@ -19,10 +19,16 @@ export const auth = {
   register: (data) => api.post("/register", data),
   login: (data) => api.post("/login", data),
   logout: () => api.post("/logout"),
-  generateAndStoreOtp: (email) =>
-    api.post("/generateAndStoreOtp", { email }),
+  generateAndStoreOtpforRegister: (email) =>
+    api.post("/generateAndStoreOtpForRegister", { email }),
+  generateAndStoreOtpForForgetPassword: (email) =>
+    api.post("/generateAndStoreOtpForForgetPassword", {email}),
   verifyOtp: (otp, email) =>
     api.post("/verifyOtp", { otp, email }),
+  resetpassword:(email,password)=>api.post("/reset-password", {
+        email,
+        newPassword: password,
+      })
 };
 
 export const users = {

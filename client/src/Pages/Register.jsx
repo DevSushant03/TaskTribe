@@ -65,7 +65,7 @@ export default function Register() {
       return;
     }
     try {
-      const res = await auth.generateAndStoreOtp(formData.email);
+      const res = await auth.generateAndStoreOtpForRegister(formData.email);
 
       if (!res.data.success) {
         return toast.info(res.data.message);
