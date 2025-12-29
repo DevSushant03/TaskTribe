@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { auth } from "../utils/api";
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
-const ResetPassword = ({ email }) => {
+const ResetPassword = ({ email, back }) => {
   const navigate = useNavigate();
 
   const [password, setPassword] = useState("");
@@ -53,10 +53,13 @@ const ResetPassword = ({ email }) => {
       onSubmit={handleSubmit}
       className="bg-white p-6 rounded-xl shadow-md w-full max-w-md"
     >
-      <h2 className="text-2xl font-semibold text-center mb-2">
+      <button onClick={() => back()} className="absolute">
+        <FaArrowAltCircleLeft color="orange" size={25} />
+      </button>
+      <h2 className="text-2xl text-orange-600 font-semibold text-center mb-2">
         Reset Password
       </h2>
-      <p className="text-sm text-gray-500 text-center mb-6">
+      <p className="text-sm text-gray-600 text-center mb-6">
         Create a new password for your account
       </p>
 
@@ -65,7 +68,7 @@ const ResetPassword = ({ email }) => {
         <input
           type={showPassword ? "text" : "password"}
           placeholder="New Password"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-4 py-2 text-black border border-gray-400 focus:border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -81,7 +84,7 @@ const ResetPassword = ({ email }) => {
       <input
         type="password"
         placeholder="Confirm Password"
-        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4"
+        className="w-full px-4 py-2 text-black border border-gray-400 focus:border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />

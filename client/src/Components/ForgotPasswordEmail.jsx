@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../utils/api"; // your axios instance
 import emailjs from "@emailjs/browser";
 
-const ForgotPasswordEmail = ({ nextStep, setemail }) => {
-  const [email, setEmail] = useState("");
+const ForgotPasswordEmail = ({ nextStep, setEmail }) => {
+  const [email, setUserEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -46,7 +46,7 @@ const ForgotPasswordEmail = ({ nextStep, setemail }) => {
           },
           import.meta.env.VITE_EMAILJS_PUBLIC_KEY
         );
-        setemail(email)
+        setEmail(email)
         toast.success(res.data.message);
         nextStep();
       } else {
@@ -64,9 +64,7 @@ const ForgotPasswordEmail = ({ nextStep, setemail }) => {
       onSubmit={handleSubmit}
       className="bg-white p-6 rounded-xl shadow-md w-full max-w-md"
     >
-      <h2 className="text-2xl font-semibold text-center mb-2">
-        Forgot Password
-      </h2>
+    
       <p className="text-sm text-gray-500 text-center mb-6">
         Enter your registered email to receive an OTP
       </p>
@@ -74,9 +72,9 @@ const ForgotPasswordEmail = ({ nextStep, setemail }) => {
       <input
         type="email"
         placeholder="Enter your email"
-        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+        className="w-full px-4 py-2 border text-black border-gray-600 rounded-lg focus:border-none focus:outline-none focus:ring-2 focus:ring-orange-500"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) => setUserEmail(e.target.value)}
       />
 
       <button
