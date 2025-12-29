@@ -14,7 +14,6 @@ import emailjs from "@emailjs/browser";
 export default function Register() {
   const navigate = useNavigate();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [VerifyOtp, setVerifyOtp] = useState(null);
   const [isOpen, setisOpen] = useState(false);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState("");
