@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { FaRegEyeSlash } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaRegEyeSlash } from "react-icons/fa";
 import team_meating from "/src/assets/team_meating.jpg";
 import { auth } from "../utils/api";
 import { toast } from "react-toastify";
@@ -22,7 +22,7 @@ export default function Register() {
     surname: "",
     email: "",
     password: "",
-    agreedRules:false
+    agreedRules: false,
   });
 
   const handleOtpChange = (value, index) => {
@@ -150,6 +150,12 @@ export default function Register() {
 
       <div className="min-h-screen flex flex-col md:flex-row">
         <div className="flex-1 flex flex-col justify-center px-8 py-8 min-h-screen bg-gradient-to-br from-orange-50 to-white">
+          <button
+            onClick={() => navigate("/")}
+            className="absolute flex justify-evenly w-25 cursor-pointer top-5 left-5 text-white bg-orange-500  p-2 rounded-full "
+          >
+            <FaArrowAltCircleLeft color="white" size={25} /> Home
+          </button>
           <div
             className={`${isOpen && "hidden"} max-w-md mx-auto w-full mt-10`}
           >
@@ -227,7 +233,9 @@ export default function Register() {
                 <input
                   type="checkbox"
                   checked={formData.agreedRules}
-                  onChange={(e)=>setFormData({...formData,agreedRules:e.target.checked})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, agreedRules: e.target.checked })
+                  }
                   className="mr-2 w-4 h-4 border-2 border-orange-300 rounded focus:border-orange-500 focus:ring-orange-400 shadow-neumorph-checkbox"
                 />
                 <span className="text-gray-600">

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebookF } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaFacebookF } from "react-icons/fa";
 import SidePicture from "/src/assets/teamworks.jpg";
 import { useState } from "react";
 import { auth } from "../utils/api";
@@ -43,11 +43,11 @@ export default function Login() {
       if (data.success) {
         setloading(false);
         if (data.user) {
-          toast.success("Welcome Back")
+          toast.success("Welcome Back");
           navigate(`/user/${data.userid}/dashboard`);
           setid(data.userid);
         } else {
-          toast.success("Login Successfully")
+          toast.success("Login Successfully");
           navigate("/auth/createProfile");
         }
       } else {
@@ -73,6 +73,12 @@ export default function Login() {
       </Helmet>
       <div className="min-h-screen flex flex-col md:flex-row">
         <div className="flex-1 flex flex-col h-screen justify-center px-8 py-8 bg-gradient-to-br from-orange-50 to-white">
+          <button
+            onClick={() => navigate("/")}
+            className="absolute flex justify-evenly w-25 cursor-pointer top-5 left-5 text-white bg-orange-500  p-2 rounded-full "
+          >
+            <FaArrowAltCircleLeft color="white" size={25} /> Home
+          </button>
           <div className="max-w-md mx-auto mt-10 w-full">
             {/* Social Login */}
             <button className="w-full flex items-center justify-center bg-white/70 backdrop-blur-sm border-2 border-orange-200/60 rounded-2xl py-3 mb-3 hover:shadow-neumorph-hover hover:border-orange-300/80 hover:bg-orange-50/80 transition-all duration-300 shadow-neumorph">

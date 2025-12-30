@@ -1,15 +1,29 @@
 import React, { useState } from "react";
 import ForgotPasswordEmail from "../Components/ForgotPasswordEmail";
 import OtpVarificationForm from "../Components/OtpVarificationForm";
+import { useMediaQuery } from "react-responsive";
 import ResetPassword from "../Components/ResetPassword";
-import { FaStepBackward } from "react-icons/fa";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 export default function ForgotPasswordOnboarding() {
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  console.log(isMobile);
+
+  const navigate = useNavigate();
   const [step, setstep] = useState(1);
   const [email, setemail] = useState("");
   const nextStep = () => setstep((prev) => prev + 1);
   const back = () => setstep((prev) => prev - 1);
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-[#050507] text-slate-50">
+      <button
+        onClick={() => navigate(-1)}
+        className={`fixed z-11 flex justify-evenly w-40 cursor-pointer ${
+          isMobile ? "top-5" : "bottom-5"
+        }   left-5 text-white bg-orange-500  p-2 rounded-full `}
+      >
+        <FaArrowAltCircleLeft color="white" size={25} /> back to login
+      </button>
       {/* animated orange gradient blobs */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-orange-500/30 blur-3xl" />
@@ -33,8 +47,6 @@ export default function ForgotPasswordOnboarding() {
         <div className="grid w-full max-w-6xl grid-cols-1 gap-10 lg:grid-cols-[1.2fr,1fr]">
           {/* left: storytelling + trust */}
           <div className="flex flex-col justify-center space-y-6">
-            
-
             <div className="space-y-4">
               <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl">
                 Forgot your password?
@@ -171,9 +183,7 @@ export default function ForgotPasswordOnboarding() {
                     email={email}
                   />
                 )}
-                {step === 3 && (
-                  <ResetPassword back={back} email={email} />
-                )}
+                {step === 3 && <ResetPassword back={back} email={email} />}
               </div>
             </div>
           </div>
