@@ -60,12 +60,7 @@ const TaskDetails = () => {
      try {
       setApplyLoading(true);
       const res = await task.applyTask(taskId, message,bidAmount);
-      if (res.data.action === "ADD_BANK_DETAILS") {
-        toast.info(res.data.message);
-
-        return navigate(`/user/${userId}/MyBankDetails`);
-      }
-
+      
       if (res.data.action === "ALREADY_APPLIED") {
         alert(res.data.message);
         toast.error("You already applied!");

@@ -3,6 +3,7 @@ import cloudinary from "../config/cloudinary.js";
 import bankModel from "../models/BankDetails_model.js";
 import { ChatRoomModel, MessageModel } from "../models/Chat_model.js";
 import userModel from "../models/user_model.js";
+import FundAccount from "../models/BankDetails_model.js";
 
 export const uploadToCloudinary = (fileBuffer, folderName) => {
   return new Promise((resolve, reject) => {
@@ -524,16 +525,6 @@ export const applyForTask = async (req, res) => {
     const { taskId } = req.params;
     const { userid } = req.user;
     const { message, bidAmount } = req.body;
-
-    const bankAccount = await bankModel.findOne({ userId: userid });
-
-    if (!bankAccount) {
-      return res.json({
-        success: false,
-        action: "ADD_BANK_DETAILS",
-        message: "Please add your bank details",
-      });
-    }
 
     const task = await taskModel.findById(taskId);
     if (!task) {

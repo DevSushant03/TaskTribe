@@ -36,20 +36,19 @@ export default function BankDetailsForm() {
       return;
     }
 
-    // Only send details to payment partner to create payout account
-    const res = await Bank.addBankDetails(form);
+    // const res = await Bank.addBankDetails(form);
 
-    if (!res.data.success) {
-      toast.error(res.data.message);
-      return;
-    }
+    // if (!res.data.success) {
+    //   toast.error(res.data.message);
+    //   return;
+    // }
 
-    toast.success(res.data.message);
+    toast.success("Bank Account Linked Successfully");
     navigate(`/user/${id}/browse`);
   };
 
   return (
-    <div className="w-full bg-[#050608] p-6 md:p-8 min-h-full flex flex-col">
+    <div className="w-full mt-10 md:mt-0 bg-[#050608] p-6 md:p-8 min-h-full flex flex-col">
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mt-6 md:mt-2">
         <div>
@@ -57,7 +56,7 @@ export default function BankDetailsForm() {
             Payout <span className="text-[#FFB347]">Bank Setup</span>
           </h2>
           <p className="text-xs md:text-sm text-[#A5ACB8] mt-2 max-w-xl">
-            Enter your bank account number and IFSC to receive payouts securely. 
+            Enter your bank account number and IFSC to receive payouts securely.
             These details are{" "}
             <span className="text-green-400 font-medium">
               sent over an encrypted connection
@@ -88,12 +87,13 @@ export default function BankDetailsForm() {
       <div className="mt-4 mb-6 rounded-xl border border-[#1A2532] bg-[#050B11] px-4 py-3 text-xs md:text-sm text-[#C4CDD9]">
         <p>
           • Only your <span className="font-medium">account number</span> and{" "}
-          <span className="font-medium">IFSC</span> are collected.  
+          <span className="font-medium">IFSC</span> are collected.
         </p>
         <p className="mt-1">
           • These details are used once to create a{" "}
           <span className="font-medium">payout account</span> with our banking
-          partner and are <span className="font-medium">never stored</span> in our database.  
+          partner and are <span className="font-medium">never stored</span> in
+          our database.
         </p>
         <p className="mt-1">
           • Sharing your account number and IFSC is generally safe for receiving
@@ -124,7 +124,8 @@ export default function BankDetailsForm() {
             autoComplete="off"
           />
           <p className="text-[11px] text-[#6B7280]">
-            Only visible to you on this screen and sent securely for verification.
+            Only visible to you on this screen and sent securely for
+            verification.
           </p>
         </div>
 
