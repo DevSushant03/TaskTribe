@@ -37,7 +37,6 @@ export default function BankDetailsForm() {
     }
 
     // const res = await Bank.addBankDetails(form);
-
     // if (!res.data.success) {
     //   toast.error(res.data.message);
     //   return;

@@ -1,6 +1,6 @@
 import FundAccount from "../models/BankDetails_model.js";
 import userModel from "../models/user_model.js";
-import razorpay from "../config/razorpay.js";
+// import razorpay from "../config/razorpay.js";
 
 export const addBankDetails = async (req, res) => {
   try {
