@@ -9,6 +9,11 @@ import {
   FaTimes,
   FaCog,
   FaQuestionCircle,
+  FaInstagram,
+  FaFacebook,
+  FaGithub,
+  FaLinkedin,
+  FaGlobe,
 } from "react-icons/fa";
 import { auth, users } from "../utils/api";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,17 +23,22 @@ import { toast } from "react-toastify";
 
 function ProfilePage() {
   const { user, loading, setUser } = useContext(AuthContext);
-  const [islogout, setislogout] = useState(false);
   const [isEditUser, setIsEditUser] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
   const [editBio, setEditBio] = useState("");
   const [editSkills, setEditSkills] = useState("");
+  const [editSocialLinks, setEditSocialLinks] = useState({
+    instagram: "",
+    facebook: "",
+    github: "",
+    linkedin: "",
+    portfolio: "",
+  });
   const [selectedFile, setSelectedFile] = useState(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingProfilePic, setSavingProfilePic] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-
 
   const getInitials = (name, surname) => {
     const first = name?.charAt(0).toUpperCase() || "";
@@ -61,6 +71,22 @@ function ProfilePage() {
         </span>
       </div>
     );
+  };
+
+  // Initialize edit social links when editing starts
+  const handleEditClick = () => {
+    setEditBio(user.bio || "");
+    setEditSkills(user.skills?.join(", ") || "");
+
+    // Initialize social links for editing
+    setEditSocialLinks({
+      instagram: user.socialLinks?.instagram || "",
+      facebook: user.socialLinks?.facebook || "",
+      github: user.socialLinks?.github || "",
+      linkedin: user.socialLinks?.linkedin || "",
+      portfolio: user.socialLinks?.portfolio || "",
+    });
+    setIsEditUser(true);
   };
 
   if (loading) {
@@ -105,6 +131,7 @@ function ProfilePage() {
       const res = await users.editProfile(userId, {
         bio: editBio,
         skills: skillsArray,
+        socialLinks: editSocialLinks,
       });
 
       if (res.data.success) {
@@ -149,22 +176,19 @@ function ProfilePage() {
         toast.error(res.data.message || "Failed to update profile picture");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error updating profile picture");
+      toast.error(
+        error.response?.data?.message || "Error updating profile picture"
+      );
     } finally {
       setSavingProfilePic(false);
     }
-  };
-
-  const handleEditClick = () => {
-    setEditBio(user.bio || "");
-    setEditSkills(user.skills?.join(", ") || "");
-    setIsEditUser(true);
   };
 
   const handleCancelEdit = () => {
     setIsEditUser(false);
     setEditBio("");
     setEditSkills("");
+    setEditSocialLinks({});
   };
 
   const handleCancelAvatarEdit = () => {
@@ -189,13 +213,59 @@ function ProfilePage() {
     }
   };
 
+  // Check if skills exist and are valid
+  const hasSkills =
+    user.skills &&
+    ((Array.isArray(user.skills) &&
+      user.skills.filter((s) => s && String(s).trim().length > 0).length > 0) ||
+      (typeof user.skills === "string" &&
+        user.skills.split(",").filter((s) => s.trim().length > 0).length > 0));
+
+  // Check if rating exists
+  const hasRating = user.rating?.avg > 0;
+
+  // Check if social links exist
+  const hasSocialLinks =
+    user.socialLinks &&
+    Object.values(user.socialLinks).some(
+      (link) => link && link.trim().length > 0
+    );
+
+  const socialLinksConfig = [
+    {
+      key: "instagram",
+      icon: FaInstagram,
+      color: "gradient-to-r from-pink-500 to-purple-500",
+    },
+    {
+      key: "facebook",
+      icon: FaFacebook,
+      color: "gradient-to-r from-blue-600 to-blue-700",
+    },
+    {
+      key: "github",
+      icon: FaGithub,
+      color: "gradient-to-r from-gray-700 to-gray-900",
+    },
+    {
+      key: "linkedin",
+      icon: FaLinkedin,
+      color: "gradient-to-r from-blue-700 to-blue-800",
+    },
+    {
+      key: "portfolio",
+      icon: FaGlobe,
+      color: "gradient-to-r from-orange-500 to-orange-600",
+    },
+  ];
+
   return (
     <div className="flex-1 bg-[#0C0C0C] min-h-screen overflow-y-auto">
       <Helmet>
         <title>Profile | TaskTribe</title>
         <meta
           name="description"
-          content="View and edit your TaskTribe profile. Update your bio, skills, photo, and personal details to improve your visibility and build trust."
+          content="View and edit your TaskTribe profile. Update your bio, skills, photo, social links, and personal details to improve your visibility and build trust."
         />
       </Helmet>
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 mt-10 md:mt-0">
@@ -302,6 +372,30 @@ function ProfilePage() {
                           placeholder="e.g., JavaScript, React, Node.js"
                         />
                       </div>
+                      <div>
+                        <label className="block text-gray-400 text-sm font-medium mb-2">
+                          Social Links
+                        </label>
+                        <div className="space-y-2">
+                          {socialLinksConfig.map(({ key, icon: Icon }) => (
+                            <div key={key} className="flex items-center gap-2">
+                              <Icon className="text-orange-500 w-5 h-5 flex-shrink-0" />
+                              <input
+                                type="url"
+                                value={editSocialLinks[key]}
+                                onChange={(e) =>
+                                  setEditSocialLinks((prev) => ({
+                                    ...prev,
+                                    [key]: e.target.value,
+                                  }))
+                                }
+                                className="flex-1 bg-[#222] border border-orange-500/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-orange-500"
+                                placeholder={`Enter ${key} URL`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <>
@@ -363,100 +457,151 @@ function ProfilePage() {
           </div>
         </div>
 
-        {/* Stats & Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* Rating Card */}
-          <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="bg-orange-600/20 p-3 rounded-lg">
-                <FaTrophy className="text-orange-500" size={24} />
+        {/* Stats & Skills Grid - Conditional Rendering */}
+        {(hasRating || hasSkills) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Rating Card - Only show if has rating */}
+            {hasRating && (
+              <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-orange-600/20 p-3 rounded-lg">
+                    <FaTrophy className="text-orange-500" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-gray-400 text-sm font-medium">
+                      Rating
+                    </h3>
+                    <p className="text-white text-2xl font-bold">
+                      {user.rating.avg.toFixed(1)}
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {renderStars(user.rating.avg)}
+                  <p className="text-gray-500 text-sm">
+                    Based on {user.rating?.count || 0}{" "}
+                    {user.rating?.count === 1 ? "review" : "reviews"}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-gray-400 text-sm font-medium">Rating</h3>
-                <p className="text-white text-2xl font-bold">
-                  {user.rating?.avg > 0 ? user.rating.avg.toFixed(1) : "0.0"}
-                </p>
+            )}
+
+            {/* Skills Card - Only show if has skills */}
+            {hasSkills && (
+              <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-orange-600/20 p-3 rounded-lg">
+                    <FaCheckCircle className="text-orange-500" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-gray-400 text-sm font-medium">
+                      Skills
+                    </h3>
+                    <p className="text-white text-2xl font-bold">
+                      {(() => {
+                        if (!user.skills) return 0;
+                        if (Array.isArray(user.skills)) {
+                          return user.skills.filter(
+                            (s) => s && String(s).trim().length > 0
+                          ).length;
+                        }
+                        if (typeof user.skills === "string") {
+                          return user.skills
+                            .split(",")
+                            .filter((s) => s.trim().length > 0).length;
+                        }
+                        return 0;
+                      })()}
+                    </p>
+                  </div>
+                </div>
+                {(() => {
+                  let skillsArray = [];
+                  if (user.skills) {
+                    if (Array.isArray(user.skills)) {
+                      skillsArray = user.skills.filter(
+                        (skill) => skill && String(skill).trim().length > 0
+                      );
+                    } else if (typeof user.skills === "string") {
+                      skillsArray = user.skills
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter((s) => s.length > 0);
+                    }
+                  }
+
+                  return skillsArray.length > 0 ? (
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {skillsArray.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="bg-orange-600/20 text-orange-400 px-3 py-1.5 rounded-full text-sm font-medium border border-orange-500/50 hover:bg-orange-600/30 transition-colors"
+                        >
+                          {String(skill).trim()}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null;
+                })()}
               </div>
-            </div>
-            {user.rating?.avg > 0 ? (
-              <div className="space-y-2">
-                {renderStars(user.rating.avg)}
-                <p className="text-gray-500 text-sm">
-                  Based on {user.rating?.count || 0}{" "}
-                  {user.rating?.count === 1 ? "review" : "reviews"}
-                </p>
-              </div>
-            ) : (
-              <p className="text-gray-500 text-sm">No ratings yet</p>
             )}
           </div>
+        )}
 
-          {/* Skills Card */}
-          <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
-            <div className="flex items-center gap-3 mb-4">
+        {/* Social Links Card - Only show if has social links */}
+        {hasSocialLinks && !isEditUser && (
+          <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 mb-6">
+            <div className="flex items-center gap-3 mb-6">
               <div className="bg-orange-600/20 p-3 rounded-lg">
-                <FaCheckCircle className="text-orange-500" size={24} />
+                <FaGlobe className="text-orange-500" size={24} />
               </div>
               <div>
-                <h3 className="text-gray-400 text-sm font-medium">Skills</h3>
-                <p className="text-white text-2xl font-bold">
-                  {(() => {
-                    if (!user.skills) return 0;
-                    if (Array.isArray(user.skills)) {
-                      return user.skills.filter(
-                        (s) => s && String(s).trim().length > 0
-                      ).length;
-                    }
-                    if (typeof user.skills === "string") {
-                      return user.skills
-                        .split(",")
-                        .filter((s) => s.trim().length > 0).length;
-                    }
-                    return 0;
-                  })()}
-                </p>
+                <h3 className="text-xl font-semibold text-white">
+                  Social Links
+                </h3>
               </div>
             </div>
-            {(() => {
-              // Ensure skills is always an array for display
-              let skillsArray = [];
-              if (user.skills) {
-                if (Array.isArray(user.skills)) {
-                  skillsArray = user.skills.filter(
-                    (skill) => skill && String(skill).trim().length > 0
-                  );
-                } else if (typeof user.skills === "string") {
-                  // Handle case where skills might be stored as comma-separated string
-                  skillsArray = user.skills
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter((s) => s.length > 0);
-                }
-              }
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {socialLinksConfig.map(({ key, icon: Icon, color }) => {
+                const link = user.socialLinks?.[key];
+                if (!link || link.trim().length === 0) return null;
 
-              return skillsArray.length > 0 ? (
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {skillsArray.map((skill, index) => (
-                    <span
-                      key={index}
-                      className="bg-orange-600/20 text-orange-400 px-3 py-1.5 rounded-full text-sm font-medium border border-orange-500/50 hover:bg-orange-600/30 transition-colors"
+                return (
+                  <a
+                    key={key}
+                    href={link.startsWith("http") ? link : `https://${link}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-3 p-4 bg-[#222] border border-orange-500/30 rounded-lg hover:bg-[#2a2a2a] hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/20 transition-all duration-200"
+                  >
+                    <div
+                      className={`p-3 rounded-lg bg-gradient-to-r ${color} group-hover:scale-110 transition-transform`}
                     >
-                      {String(skill).trim()}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-sm mt-4">
-                  No skills added yet
-                </p>
-              );
-            })()}
+                      <Icon className="text-white" size={20} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-medium text-sm truncate group-hover:no-underline">
+                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                      </p>
+                      <p
+                        className="text-orange-400 text-xs truncate"
+                        title={link}
+                      >
+                        {link.replace(/^https?:\/\//, "")}
+                      </p>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Help & Settings Section */}
         <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 mb-6">
-          <h3 className="text-xl font-semibold text-white mb-4">Account & Support</h3>
+          <h3 className="text-xl font-semibold text-white mb-4">
+            Account & Support
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
               onClick={() => navigate(`/user/${id}/help`)}
@@ -489,9 +634,7 @@ function ProfilePage() {
             </button>
           </div>
         </div>
-
       </div>
-
     </div>
   );
 }

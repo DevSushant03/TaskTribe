@@ -87,7 +87,7 @@ export const setUserData = async (req, res) => {
 export const editProfile = async (req, res) => {
   try {
     const { userid } = req.user;
-    let { skills, bio } = req.body;
+    let { skills, bio, socialLinks } = req.body;
 
     // Parse skills - handle different formats
     let parsedSkills = undefined;
@@ -116,9 +116,52 @@ export const editProfile = async (req, res) => {
       }
     }
 
+    // Parse socialLinks - handle different formats
+    let parsedSocialLinks = undefined;
+    if (socialLinks !== undefined) {
+      if (typeof socialLinks === "string") {
+        try {
+          // Try to parse as JSON first
+          parsedSocialLinks = JSON.parse(socialLinks);
+        } catch (e) {
+          // If not JSON, return empty object
+          parsedSocialLinks = {};
+        }
+      } else if (typeof socialLinks === "object" && socialLinks !== null) {
+        // Clean and validate social links
+        parsedSocialLinks = {};
+        const allowedKeys = [
+          "instagram",
+          "facebook",
+          "github",
+          "linkedin",
+          "portfolio",
+        ];
+
+        for (const [key, value] of Object.entries(socialLinks)) {
+          if (
+            allowedKeys.includes(key) &&
+            value &&
+            String(value).trim().length > 0
+          ) {
+            // Ensure URLs start with http:// or https://
+            let cleanUrl = String(value).trim();
+            if (!cleanUrl.match(/^https?:\/\//)) {
+              cleanUrl = "https://" + cleanUrl;
+            }
+            parsedSocialLinks[key] = cleanUrl;
+          }
+        }
+      } else {
+        parsedSocialLinks = {};
+      }
+    }
+
     const updateData = {};
     if (bio !== undefined) updateData.bio = bio;
     if (parsedSkills !== undefined) updateData.skills = parsedSkills;
+    if (parsedSocialLinks !== undefined)
+      updateData.socialLinks = parsedSocialLinks;
 
     const user = await userModel
       .findByIdAndUpdate(userid, updateData, { new: true, runValidators: true })
@@ -145,7 +188,11 @@ export const editProfile = async (req, res) => {
       user,
     });
   } catch (error) {
-    return res.json({ success: false, message: error.message });
+    console.error("Edit profile error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to update profile",
+    });
   }
 };
 
