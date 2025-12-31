@@ -8,136 +8,195 @@ export default function UserOnboarding2({ onBack, userData }) {
   const Navigate = useNavigate();
   const { setid } = useContext(AuthContext);
   const [loading, setloading] = useState(false);
-  const [photo, setPhoto] = useState(userData.photo || null);
+  const [photo] = useState(userData.photo || null);
+  const [bio] = useState(userData.bio || "");
   const [skills, setSkills] = useState([]);
-  const [bio, setBio] = useState("");
+  const [newSkill, setNewSkill] = useState("");
+  const [socialLinks, setSocialLinks] = useState({
+    instagram: "",
+    facebook: "",
+    github: "",
+    linkedin: "",
+    portfolio: "",
+  });
 
-  const skillList = [
-    "Web Development",
-    "App Development",
-    "Content Writing",
-    "Video Editing",
-    "Graphic Design",
-    "Data Entry",
-    "Software Setup",
-  ];
-
-  const toggleSkill = (skill) => {
-    if (skills.includes(skill)) {
-      setSkills(skills.filter((s) => s !== skill));
-    } else {
-      setSkills([...skills, skill]);
+  const addSkill = () => {
+    const trimmed = newSkill.trim();
+    if (trimmed && !skills.includes(trimmed)) {
+      setSkills([...skills, trimmed]);
+      setNewSkill("");
     }
   };
 
+  const removeSkill = (skillToRemove) => {
+    setSkills(skills.filter((skill) => skill !== skillToRemove));
+  };
+
+  const updateSocialLink = (platform, value) => {
+    setSocialLinks((prev) => ({
+      ...prev,
+      [platform]: value,
+    }));
+  };
   const handleSubmit = async () => {
     setloading(true);
     const fd = new FormData();
-    // Convert skills array to JSON string for proper parsing on backend
+
     fd.append("skills", JSON.stringify(skills));
-    fd.append("bio", bio);
+    fd.append("bio", bio || "");
+    fd.append("socialLinks", JSON.stringify(socialLinks));
+
     if (photo) {
       fd.append("photo", photo);
     }
-    const response = await users.setUserData(fd);
 
-    if (response.data.success) {
-      Navigate(`/user/${response.data.userid}/dashboard`);
-      setid(response.data.userid);
-    } else {
+    try {
+      const response = await users.setUserData(fd);
+      if (response.data.success) {
+        Navigate(`/user/${response.data.userid}/dashboard`);
+        setid(response.data.userid);
+        toast.success("Profile created successfully!");
+      } else {
+        toast.error(response.data?.message || "Unable to save profile");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
       setloading(false);
-      toast.error(response.data?.message || "Unable to save profile");
     }
   };
 
   return (
-    <div className="w-screen min-h-screen bg-gray-900 text-white flex justify-center">
-      <div className="p-12 flex flex-col justify-center">
-        <p className="text-sm text-gray-400 mb-2">Step 2 of 2</p>
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-8 text-white">
+      {/* Step indicator */}
+      <div className="w-24 h-1 bg-orange-600 rounded-full mb-12 self-start"></div>
+      <p className="text-orange-400 text-lg font-medium mb-12 self-start">
+        Step 2 of 2
+      </p>
 
-        <h1 className="text-3xl font-bold mb-2">✨ Your Skills & Story</h1>
-        <p className="text-gray-400 mb-8 max-w-md">
-          Tell others what you can do and what makes you unique on TaskTribe.
-        </p>
+      <div className="w-full max-w-4xl flex flex-col lg:flex-row gap-16 items-start">
+        {/* Left content */}
+        <div className="lg:w-1/2">
+          <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            Build Client Trust
+          </h1>
+          <p className="text-gray-400 text-xl mb-16 max-w-lg">
+            Add your skills and social proof. Complete profiles get 3x more
+            invites.
+          </p>
+        </div>
 
-        <label className="block mb-3 text-gray-300 font-medium">
-          Select your skills
-        </label>
+        {/* Right form */}
+        <div className="lg:w-1/2 w-full space-y-12">
+          {/* Skills Input */}
+          <div>
+            <label className="block text-orange-400 mb-4 font-semibold text-xl">
+              Your Skills (Optional)
+            </label>
+            <div className="flex flex-col md:flex-row   gap-3 mb-4 ">
+              <input
+                type="text"
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                placeholder="e.g. React Developer, Video Editor"
+                className="flex-1 bg-gray-900 border border-gray-600 rounded-xl p-4 text-white text-lg focus:outline-none focus:border-orange-500"
+                onKeyDown={(e) => e.key === "Enter" && addSkill()}
+              />
+              <button
+                onClick={addSkill}
+                className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl border-2 border-orange-600 transition-colors whitespace-nowrap"
+              >
+                Add Skill
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {skills.map((skill) => (
+                <div
+                  key={skill}
+                  className="px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg flex items-center gap-2 hover:bg-orange-700 transition-colors cursor-pointer"
+                  onClick={() => removeSkill(skill)}
+                >
+                  {skill}
+                  <span className="text-xs">×</span>
+                </div>
+              ))}
+            </div>
+            {skills.length === 0 && (
+              <p className="text-gray-500 text-sm mt-3 italic">
+                Add 3-5 skills → Clients find you faster
+              </p>
+            )}
+          </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-          {skillList.map((skill) => (
+          {/* Social Links */}
+          <div>
+            <label className="block text-orange-400 mb-6 font-semibold text-xl">
+              Social Links (Optional)
+            </label>
+            <div className="space-y-4">
+              {[
+                {
+                  key: "linkedin",
+                  label: "LinkedIn",
+                  placeholder: "linkedin.com/in/yourprofile",
+                },
+                {
+                  key: "github",
+                  label: "GitHub",
+                  placeholder: "github.com/yourusername",
+                },
+                {
+                  key: "portfolio",
+                  label: "Portfolio",
+                  placeholder: "yourportfolio.com",
+                },
+                {
+                  key: "instagram",
+                  label: "Instagram",
+                  placeholder: "instagram.com/yourprofile",
+                },
+                {
+                  key: "facebook",
+                  label: "Facebook",
+                  placeholder: "facebook.com/yourprofile",
+                },
+              ].map(({ key, label, placeholder }) => (
+                <div
+                  key={key}
+                  className="flex items-center gap-3 p-4 bg-gray-900 border border-gray-600 rounded-xl"
+                >
+                  <span className="text-orange-400 font-semibold min-w-[80px]">
+                    {label}
+                  </span>
+                  <input
+                    type="url"
+                    placeholder={placeholder}
+                    value={socialLinks[key]}
+                    onChange={(e) => updateSocialLink(key, e.target.value)}
+                    className="flex-1 bg-transparent outline-none text-white placeholder-gray-500 text-lg border-none"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 pt-8">
             <button
-              key={skill}
-              onClick={() => toggleSkill(skill)}
-              className={`p-3 rounded-lg text-sm border transition text-left ${
-                skills.includes(skill)
-                  ? "bg-blue-600 border-blue-700 text-white"
-                  : "bg-gray-800 border-gray-700 text-gray-300"
-              }`}
+              onClick={onBack}
+              className="flex-1 px-8 py-4 bg-gray-900 text-gray-300 border border-gray-600 rounded-xl hover:bg-gray-800 transition font-semibold"
             >
-              {skill}
+              ← Back
             </button>
-          ))}
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="flex-1 px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl border-2 border-orange-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50"
+            >
+              {loading ? "Creating Profile..." : "Launch Profile →"}
+            </button>
+          </div>
         </div>
-
-        {/* Bio Input */}
-        <label className="block mb-3 text-gray-300 font-medium">Your Bio</label>
-        <textarea
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          placeholder="Write a short intro about yourself..."
-          className="w-full h-32 bg-gray-800 border border-gray-700 rounded-lg p-3 text-gray-200 focus:outline-none focus:border-blue-400 resize-none"
-        />
-
-        {/* Buttons */}
-        <div className="flex gap-4 mt-8">
-          <button
-            onClick={onBack}
-            className="px-6 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition"
-          >
-            Back
-          </button>
-
-          <button
-            onClick={handleSubmit}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            {loading ? "loading..." : "Continue →"}
-          </button>
-        </div>
-      </div>
-
-      {/* RIGHT SECTION */}
-      <div className="hidden md:block bg-gray-800 p-12 flex flex-col justify-center relative overflow-hidden">
-        <h2 className="text-2xl font-semibold mb-4">
-          Grow your skillset on TaskTribe
-        </h2>
-
-        <p className="text-gray-300 max-w-sm mb-8">
-          Thousands of people are enhancing their careers, completing tasks, and
-          earning more every day.
-        </p>
-
-        <div className="flex gap-4 mt-4">
-          <img
-            src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=200&q=60"
-            className="w-28 h-40 object-cover rounded-xl"
-          />
-
-          <img
-            src="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&w=200&q=60"
-            className="w-28 h-40 object-cover rounded-xl"
-          />
-
-          <img
-            src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=200&q=60"
-            className="w-28 h-40 object-cover rounded-xl"
-          />
-        </div>
-
-        <p className="text-gray-400 text-sm mt-6">
-          63,271+ active members growing together ✨
-        </p>
       </div>
     </div>
   );

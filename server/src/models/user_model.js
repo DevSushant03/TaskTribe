@@ -8,7 +8,11 @@ const userSchema = new mongoose.Schema({
   photo: { type: String, default: "" },
   bio: { type: String, default: "" },
   skills: { type: [String], default: [] },
-  role: { type: String, enum: ["user", "admin"], default: "user" },
+  socialLinks: {
+    type: Map,
+    of: String,
+    default: {},
+  },
   rating: {
     avg: { type: Number, default: 0 },
     count: { type: Number, default: 0 },
@@ -55,9 +59,6 @@ const userSchema = new mongoose.Schema({
     ],
     default: [],
   },
-
-  verifyOtp: { type: String, default: "" },
-  verifyOtpExpireAt: { type: Number, default: 0 },
   isCreatedProfile: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
