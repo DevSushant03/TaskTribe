@@ -1,20 +1,52 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import emailjs from "@emailjs/browser";
 
 export default function HelpAndSupport() {
   const [loading, setLoading] = useState(false);
+  const [mail, setmail] = useState({
+    name: "",
+    email: "",
+    category: "",
+    description: "",
+  });
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setmail({ ...mail, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
 
     setLoading(true);
 
-    // TODO: connect API here
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          email: "mrsushant2005@gmail.com",
+          title: "TaskTribe - Help & Support",
+          message: mail.description,
+          highlight: mail.category,
+          footer_note: `From: ${mail.name}\nEmail: ${mail.email}`,
+          year: new Date().getFullYear(),
+          company_name: "TaskTribe",
+          website_url: "https://tasktribe-plum.vercel.app",
+          logo_url: "https://tasktribe-plum.vercel.app/icon.jpeg",
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
       toast.success("Support request submitted successfully!");
-    }, 1500);
+      setmail({ name: "", email: "", category: "", description: "" });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to submit request. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,6 +74,9 @@ export default function HelpAndSupport() {
             </label>
             <input
               type="text"
+              onChange={handleChange}
+              name="name"
+              value={mail.name}
               placeholder="John Doe"
               required
               className="w-full max-w-full bg-[#0f0f0f] border border-zinc-700/80 rounded-lg px-4 py-2.5
@@ -58,6 +93,9 @@ export default function HelpAndSupport() {
             </label>
             <input
               type="email"
+              onChange={handleChange}
+              name="email"
+              value={mail.email}
               placeholder="you@example.com"
               required
               className="w-full max-w-full bg-[#0f0f0f] border border-zinc-700/80 rounded-lg px-4 py-2.5
@@ -78,6 +116,9 @@ export default function HelpAndSupport() {
             </label>
             <select
               required
+              onChange={handleChange}
+              name="category"
+              value={mail.category}
               className="w-full max-w-full bg-[#0f0f0f] border border-zinc-700/80 rounded-lg px-4 py-2.5
               text-sm text-zinc-100
               focus:outline-none focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent transition"
@@ -100,6 +141,9 @@ export default function HelpAndSupport() {
             <textarea
               rows={5}
               required
+              onChange={handleChange}
+              name="description"
+              value={mail.description}
               placeholder="Describe the issue you’re facing, including any error messages, task IDs, or transaction references if available."
               className="w-full max-w-full bg-[#0f0f0f] border border-zinc-700/80 rounded-lg px-4 py-2.5
               text-sm text-zinc-100 placeholder:text-zinc-500 resize-none
@@ -137,7 +181,7 @@ export default function HelpAndSupport() {
           TaskTribe is currently in early access. Support responses may take up
           to 24 hours, but every request is reviewed by a member of the team.
         </div>
-        </div>
+      </div>
     </div>
   );
 }

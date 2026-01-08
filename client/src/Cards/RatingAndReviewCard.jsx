@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { task } from "../utils/api";
 import CircularLoader from "../Components/CircularLoader";
+import { toast } from "react-toastify";
 
 export default function RatingAndReviewCard({ taskId, onClose, onSuccess }) {
   const [rating, setRating] = useState(0);
@@ -12,7 +13,7 @@ export default function RatingAndReviewCard({ taskId, onClose, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (rating === 0) {
       setError("Please select a rating");
       return;
@@ -27,12 +28,18 @@ export default function RatingAndReviewCard({ taskId, onClose, onSuccess }) {
       setLoading(true);
       setError("");
       const res = await task.markAsComplete(taskId, review.trim(), rating);
-      alert(res.data.message);
+      if (!res.data.success) {
+        toast.error(res.data.message);
+        return;
+      }
+      toast.success(res.data.message);
       onSuccess();
       onClose();
     } catch (error) {
       console.log(error);
-      setError(error.response?.data?.message || "Failed to submit rating and review");
+      setError(
+        error.response?.data?.message || "Failed to submit rating and review"
+      );
     } finally {
       setLoading(false);
     }

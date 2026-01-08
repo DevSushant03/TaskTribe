@@ -8,7 +8,7 @@ function ApplicantCard({ applicant, selectedTask, fetchPostedTasks, setTab }) {
   const [UserProfile, setUserProfile] = useState(null);
   const [bidAmount, setBidAmount] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [actionType, setActionType] = useState(null); // "accept" | "reject"
+  const [actionType, setActionType] = useState(null); 
   const [actionUserId, setActionUserId] = useState(null);
 
   const handleConfirmAction = async () => {

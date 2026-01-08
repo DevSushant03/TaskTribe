@@ -40,7 +40,7 @@ const DashBoard = () => {
       label: "Active Contracts",
       value: Task?.filter(
         (task) =>
-          task.assignedTo?._id === user?._id && task.status === "assigned"
+          task.assignedTo?._id === user?._id && task.status === "in_progress"
       ).length,
     },
     {
