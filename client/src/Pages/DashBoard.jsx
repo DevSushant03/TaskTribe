@@ -91,7 +91,7 @@ const DashBoard = () => {
 
         {/* Global stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          {globalStats.map((stat) => (
+          {globalStats?.map((stat) => (
             <div
               key={stat.label}
               className="bg-[#111] border border-orange-500/50 rounded-xl p-4 md:p-6"
@@ -111,15 +111,10 @@ const DashBoard = () => {
             <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-white">As Client</h2>
-                <Link
-                  to="../client/tasks"
-                  className="text-orange-500 text-sm font-medium"
-                >
-                  View all tasks →
-                </Link>
+               
               </div>
               <div className="grid grid-cols-3 gap-3 mb-4">
-                {clientStats.map((stat) => (
+                {clientStats?.map((stat) => (
                   <div key={stat.label}>
                     <p className="text-gray-400 text-xs mb-1">{stat.label}</p>
                     <p className="text-xl font-bold text-white">{stat.value}</p>
@@ -135,7 +130,7 @@ const DashBoard = () => {
                   Post new task
                 </Link>
                 <Link
-                  to="../client/proposals"
+                  to="../manage"
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#0c0c0c] border border-gray-700 rounded-lg text-white text-sm"
                 >
                   View proposals
@@ -149,14 +144,14 @@ const DashBoard = () => {
                   Recent Client Tasks
                 </h3>
                 <Link
-                  to="../client/tasks"
+                  to="../manage"
                   className="text-orange-500 text-xs font-medium"
                 >
                   See all
                 </Link>
               </div>
               <div className="space-y-3">
-                {clientTasks.map((task) => (
+                {clientTasks?.map((task) => (
                   <div
                     key={task._id}
                     className="flex items-center justify-between p-3 bg-[#0c0c0c] border border-gray-800 rounded-lg"
@@ -183,15 +178,10 @@ const DashBoard = () => {
             <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-white">As Freelancer</h2>
-                <Link
-                  to="../freelancer/tasks"
-                  className="text-orange-500 text-sm font-medium"
-                >
-                  View your work →
-                </Link>
+               
               </div>
               <div className="grid grid-cols-3 gap-3 mb-4">
-                {freelancerStats.map((stat) => (
+                {freelancerStats?.map((stat) => (
                   <div key={stat.label}>
                     <p className="text-gray-400 text-xs mb-1">{stat.label}</p>
                     <p className="text-xl font-bold text-white">{stat.value}</p>
@@ -207,7 +197,7 @@ const DashBoard = () => {
                   Browse tasks
                 </Link>
                 <Link
-                  to="../freelancer/proposals"
+                  to="../manage"
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#0c0c0c] border border-gray-700 rounded-lg text-white text-sm"
                 >
                   Your proposals
@@ -221,14 +211,14 @@ const DashBoard = () => {
                   Recent Freelancer Tasks
                 </h3>
                 <Link
-                  to="../freelancer/tasks"
+                  to="../manage"
                   className="text-orange-500 text-xs font-medium"
                 >
                   See all
                 </Link>
               </div>
               <div className="space-y-3">
-                {freelancerTasks.map((task) => (
+                {freelancerTasks?.map((task) => (
                   <div
                     key={task._id}
                     className="flex items-center justify-between p-3 bg-[#0c0c0c] border border-gray-800 rounded-lg"

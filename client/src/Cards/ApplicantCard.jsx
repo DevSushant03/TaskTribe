@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { task } from "../utils/api";
 import ViewProfile from "../Components/ViewProfile";
 import { toast } from "react-toastify";
+import emailjs from "@emailjs/browser";
 function ApplicantCard({ applicant, selectedTask, fetchPostedTasks, setTab }) {
   const [loading, setloading] = useState(false);
   const [UserProfile, setUserProfile] = useState(null);
@@ -16,11 +17,32 @@ function ApplicantCard({ applicant, selectedTask, fetchPostedTasks, setTab }) {
 
       if (actionType === "accept") {
         const res = await task.acceptApplicant(actionUserId, selectedTask);
-        if (!res.data.success) {
-          return toast.error("Sommething went wrong , try again later");
+        if (res.data.success) {
+          toast.success(res.data.message);
+          await emailjs.send(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID,
+            import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+            {
+              email: applicant.user.email,
+              title: "Application Accepted – Task Assigned",
+              message: `Congratulations! We’re pleased to inform you that your application has been accepted for the task "${selectedTask.title}". 
+
+You are now officially assigned to this task. Please review the task details carefully and begin work as per the agreed scope and timeline.`,
+              highlight: "Important Guidelines After Assignment",
+              footer_note: `• Work must be completed within the agreed deadline.
+• Maintain clear and professional communication with the client.
+• Submit work only through the TaskTribe platform.
+• Any scope changes must be discussed and approved before execution.
+• Failure to comply with platform guidelines may result in task cancellation.`,
+              year: new Date().getFullYear(),
+              company_name: "TaskTribe",
+              website_url: "https://tasktribe-plum.vercel.app",
+              logo_url: "https://tasktribe-plum.vercel.app/icon.jpeg",
+            },
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+          );
+          setTab("posted");
         }
-        toast.success(res.data.message);
-        setTab("posted");
       } else if (actionType === "reject") {
         const res = await task.rejectApplicant(actionUserId, selectedTask);
         if (!res.data.success) {

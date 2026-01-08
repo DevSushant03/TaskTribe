@@ -4,7 +4,7 @@ import { task } from "../utils/api";
 import { useState } from "react";
 import CircularLoader from "../Components/CircularLoader";
 import { toast } from "react-toastify";
-function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
+function AssignedTaskCard({ tasks, key, fetchAssignedTasks }) {
   const [open, setopen] = useState(null);
   const [file, setfile] = useState(null);
   const [loading, setloading] = useState(false);
@@ -21,7 +21,7 @@ function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
     try {
       setloading(true);
       const res = await task.submitWork(formData, TaskId);
-      if(res.data.success){
+      if (res.data.success) {
         toast.success(res.data.message);
         fetchAssignedTasks();
       }
@@ -41,11 +41,18 @@ function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
       <div className="flex items-center justify-between gap-3">
         {/* Client Info */}
         <div className="flex items-center gap-3">
-          <img
-            src={tasks.createdBy.photo}
-            alt="profile"
-            className="w-9 h-9 rounded-full object-cover border border-[#333]"
-          />
+          {tasks.createdBy.photo ? (
+            <img
+              src={tasks.createdBy.photo}
+              alt="profile"
+              className="w-9 h-9 rounded-full object-cover border border-[#333]"
+            />
+          ) : (
+            <div className="w-9 h-9 bg-orange-500 flex items-center justify-center rounded-full object-cover border border-[#333]">
+              {tasks.createdBy.name[0].toUpperCase() +
+                tasks.createdBy.surname[0].toUpperCase()}
+            </div>
+          )}
 
           <div className="leading-tight">
             <p className="text-[13px] font-semibold text-white">
@@ -146,7 +153,7 @@ function AssignedTaskCard({ tasks, key,fetchAssignedTasks }) {
         onClick={() => uploadWork(tasks._id)}
         className="mt-3 w-full py-2 text-[12px]  rounded-md bg-[#FF6B00] disabled:cursor-not-allowed text-white hover:bg-[#ff7f2e] transition"
       >
-        {loading ? <CircularLoader/> : "Mark Completed"}
+        {loading ? <CircularLoader /> : "Mark Completed"}
       </button>
     </div>
   );

@@ -701,6 +701,7 @@ export const acceptApplicant = async (req, res) => {
     }
 
     res.json({
+      success:true,
       message: "Applicant accepted",
       task,
     });
