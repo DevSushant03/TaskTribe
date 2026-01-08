@@ -2,11 +2,11 @@ import React, { useContext, useState } from "react";
 import { users } from "../utils/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../Context/AuthContext";
+import { ContextApi } from "../Context/ContextApi";
 
 export default function UserOnboarding2({ onBack, userData }) {
   const Navigate = useNavigate();
-  const { setid } = useContext(AuthContext);
+  const { setid } = useContext(ContextApi);
   const [loading, setloading] = useState(false);
   const [photo] = useState(userData.photo || null);
   const [bio] = useState(userData.bio || "");

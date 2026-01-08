@@ -1,7 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { AuthProvider } from "./Context/AuthContext";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,6 +26,7 @@ import HelpAndSupport from "./Pages/HelpAndSupport"
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import ForgotPasswordOnboarding from "./Pages/ForgotPasswordOnboarding";
 import Settings from "./Pages/Setting";
+import { ContextProvider } from "./Context/ContextApi";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -87,7 +87,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
+    <ContextProvider>
       <RouterProvider router={router} />
       <ToastContainer
         position="top-right"
@@ -98,6 +98,6 @@ createRoot(document.getElementById("root")).render(
         draggable
         theme="dark"
       />
-    </AuthProvider>
+    </ContextProvider>
   </React.StrictMode>
 );

@@ -18,11 +18,11 @@ import {
 import { auth, users } from "../utils/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
+import { ContextApi } from "../Context/ContextApi";
 
 function ProfilePage() {
-  const { user, loading, setUser } = useContext(AuthContext);
+  const { user, loading, setUser } = useContext(ContextApi);
   const [isEditUser, setIsEditUser] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
   const [editBio, setEditBio] = useState("");

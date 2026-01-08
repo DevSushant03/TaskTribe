@@ -9,11 +9,11 @@ import {
   FaSearch,
 } from "react-icons/fa";
 import { IoMdNotifications } from "react-icons/io";
-import { AuthContext } from "../Context/AuthContext";
+import { ContextApi } from "../Context/ContextApi";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading } = useContext(ContextApi);
   const { id } = useParams();
 
   const getInitials = (name, surname) => {

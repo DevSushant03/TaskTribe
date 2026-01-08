@@ -2,11 +2,11 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../utils/api";
 import { toast } from "react-toastify";
-import { AuthContext } from "../Context/AuthContext";
+import { ContextApi } from "../Context/ContextApi";
 
 export default function Settings() {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(ContextApi);
   const [isLogout, setIsLogout] = useState(false);
 
   const [privacy, setPrivacy] = useState({

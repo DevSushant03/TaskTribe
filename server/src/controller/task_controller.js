@@ -239,13 +239,35 @@ export const editTask = async (req, res) => {
   }
 };
 
-export const getAllTasks = async (req, res) => {
+export const getAllOpenTask = async (req, res) => {
   const { userid } = req.user;
   try {
     const tasks = await taskModel
       .find({ createdBy: { $ne: userid }, status: "open" })
       .populate("createdBy", "name surname email photo bio skills")
-      .populate("assignedTo");
+      .populate("assignedTo", "name surname email photo bio skills");
+
+    return res.json({
+      success: true,
+      tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch tasks",
+    });
+  }
+};
+
+export const getAllTask = async (req, res) => {
+  const { userid } = req.user;
+  try {
+    const tasks = await taskModel
+      .find({
+        $or: [{ createdBy: userid }, { assignedTo: userid }],
+      })
+      .populate("createdBy", "name surname photo")
+      .populate("assignedTo", "name surname photo");
 
     return res.json({
       success: true,
@@ -292,7 +314,9 @@ export const getTaskApplyByMe = async (req, res) => {
         status: "open",
         "applicants.user": userid,
       })
-      .select("title description budget deadline applicants.bidAmount applicants.message")
+      .select(
+        "title description budget deadline applicants.bidAmount applicants.message"
+      )
       .populate("createdBy", "name surname photo email")
       .sort({ createdAt: -1 });
 

@@ -8,10 +8,10 @@ import { toast } from "react-toastify";
 import { loginSchema } from "../Validation/auth_validation.js";
 import { Helmet } from "react-helmet";
 import { useContext } from "react";
-import { AuthContext } from "../Context/AuthContext.jsx";
 import CircularLoader from "../Components/CircularLoader.jsx";
+import { ContextApi } from "../Context/ContextApi.jsx";
 export default function Login() {
-  const { setid } = useContext(AuthContext);
+  const { setid } = useContext(ContextApi);
   const navigate = useNavigate();
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState("");

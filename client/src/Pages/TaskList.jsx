@@ -16,7 +16,7 @@ export default function TaskList() {
     const fetchTasks = async () => {
       setloading(true);
       try {
-        const res = await task.getAllTask();
+        const res = await task.getAllOpenTask();
         setTasks(res.data.tasks);
         setFiltered(res.data.tasks);
         setloading(false);
