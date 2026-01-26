@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { FaArrowAltCircleLeft, FaFacebookF } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaEye, FaEyeSlash } from "react-icons/fa";
+
 import SidePicture from "/src/assets/teamworks.jpg";
 import { useState } from "react";
 import { auth } from "../utils/api";
@@ -15,6 +16,8 @@ export default function Login() {
   const navigate = useNavigate();
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -108,15 +111,30 @@ export default function Login() {
                 className="w-full mb-3 py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
                 required
               />
-              <input
-                type="password"
-                placeholder="Password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full mb-3 py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
-                required
-              />
+              <div className="relative mb-3">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full py-3 px-4 pr-12 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-600 hover:text-orange-700"
+                >
+                  {showPassword ? (
+                    <FaEyeSlash size={18} />
+                  ) : (
+                    <FaEye size={18} />
+                  )}
+                </button>
+              </div>
+
               {error && (
                 <p className="bg-orange-50 border-2 border-orange-200/60 p-3 my-2 rounded-xl text-orange-700 text-sm shadow-neumorph-orange-sm backdrop-blur-sm">
                   {error}

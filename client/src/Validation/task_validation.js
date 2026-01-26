@@ -21,15 +21,15 @@ export const TaskValidationSchema = z
       .string()
       .min(1, "Minimum budget is required.")
       .refine(
-        (val) => !val || (!isNaN(Number(val)) && Number(val) >= 0),
-        "Minimum budget must be a positive number."
+        (val) => !val || (!isNaN(Number(val)) && Number(val) > 0),
+        "Minimum budget must be a greater then 0."
       ),
 
     budgetMax: z
       .string()
       .min(1, "Minimum budget is required.")
       .refine(
-        (val) => !val || (!isNaN(Number(val)) && Number(val) >= 0),
+        (val) => !val || (!isNaN(Number(val)) && Number(val) > 0),
         "Maximum budget must be a positive number."
       ),
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { FaArrowAltCircleLeft, FaRegEyeSlash } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import team_meating from "/src/assets/team_meating.jpg";
 import { auth } from "../utils/api";
 import { toast } from "react-toastify";
@@ -17,6 +17,8 @@ export default function Register() {
   const [isOpen, setisOpen] = useState(false);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -72,7 +74,7 @@ export default function Register() {
       }
 
       const expiryTime = new Date(
-        Date.now() + 15 * 60 * 1000
+        Date.now() + 15 * 60 * 1000,
       ).toLocaleTimeString();
 
       await emailjs.send(
@@ -91,7 +93,7 @@ export default function Register() {
           website_url: "https://tasktribe-plum.vercel.app",
           logo_url: "https://tasktribe-plum.vercel.app/icon.jpeg",
         },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
       );
 
       toast.success("OTP sent successfully");
@@ -211,16 +213,28 @@ export default function Register() {
               </div>
 
               {/* Password */}
-              <div className="relative mb-4">
+              <div className="relative mb-3">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Password"
-                  className="w-full py-3 px-4 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm pr-10"
+                  className="w-full py-3 px-4 pr-12 bg-white/90 backdrop-blur-sm border-2 border-orange-200/70 rounded-xl placeholder-gray-500 focus:border-orange-400 focus:shadow-neumorph-focus focus:outline-none transition-all duration-300 shadow-neumorph-sm"
+                  required
                 />
-                <FaRegEyeSlash className="absolute right-4 top-4 text-gray-400 h-5 w-5" />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-600 hover:text-orange-700"
+                >
+                  {showPassword ? (
+                    <FaEyeSlash size={18} />
+                  ) : (
+                    <FaEye size={18} />
+                  )}
+                </button>
               </div>
 
               {error && (

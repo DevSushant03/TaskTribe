@@ -8,6 +8,7 @@ export default function Settings() {
   const navigate = useNavigate();
   const { user } = useContext(ContextApi);
   const [isLogout, setIsLogout] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const [privacy, setPrivacy] = useState({
     directMessage: true,
@@ -16,6 +17,7 @@ export default function Settings() {
   });
 
   const handleLogOut = async () => {
+    setloading(true);
     try {
       const res = await auth.logout();
       if (res.data.success) {
@@ -27,21 +29,21 @@ export default function Settings() {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Error logging out");
+    } finally {
+      setloading(false);
     }
   };
 
   return (
     <div className="w-full min-h-full bg-[#050505] text-white px-4 py-6 md:py-8 flex justify-center overflow-x-hidden overflow-y-auto">
       <div className="w-full max-w-5xl mt-20 md:mt-0 space-y-6">
-
         {/* Header */}
         <header>
           <h1 className="text-2xl md:text-3xl font-semibold mb-1">
             Account <span className="text-[#FF6B00]">Settings</span>
           </h1>
           <p className="text-sm text-zinc-400 max-w-2xl">
-            Manage privacy and security settings for your
-            TaskTribe account.
+            Manage privacy and security settings for your TaskTribe account.
           </p>
         </header>
 
@@ -64,17 +66,14 @@ export default function Settings() {
             value={
               user?.createdAt
                 ? new Date(user.createdAt).toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
                 : "Not available"
             }
           />
-
         </Section>
-
-
 
         {/* Privacy */}
         <Section title="Privacy & Visibility">
@@ -128,16 +127,17 @@ export default function Settings() {
           >
             Log out
           </button>
-          <button className="px-4 py-2 text-sm rounded-lg border border-red-700/60 text-red-600 hover:bg-red-700/10 transition">
+          {/* <button className="px-4 py-2 text-sm rounded-lg border border-red-700/60 text-red-600 hover:bg-red-700/10 transition">
             Delete account
-          </button>
+          </button> */}
         </Section>
       </div>
 
       {/* Logout Confirmation Modal */}
       <div
-        className={`${isLogout ? "flex" : "hidden"
-          } fixed inset-0 z-50 items-center justify-center bg-black/80`}
+        className={`${
+          isLogout ? "flex" : "hidden"
+        } fixed inset-0 z-50 items-center justify-center bg-black/80`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="logout-title"
@@ -151,8 +151,8 @@ export default function Settings() {
           </h2>
 
           <p className="text-sm text-zinc-400 mb-6">
-            Are you sure you want to logout from Task Tribe? This
-            action cannot be undone.
+            Are you sure you want to logout from Task Tribe? This action cannot
+            be undone.
           </p>
 
           <div className="flex justify-end gap-3">
@@ -166,6 +166,7 @@ export default function Settings() {
             <button
               type="button"
               onClick={handleLogOut}
+              disabled={loading}
               className="px-4 py-2 text-sm rounded-md bg-red-600 text-white hover:bg-red-700 transition"
             >
               Logout
@@ -181,8 +182,12 @@ export default function Settings() {
 
 function Section({ title, children, danger }) {
   return (
-    <div className={`bg-[#151515] border ${danger ? "border-red-800/40" : "border-zinc-800/70"} rounded-xl p-6 space-y-4`}>
-      <h2 className={`text-sm font-semibold uppercase tracking-wide ${danger ? "text-red-400" : "text-zinc-200"}`}>
+    <div
+      className={`bg-[#151515] border ${danger ? "border-red-800/40" : "border-zinc-800/70"} rounded-xl p-6 space-y-4`}
+    >
+      <h2
+        className={`text-sm font-semibold uppercase tracking-wide ${danger ? "text-red-400" : "text-zinc-200"}`}
+      >
         {title}
       </h2>
       {children}
@@ -208,12 +213,14 @@ function Toggle({ label, description, checked, onChange }) {
       </div>
       <button
         onClick={onChange}
-        className={`relative w-11 h-6 rounded-full transition ${checked ? "bg-[#FF6B00]" : "bg-zinc-700"
-          }`}
+        className={`relative w-11 h-6 rounded-full transition ${
+          checked ? "bg-[#FF6B00]" : "bg-zinc-700"
+        }`}
       >
         <span
-          className={`absolute top-1 left-1 w-4 h-4 bg-black rounded-full transition ${checked ? "translate-x-5" : ""
-            }`}
+          className={`absolute top-1 left-1 w-4 h-4 bg-black rounded-full transition ${
+            checked ? "translate-x-5" : ""
+          }`}
         />
       </button>
     </div>
