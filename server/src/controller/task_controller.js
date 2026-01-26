@@ -287,7 +287,7 @@ export const getTaskById = async (req, res) => {
 
     const task = await taskModel
       .findById(taskId)
-      .populate("createdBy", "name email photo");
+      .populate("createdBy", "name surname email photo");
 
     if (!task) {
       return res.json({

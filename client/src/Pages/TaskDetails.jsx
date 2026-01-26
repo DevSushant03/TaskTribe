@@ -20,7 +20,6 @@ const TaskDetails = () => {
         const res = await task.getTaskById(taskId);
         setDetailTask(res.data.task);
         console.log(res.data.task);
-        
       } catch (error) {
         console.error("Error fetching task details:", error);
       } finally {
@@ -51,16 +50,18 @@ const TaskDetails = () => {
 
   const handleApply = async () => {
     if (!agreedToRules) {
-      return toast.warning("Please read and agree to the application guidelines before applying.");
+      return toast.warning(
+        "Please read and agree to the application guidelines before applying.",
+      );
     }
     if (!message.trim()) return alert("Please write a message.");
     if (!bidAmount || Number(bidAmount) <= 0) {
       return toast.warning("Please enter a valid bid amount.");
     }
-     try {
+    try {
       setApplyLoading(true);
-      const res = await task.applyTask(taskId, message,bidAmount);
-      
+      const res = await task.applyTask(taskId, message, bidAmount);
+
       if (res.data.action === "ALREADY_APPLIED") {
         alert(res.data.message);
         toast.error("You already applied!");
@@ -128,11 +129,19 @@ const TaskDetails = () => {
           Posted By
         </h2>
         <div className="flex items-center gap-3">
-          <img
-            src={detailTask.createdBy.photo || "/user.png"}
-            alt="User"
-            className="w-14 h-14 rounded-full object-cover border border-orange-500/40 shadow-lg"
-          />
+          {detailTask.createdBy.photo ? (
+            <img
+              src={detailTask.createdBy.photo || "/user.png"}
+              alt="User"
+              className="w-14 h-14 rounded-full object-cover border border-orange-500/40 shadow-lg"
+            />
+          ) : (
+            <span className="w-14 h-14 flex justify-center items-center rounded-full object-cover border border-orange-500/40 shadow-lg">
+              {detailTask.createdBy?.name[0].toUpperCase() +
+                detailTask.createdBy?.surname[0].toUpperCase()}
+            </span>
+          )}
+
           <div>
             <h3 className="font-semibold text-gray-200 text-lg">
               {detailTask.createdBy.name}
@@ -180,9 +189,17 @@ const TaskDetails = () => {
                 <li>Apply only if you have relevant skills for the task.</li>
                 <li>Read the task description carefully before applying.</li>
                 <li>Your application should be professional and honest.</li>
-                <li>Do not apply to multiple tasks if you cannot manage deadlines.</li>
-                <li>Once assigned, you are expected to complete the task responsibly.</li>
-                <li>Repeated rejection or poor submissions may affect your profile visibility.</li>
+                <li>
+                  Do not apply to multiple tasks if you cannot manage deadlines.
+                </li>
+                <li>
+                  Once assigned, you are expected to complete the task
+                  responsibly.
+                </li>
+                <li>
+                  Repeated rejection or poor submissions may affect your profile
+                  visibility.
+                </li>
               </ul>
             </div>
 
@@ -195,22 +212,24 @@ const TaskDetails = () => {
                 onChange={(e) => setAgreedToRules(e.target.checked)}
                 className="mt-1 w-4 h-4 text-orange-500 bg-black/40 border-orange-500/40 rounded focus:ring-orange-500 focus:ring-2"
               />
-              <label htmlFor="agreeRules" className="text-sm text-gray-300 cursor-pointer">
+              <label
+                htmlFor="agreeRules"
+                className="text-sm text-gray-300 cursor-pointer"
+              >
                 I have read and agree to the application guidelines above
               </label>
             </div>
 
             <label className="text-sm text-gray-400 mb-1 block">
-  Bid Amount (₹)
-</label>
+              Bid Amount (₹)
+            </label>
             <input
-  value={bidAmount}
-  type="number"
-  onChange={(e) => setbidAmount(e.target.value)}
-  placeholder="eg: (1000)"
-  className="w-full px-4 py-2 rounded-lg bg-black/40 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4"
-/>
-
+              value={bidAmount}
+              type="number"
+              onChange={(e) => setbidAmount(e.target.value)}
+              placeholder="eg: (1000)"
+              className="w-full px-4 py-2 rounded-lg bg-black/40 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4"
+            />
 
             <textarea
               value={message}

@@ -162,8 +162,15 @@ export default function PostedTasksCard({
             </p>
           ) : (
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 overflow-hidden items-center justify-center rounded-full">
-                <img src={tasks.assignedTo.photo} />
+              <div className="flex h-10 w-10 overflow-hidden border border-orange-500/40 items-center justify-center rounded-full">
+                {tasks.assignedTo.photo ? (
+                  <img src={tasks.assignedTo.photo} />
+                ) : (
+                  <span className="w-14 h-14 flex justify-center items-center rounded-full object-cover border border-orange-500/40 shadow-lg">
+                    {tasks.assignedTo?.name[0].toUpperCase() +
+                      tasks.assignedTo?.surname[0].toUpperCase()}
+                  </span>
+                )}
               </div>
               <div className="leading-tight">
                 <p className="text-[13px] font-medium text-white">
@@ -186,7 +193,7 @@ export default function PostedTasksCard({
               <a
                 href={tasks.submittedWork.files[0].url.replace(
                   "/upload/",
-                  "/upload/fl_attachment/"
+                  "/upload/fl_attachment/",
                 )}
                 rel="noopener noreferrer"
                 className="

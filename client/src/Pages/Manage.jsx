@@ -94,7 +94,6 @@ const Manage = () => {
         >
           My Posted Tasks
         </button>
-
         <button
           onClick={() => setTab("assigned")}
           className={`px-4 py-2 rounded-md border text-sm whitespace-nowrap  transition ${

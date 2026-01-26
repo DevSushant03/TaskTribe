@@ -12,7 +12,7 @@ function Chats() {
   const [myUserId, setMyUserId] = useState(null);
   const openChat = async (chat) => {
     setActiveChat(chat);
-    
+
     setMessages([]);
 
     try {
@@ -22,7 +22,9 @@ function Chats() {
         const uniqueMessages = res.data.messages.filter(
           (message, index, self) =>
             index ===
-            self.findIndex((m) => m._id?.toString() === message._id?.toString())
+            self.findIndex(
+              (m) => m._id?.toString() === message._id?.toString(),
+            ),
         );
         setMessages(uniqueMessages);
         // Join socket room for real-time updates
@@ -30,8 +32,8 @@ function Chats() {
         // Reset unseen count for this chat
         setChats((prevChats) =>
           prevChats.map((c) =>
-            c.room._id === chat.room._id ? { ...c, unseenCount: 0 } : c
-          )
+            c.room._id === chat.room._id ? { ...c, unseenCount: 0 } : c,
+          ),
         );
       }
     } catch (error) {
@@ -87,7 +89,7 @@ function Chats() {
         setMessages((prev) => {
           // Check if message already exists to prevent duplicates
           const exists = prev.some(
-            (m) => m._id?.toString() === message._id?.toString()
+            (m) => m._id?.toString() === message._id?.toString(),
           );
           if (exists) return prev;
           return [...prev, message];
@@ -113,8 +115,8 @@ function Chats() {
                     ? chat.unseenCount || 0
                     : (chat.unseenCount || 0) + 1,
               }
-            : chat
-        )
+            : chat,
+        ),
       );
     };
 
@@ -130,7 +132,7 @@ function Chats() {
       if (res.data.success) {
         setMessages((prev) => {
           const exists = prev.some(
-            (m) => m._id?.toString() === res.data.message._id?.toString()
+            (m) => m._id?.toString() === res.data.message._id?.toString(),
           );
           if (exists) return prev;
           return [...prev, res.data.message];
@@ -140,8 +142,8 @@ function Chats() {
           prevChats.map((chat) =>
             chat.room._id === activeChat.room._id
               ? { ...chat, lastMessage: res.data.message }
-              : chat
-          )
+              : chat,
+          ),
         );
         setMsg("");
       }
@@ -189,22 +191,29 @@ function Chats() {
               {activeChat &&
                 (() => {
                   const otherUser = activeChat.room.participants.find(
-                    (p) => p._id !== myUserId
+                    (p) => p._id !== myUserId,
                   );
                   return (
                     <>
                       <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
-                        <img src={otherUser?.photo} alt="profile" />
+                        {otherUser.photo ? (
+                          <img src={otherUser?.photo} alt="profile" />
+                        ) : (
+                          <span className="w-14 h-14 bg-orange-600 flex justify-center items-center rounded-full object-cover border border-orange-500/40 shadow-lg">
+                            {otherUser?.name[0].toUpperCase() +
+                              otherUser?.surname[0].toUpperCase()}
+                          </span>
+                        )}
                       </div>
                       <div>
                         <h3 className="text-sm font-semibold leading-tight">
                           {otherUser?.name + " " + otherUser?.surname ||
                             "Unknown User"}
                         </h3>
-                        <p className="text-[11px] text-emerald-400 flex items-center gap-1">
+                        {/* <p className="text-[11px] text-emerald-400 flex items-center gap-1">
                           <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
                           Online
-                        </p>
+                        </p> */}
                       </div>
                     </>
                   );
@@ -313,7 +322,7 @@ function Chats() {
             {chats?.map((chat) => {
               // get the OTHER user (not me)
               const otherUser = chat.room.participants.find(
-                (p) => p._id !== myUserId
+                (p) => p._id !== myUserId,
               );
 
               return (
@@ -326,7 +335,14 @@ function Chats() {
                 >
                   {/* Avatar */}
                   <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden  flex items-center justify-center shadow-sm">
-                    <img src={otherUser?.photo} alt="profile" />
+                    {otherUser.photo ? (
+                      <img src={otherUser?.photo} alt="profile" />
+                    ) : (
+                      <span className="w-14 h-14 bg-orange-600 flex justify-center items-center rounded-full object-cover border border-orange-500/40 shadow-lg">
+                        {otherUser?.name[0].toUpperCase() +
+                          otherUser?.surname[0].toUpperCase()}
+                      </span>
+                    )}
                   </div>
 
                   {/* Name + last message */}

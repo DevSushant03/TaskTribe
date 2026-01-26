@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 const nameSchema = z
   .string()
   .trim()
@@ -14,7 +13,10 @@ const emailSchema = z
   .toLowerCase()
   .min(1, "Email is required")
   .max(100, "Email is too long")
-  .email("Please enter a valid email address");
+  .regex(
+    /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
+    "Please enter a valid email address",
+  );
 
 const passwordSchema = z
   .string()
@@ -23,8 +25,10 @@ const passwordSchema = z
   .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
   .regex(/[a-z]/, "Password must contain at least one lowercase letter")
   .regex(/[0-9]/, "Password must contain at least one number")
-  .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character");
-
+  .regex(
+    /[^A-Za-z0-9]/,
+    "Password must contain at least one special character",
+  );
 
 export const registerSchema = z.object({
   name: nameSchema,
@@ -36,11 +40,11 @@ export const registerSchema = z.object({
 
   agreedRules: z.literal(true, {
     errorMap: () => ({
-      message: "You must agree to the rules and regulations to use this platform.",
+      message:
+        "You must agree to the rules and regulations to use this platform.",
     }),
   }),
 });
-
 
 export const loginSchema = z.object({
   email: emailSchema,
