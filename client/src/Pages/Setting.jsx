@@ -76,7 +76,7 @@ export default function Settings() {
         </Section>
 
         {/* Privacy */}
-        <Section title="Privacy & Visibility">
+        {/* <Section title="Privacy & Visibility">
           <Toggle
             label="Allow direct messages"
             description="Let other users contact you directly."
@@ -110,14 +110,14 @@ export default function Settings() {
               })
             }
           />
-        </Section>
+        </Section> */}
 
         {/* Security */}
-        <Section title="Security">
+        {/* <Section title="Security">
           <button className="px-4 py-2 text-sm rounded-lg border border-zinc-700 hover:border-[#FF6B00] transition">
             Change password
           </button>
-        </Section>
+        </Section> */}
 
         {/* Danger Zone */}
         <Section title="Danger Zone" danger>
