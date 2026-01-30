@@ -7,27 +7,27 @@ const DashBoard = () => {
   const { user, Task, loading } = useContext(ContextApi);
 
   const globalStats = [
-    { label: "Total Active Tasks", value: Task?.length },
-    { label: "Total Earned", value: "₹12.4K" },
-    { label: "Total Spent", value: "₹6.8K" },
+    { label: "Tasks Shared by Students", value: Task?.length },
+    { label: "Peers You Helped", value: Task?.filter(task => task.assignedTo?._id === user?._id && task.status === "completed").length },
+    { label: "Collaborations Completed", value: Task?.filter(task => task.createdBy?._id === user?._id && task.status === "completed").length },
   ];
 
   const clientStats = [
     {
-      label: "Open Tasks",
+      label: "Your Open Academic Tasks",
       value: Task?.filter(
         (task) => task.createdBy?._id === user?._id && task.status === "open"
       ).length,
     },
     {
-      label: "In Progress",
+      label: "Ongoing Collaborations",
       value: Task?.filter(
         (task) =>
           task.createdBy?._id === user?._id && task.status === "in_progress"
       ).length,
     },
     {
-      label: "Completed",
+      label: "Collaboration Successes",
       value: Task?.filter(
         (task) =>
           task.createdBy?._id === user?._id && task.status === "completed"
@@ -37,21 +37,21 @@ const DashBoard = () => {
 
   const freelancerStats = [
     {
-      label: "Active Contracts",
+      label: "Active Peer Collaborations",
       value: Task?.filter(
         (task) =>
           task.assignedTo?._id === user?._id && task.status === "in_progress"
       ).length,
     },
     {
-      label: "Pending Proposals",
+      label: "Your Pending Applications",
       value: Task?.filter(
         (task) =>
-          task.applicants[0]?.user === user?._id && task.status === "open"
+          task.applicants?.some(app => String(app.user) === String(user?._id)) && task.status === "open"
       ).length,
     },
     {
-      label: "Completed Tasks",
+      label: "Peer Tasks Completed",
       value: Task?.filter(
         (task) =>
           task.assignedTo?._id === user?._id && task.status === "completed"
@@ -81,10 +81,10 @@ const DashBoard = () => {
         <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-1">
-              Hello 👋 {user?.name}
+              Welcome back, {user?.name}! 👋
             </h1>
             <p className="text-gray-400">
-              Overview of your activity as client and freelancer
+              See your learning journey, collaborations, and campus connections grow.
             </p>
           </div>
         </div>
@@ -104,14 +104,13 @@ const DashBoard = () => {
           ))}
         </div>
 
-        {/* Two-column: Client vs Freelancer */}
+        {/* Two-column: Academic Tasks vs Peer Collaboration */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Client column */}
+          {/* Academic Tasks column */}
           <section className="space-y-4">
             <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-white">As Client</h2>
-               
+                <h2 className="text-xl font-bold text-white">Your Academic Tasks</h2>
               </div>
               <div className="grid grid-cols-3 gap-3 mb-4">
                 {clientStats?.map((stat) => (
@@ -127,13 +126,13 @@ const DashBoard = () => {
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-orange-600/20 border border-orange-500/50 rounded-lg text-white text-sm"
                 >
                   <FaPlus className="text-orange-500" />
-                  Post new task
+                  Share New Academic Task
                 </Link>
                 <Link
                   to="../manage"
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#0c0c0c] border border-gray-700 rounded-lg text-white text-sm"
                 >
-                  View proposals
+                  View Your Collaborations
                 </Link>
               </div>
             </div>
@@ -141,13 +140,13 @@ const DashBoard = () => {
             <div className="bg-[#111] border border-gray-800 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-white">
-                  Recent Client Tasks
+                  Your Recent Academic Tasks
                 </h3>
                 <Link
                   to="../manage"
                   className="text-orange-500 text-xs font-medium"
                 >
-                  See all
+                  View All
                 </Link>
               </div>
               <div className="space-y-3">
@@ -161,7 +160,7 @@ const DashBoard = () => {
                         {task.title}
                       </p>
                       <p className="text-gray-400 text-xs">
-                        {task.budget.min + "-" + task.budget.min} • proposals
+                        {task.budget.min + "-" + task.budget.min} • students collaborating
                       </p>
                     </div>
                     <span className="text-xs px-2 py-1 rounded-full border border-gray-700 text-gray-300">
@@ -173,12 +172,11 @@ const DashBoard = () => {
             </div>
           </section>
 
-          {/* Freelancer column */}
+          {/* Peer Collaboration column */}
           <section className="space-y-4">
             <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-white">As Freelancer</h2>
-               
+                <h2 className="text-xl font-bold text-white">Peer Collaboration</h2>
               </div>
               <div className="grid grid-cols-3 gap-3 mb-4">
                 {freelancerStats?.map((stat) => (
@@ -194,13 +192,13 @@ const DashBoard = () => {
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#0c0c0c] border border-gray-700 rounded-lg text-white text-sm"
                 >
                   <FaSearch className="text-gray-400" />
-                  Browse tasks
+                  Discover Academic Tasks
                 </Link>
                 <Link
                   to="../manage"
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#0c0c0c] border border-gray-700 rounded-lg text-white text-sm"
                 >
-                  Your proposals
+                  Your Peer Collaborations
                 </Link>
               </div>
             </div>
@@ -208,13 +206,13 @@ const DashBoard = () => {
             <div className="bg-[#111] border border-gray-800 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-white">
-                  Recent Freelancer Tasks
+                  Your Recent Peer Collaborations
                 </h3>
                 <Link
                   to="../manage"
                   className="text-orange-500 text-xs font-medium"
                 >
-                  See all
+                  View All
                 </Link>
               </div>
               <div className="space-y-3">

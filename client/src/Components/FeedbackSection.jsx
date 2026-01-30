@@ -7,7 +7,7 @@ export default function FeedbackSection() {
       category: "Projects",
       rating: 4,
       feedback:
-        "TaskTribe helped me finish my college project fast. The helper responded in minutes!",
+        "TaskTribe helped me finish my college project quickly. My peers responded in minutes!",
       color: "bg-[#FFE66D]", // yellow like left card
       rotate: "-rotate-3",
     },
@@ -18,7 +18,7 @@ export default function FeedbackSection() {
       category: "Doubt Clearing",
       rating: 5,
       feedback:
-        "Cleared my doubts instantly before my exam. Highly recommended!",
+        "Cleared my academic doubts instantly before my exam. Highly recommended for students!",
       color: "bg-[#A2D2FF]", // blue like center card
       rotate: "rotate-2",
     },
@@ -30,11 +30,10 @@ export default function FeedbackSection() {
       <div className="relative max-w-6xl mx-auto px-6">
         {/* Heading like reference */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-center mb-3">
-          Real Voices & <span className="text-orange-400">Real Impact</span>
+          Student Stories & <span className="text-orange-400">Peer Impact</span>
         </h2>
         <p className="text-sm sm:text-base text-gray-300 text-center max-w-2xl mx-auto mb-10">
-          Feedback from students and creators who use TaskTribe to solve
-          projects, clear doubts, and grow their skills every day.
+          Feedback from students who use TaskTribe to collaborate, clear doubts, and grow their academic network every day.
         </p>
 
         {/* SCROLLING ROW OF TILTED CARDS */}
@@ -83,8 +82,7 @@ export default function FeedbackSection() {
           <div className="hidden md:block rotate-3 drop-shadow-2xl w-1/3">
             <div className="bg-[#FFC1CC] text-black rounded-3xl px-6 py-8 border border-black/10">
               <p className="text-base leading-relaxed mb-6">
-                “Fast, friendly help on my toughest assignments. TaskTribe makes
-                group work and freelancing feel easy.”
+                “Fast, friendly help on my toughest assignments. TaskTribe makes group work and student collaboration easy.”
               </p>
               <div className="mt-6 flex items-center justify-between text-xs sm:text-sm">
                 <div>
@@ -99,7 +97,7 @@ export default function FeedbackSection() {
         {/* CTA bottom right-ish like reference */}
         <div className="flex justify-center md:justify-end mt-10">
           <button className="px-6 py-3 bg-orange-500 text-black font-semibold rounded-full shadow-lg hover:bg-orange-400 transition">
-            Explore More Stories
+            Explore More Student Stories
           </button>
         </div>
       </div>

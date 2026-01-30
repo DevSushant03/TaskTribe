@@ -2,27 +2,27 @@ export default function FeaturesSection() {
   const features = [
     {
       id: "01",
-      title: "Post & Share",
-      desc: "Create micro-tasks instantly, share with your tribe and collaborate faster.",
+      title: "Post Academic Tasks",
+      desc: "Share your academic challenges and projects with fellow students for collaborative solutions.",
       img: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=800",
     },
     {
       id: "02",
-      title: "Real-Time Collaboration",
-      desc: "Work together instantly, exchange ideas, and finish tasks with lightning speed.",
+      title: "Collaborate in Real-Time",
+      desc: "Work together with peers, exchange ideas, and solve problems as a team.",
       img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=800",
     },
     {
       id: "03",
-      title: "Earn Rewards",
-      desc: "Help others, complete tasks, and earn points, badges and real-world rewards.",
+      title: "Peer Recognition",
+      desc: "Help others, complete academic tasks, and earn badges and recognition from your campus community.",
       img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80",
     },
 
     {
       id: "04",
-      title: "Build Network",
-      desc: "Connect with talented contributors, expand your tribe, and grow your influence.",
+      title: "Build Your Network",
+      desc: "Connect with students across campuses, expand your academic circle, and grow together.",
       img: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
     },
   ];
@@ -32,13 +32,12 @@ export default function FeaturesSection() {
       <div className="max-w-6xl mx-auto px-6">
         {/* Heading */}
         <h2 className="text-4xl md:text-5xl font-extrabold text-center">
-          Built For Contributors <br />
-          <span className="text-orange-500">Loved By Tribe</span>
+          Built for Students <br />
+          <span className="text-orange-500">Empowered by Peers</span>
         </h2>
 
         <p className="text-gray-400 text-center max-w-2xl mx-auto mt-4 mb-20">
-          TaskTribe empowers every user—students, freelancers, creators and
-          helpers— to create micro-tasks and build real communities.
+          TaskTribe empowers students to post academic tasks, collaborate on projects, clear doubts, and build real campus communities.
         </p>
 
         {/* Main container */}

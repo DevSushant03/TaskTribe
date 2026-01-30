@@ -36,10 +36,10 @@ export default function Home() {
   return (
     <>
       <Helmet>
-        <title>TaskTribe – Post & Solve Tasks Instantly</title>
+        <title>TaskTribe – Student Collaboration Platform</title>
         <meta
           name="description"
-          content="TaskTribe is a modern task marketplace to post and solve tasks instantly."
+          content="TaskTribe is a student-only platform to post academic tasks, collaborate, clear doubts, and build campus networks."
         />
       </Helmet>
 
@@ -59,7 +59,6 @@ export default function Home() {
         />
         <HeroSection />
       </div>
-      <InfiniteScroll/>
       <FeaturesSection />
       <SolveAndEarn />
       <FeedbackSection />
