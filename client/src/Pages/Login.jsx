@@ -83,19 +83,14 @@ export default function Login() {
             <FaArrowAltCircleLeft color="white" size={25} /> Home
           </button>
           <div className="max-w-md mx-auto mt-10 w-full">
-            {/* Social Login */}
-            <button className="w-full flex items-center justify-center bg-white/70 backdrop-blur-sm border-2 border-orange-200/60 rounded-2xl py-3 mb-3 hover:shadow-neumorph-hover hover:border-orange-300/80 hover:bg-orange-50/80 transition-all duration-300 shadow-neumorph">
-              <FcGoogle className="mr-2" /> Continue with Google
-            </button>
-
-            {/* Divider */}
-            <div className="flex items-center my-3">
-              <div className="flex-grow border-t border-orange-200/60"></div>
-              <span className="mx-2 text-gray-600 font-bold bg-white/90 px-3 py-1 rounded-full border border-orange-200/50 shadow-neumorph-sm">
-                OR
-              </span>
-              <div className="flex-grow border-t border-orange-200/60"></div>
-            </div>
+            <h2 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">
+              <h2 />
+              Welcome Back to <span className="text-orange-500">TaskTribe</span>
+            </h2>
+            <p className="text-center text-gray-600 mb-8">
+              Log in to your account to post academic tasks, collaborate with
+              peers, and grow your campus network.
+            </p>
 
             {/* Login Form */}
             <form
@@ -189,9 +184,7 @@ export default function Login() {
             className="w-full object-cover object-center"
           />
 
-          <p className="absolute bottom-12 right-16 text-white text-2xl font-script">
-            make it real.
-          </p>
+         
         </div>
       </div>
     </>

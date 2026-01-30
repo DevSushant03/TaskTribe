@@ -161,19 +161,13 @@ export default function Register() {
           <div
             className={`${isOpen && "hidden"} max-w-md mx-auto w-full mt-10`}
           >
-            {/* Social Login */}
-            <button className="w-full flex items-center justify-center bg-white/70 backdrop-blur-sm border-2 border-orange-200/60 rounded-2xl py-3 mb-3 hover:shadow-neumorph-hover hover:border-orange-300/80 hover:bg-orange-50/80 transition-all duration-300 shadow-neumorph h-5 w-5">
-              <FcGoogle className="h-5 w-5 mr-2" /> Continue with Google
-            </button>
-
-            {/* Divider */}
-            <div className="flex items-center my-3">
-              <div className="flex-grow border-t border-orange-200/60"></div>
-              <span className="mx-2 text-gray-600 font-bold bg-white/90 px-3 py-1 rounded-full border border-orange-200/50 shadow-neumorph-sm">
-                OR
-              </span>
-              <div className="flex-grow border-t border-orange-200/60"></div>
-            </div>
+            
+            <h2 className="text-4xl font-extrabold text-gray-800 mb-2 text-center">
+              Create Your Account
+            </h2>
+            <p className="text-sm text-center text-gray-600 mb-8">
+              Join TaskTribe to post academic tasks, collaborate with peers, and build your student network.
+            </p>
 
             {/* Login Form */}
             <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-orange-200/50 shadow-neumorph-inset">
@@ -347,9 +341,7 @@ export default function Register() {
             loading="lazy"
             className="w-full h-full object-cover object-center rounded-none"
           />
-          <p className="absolute bottom-12 right-16 text-white text-2xl font-script">
-            make it real.
-          </p>
+          
         </div>
       </div>
     </>
