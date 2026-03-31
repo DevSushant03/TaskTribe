@@ -1,19 +1,8 @@
 import { useContext, useState } from "react";
 import {
-  FaEdit,
-  FaEnvelope,
-  FaStar,
-  FaTrophy,
-  FaCheckCircle,
-  FaSpinner,
-  FaTimes,
-  FaCog,
-  FaQuestionCircle,
-  FaInstagram,
-  FaFacebook,
-  FaGithub,
-  FaLinkedin,
-  FaGlobe,
+  FaEdit, FaEnvelope, FaStar, FaTrophy, FaCheckCircle,
+  FaSpinner, FaTimes, FaCog, FaQuestionCircle,
+  FaInstagram, FaFacebook, FaGithub, FaLinkedin, FaGlobe,
 } from "react-icons/fa";
 import { auth, users } from "../utils/api";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,619 +10,495 @@ import { Helmet } from "react-helmet";
 import { toast } from "react-toastify";
 import { ContextApi } from "../Context/ContextApi";
 
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const SOCIAL_CONFIG = [
+  { key: "instagram", icon: FaInstagram, gradient: "from-pink-500 to-purple-500" },
+  { key: "facebook",  icon: FaFacebook,  gradient: "from-blue-600 to-blue-700" },
+  { key: "github",    icon: FaGithub,    gradient: "from-gray-700 to-gray-900" },
+  { key: "linkedin",  icon: FaLinkedin,  gradient: "from-blue-700 to-blue-800" },
+  { key: "portfolio", icon: FaGlobe,     gradient: "from-orange-500 to-orange-600" },
+];
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const getInitials = (name, surname) =>
+  (name?.charAt(0) || "").toUpperCase() + (surname?.charAt(0) || "").toUpperCase() || "U";
+
+const normalizeSkills = (skills) => {
+  if (!skills) return [];
+  if (Array.isArray(skills)) return skills.map((s) => String(s).trim()).filter(Boolean);
+  if (typeof skills === "string") return skills.split(",").map((s) => s.trim()).filter(Boolean);
+  return [];
+};
+
+const hasContent = (val) =>
+  val && (typeof val === "string" ? val.trim().length > 0 : true);
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function StarRating({ rating }) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5;
+  const empty = 5 - full - (half ? 1 : 0);
+  return (
+    <div className="flex items-center gap-1">
+      {[...Array(full)].map((_, i) => <FaStar key={`f${i}`} className="text-orange-500 fill-orange-500" size={15} />)}
+      {half && <FaStar className="text-orange-500 fill-orange-500/50" size={15} />}
+      {[...Array(empty)].map((_, i) => <FaStar key={`e${i}`} className="text-gray-600" size={15} />)}
+      <span className="ml-1.5 text-gray-400 text-sm">({rating.toFixed(1)})</span>
+    </div>
+  );
+}
+
+function AvatarDisplay({ user, onEdit }) {
+  return (
+    <div className="relative inline-block">
+      {user.photo ? (
+        <img
+          src={user.photo}
+          alt={`${user.name} ${user.surname}`}
+          className="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-[#111] object-cover shadow-xl"
+        />
+      ) : (
+        <div className="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-[#111] bg-gradient-to-br from-orange-600 to-orange-400 flex items-center justify-center shadow-xl">
+          <span className="text-3xl md:text-4xl font-bold text-white">
+            {getInitials(user.name, user.surname)}
+          </span>
+        </div>
+      )}
+      <button
+        onClick={onEdit}
+        className="absolute bottom-1 right-1 bg-orange-600 hover:bg-orange-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+      >
+        <FaEdit size={12} />
+      </button>
+    </div>
+  );
+}
+
+function AvatarEditor({ onSave, onCancel, saving }) {
+  const [file, setFile] = useState(null);
+
+  const handleFile = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    if (!f.type.startsWith("image/")) { toast.warning("Please select an image file"); return; }
+    if (f.size > 5 * 1024 * 1024) { toast.warning("File size must be under 5MB"); return; }
+    setFile(f);
+  };
+
+  return (
+    <div className="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-[#111] bg-[#1A1A1A] flex flex-col items-center justify-center shadow-xl gap-2 p-3">
+      <input type="file" accept="image/*" onChange={handleFile} className="hidden" id="avatar-input" />
+      <label htmlFor="avatar-input" className="cursor-pointer text-orange-400 text-xs text-center leading-tight hover:text-orange-300 transition-colors">
+        {file ? file.name.slice(0, 12) + "…" : "Choose photo"}
+      </label>
+      <div className="flex gap-2">
+        <button
+          onClick={() => onSave(file)}
+          disabled={saving || !file}
+          className="bg-green-600 hover:bg-green-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white p-1.5 rounded-full transition-all"
+        >
+          {saving ? <FaSpinner className="animate-spin" size={11} /> : <FaCheckCircle size={11} />}
+        </button>
+        <button
+          onClick={onCancel}
+          disabled={saving}
+          className="bg-red-600/80 hover:bg-red-700 disabled:bg-gray-700 text-white p-1.5 rounded-full transition-all"
+        >
+          <FaTimes size={11} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function EditForm({ bio, skills, socialLinks, onChange, onSocialChange }) {
+  return (
+    <div className="space-y-5 mt-4">
+      {/* Bio */}
+      <div>
+        <label className="block text-gray-500 text-xs uppercase tracking-widest mb-2 font-medium">Bio</label>
+        <textarea
+          value={bio}
+          onChange={(e) => onChange("bio", e.target.value)}
+          className="w-full bg-[#1A1A1A] border border-[#2a2a2a] focus:border-orange-500/60 rounded-xl px-4 py-3 text-white text-sm focus:outline-none resize-none transition-colors"
+          rows={3}
+          placeholder="Tell us about yourself..."
+        />
+      </div>
+
+      {/* Skills */}
+      <div>
+        <label className="block text-gray-500 text-xs uppercase tracking-widest mb-2 font-medium">Skills <span className="normal-case text-gray-600">(comma-separated)</span></label>
+        <input
+          type="text"
+          value={skills}
+          onChange={(e) => onChange("skills", e.target.value)}
+          className="w-full bg-[#1A1A1A] border border-[#2a2a2a] focus:border-orange-500/60 rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors"
+          placeholder="e.g. JavaScript, React, Node.js"
+        />
+      </div>
+
+      {/* Social Links */}
+      <div>
+        <label className="block text-gray-500 text-xs uppercase tracking-widest mb-3 font-medium">Social Links</label>
+        <div className="space-y-2">
+          {SOCIAL_CONFIG.map(({ key, icon: Icon }) => (
+            <div key={key} className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                <Icon className="text-orange-500" size={14} />
+              </div>
+              <input
+                type="url"
+                value={socialLinks[key] || ""}
+                onChange={(e) => onSocialChange(key, e.target.value)}
+                className="flex-1 bg-[#1A1A1A] border border-[#2a2a2a] focus:border-orange-500/60 rounded-xl px-3 py-2 text-white text-sm focus:outline-none transition-colors"
+                placeholder={`${key.charAt(0).toUpperCase() + key.slice(1)} URL`}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StatCard({ icon: Icon, label, value, children }) {
+  return (
+    <div className="bg-[#111] border border-[#1E1E1E] hover:border-orange-500/30 rounded-2xl p-5 transition-colors duration-200">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="bg-orange-500/10 p-2.5 rounded-xl">
+          <Icon className="text-orange-500" size={18} />
+        </div>
+        <div>
+          <p className="text-gray-600 text-xs uppercase tracking-widest font-medium">{label}</p>
+          <p className="text-white text-2xl font-bold leading-tight">{value}</p>
+        </div>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function SocialLinks({ links }) {
+  const activeLinks = SOCIAL_CONFIG.filter(({ key }) => hasContent(links?.[key]));
+  if (activeLinks.length === 0) return null;
+
+  return (
+    <div className="bg-[#111] border border-[#1E1E1E] rounded-2xl p-6 mb-5">
+      <div className="flex items-center gap-3 mb-5">
+        <div className="bg-orange-500/10 p-2.5 rounded-xl">
+          <FaGlobe className="text-orange-500" size={16} />
+        </div>
+        <h3 className="text-white font-semibold text-base">Social Links</h3>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {activeLinks.map(({ key, icon: Icon, gradient }) => {
+          const href = links[key].startsWith("http") ? links[key] : `https://${links[key]}`;
+          return (
+            <a
+              key={key}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3 p-3 bg-[#161616] border border-[#1E1E1E] rounded-xl hover:border-orange-500/30 transition-all duration-150"
+            >
+              <div className={`p-2 rounded-lg bg-gradient-to-br ${gradient} group-hover:scale-105 transition-transform`}>
+                <Icon className="text-white" size={15} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-white text-sm font-medium capitalize">{key}</p>
+                <p className="text-gray-600 text-xs truncate">{links[key].replace(/^https?:\/\//, "")}</p>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function AccountSection({ userId, navigate }) {
+  const items = [
+    {
+      icon: FaQuestionCircle,
+      title: "Help & Support",
+      desc: "Get assistance with your account or tasks",
+      path: `/user/${userId}/help`,
+    },
+    {
+      icon: FaCog,
+      title: "Settings",
+      desc: "Manage account preferences and privacy",
+      path: `/user/${userId}/setting`,
+    },
+  ];
+
+  return (
+    <div className="bg-[#111] border border-[#1E1E1E] rounded-2xl p-6 mb-5">
+      <p className="text-xs text-gray-600 uppercase tracking-widest font-medium mb-4">Account & Support</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {items.map(({ icon: Icon, title, desc, path }) => (
+          <button
+            key={title}
+            onClick={() => navigate(path)}
+            className="flex items-center gap-4 p-4 bg-[#161616] border border-[#1E1E1E] rounded-xl hover:border-orange-500/30 transition-all duration-150 group text-left"
+          >
+            <div className="bg-orange-500/10 p-2.5 rounded-xl group-hover:bg-orange-500/15 transition-colors flex-shrink-0">
+              <Icon className="text-orange-500" size={17} />
+            </div>
+            <div>
+              <p className="text-white text-sm font-medium mb-0.5">{title}</p>
+              <p className="text-gray-600 text-xs">{desc}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
 function ProfilePage() {
   const { user, loading, setUser } = useContext(ContextApi);
-  const [isEditUser, setIsEditUser] = useState(false);
-  const [isEditAvatar, setIsEditAvatar] = useState(false);
-  const [editBio, setEditBio] = useState("");
-  const [editSkills, setEditSkills] = useState("");
-  const [editSocialLinks, setEditSocialLinks] = useState({
-    instagram: "",
-    facebook: "",
-    github: "",
-    linkedin: "",
-    portfolio: "",
-  });
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [savingProfile, setSavingProfile] = useState(false);
-  const [savingProfilePic, setSavingProfilePic] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const getInitials = (name, surname) => {
-    const first = name?.charAt(0).toUpperCase() || "";
-    const last = surname?.charAt(0).toUpperCase() || "";
-    return first + last || "U";
-  };
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [editingAvatar, setEditingAvatar] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [savingAvatar, setSavingAvatar] = useState(false);
 
-  const renderStars = (rating) => {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  const [editBio, setEditBio] = useState("");
+  const [editSkills, setEditSkills] = useState("");
+  const [editSocialLinks, setEditSocialLinks] = useState({});
 
-    return (
-      <div className="flex items-center gap-1">
-        {[...Array(fullStars)].map((_, i) => (
-          <FaStar
-            key={i}
-            className="text-orange-500 fill-orange-500"
-            size={16}
-          />
-        ))}
-        {hasHalfStar && (
-          <FaStar className="text-orange-500 fill-orange-500/50" size={16} />
-        )}
-        {[...Array(emptyStars)].map((_, i) => (
-          <FaStar key={i} className="text-gray-400" size={16} />
-        ))}
-        <span className="ml-2 text-gray-300 text-sm">
-          ({rating.toFixed(1)})
-        </span>
-      </div>
-    );
-  };
+  // ── Edit handlers ──
 
-  // Initialize edit social links when editing starts
-  const handleEditClick = () => {
+  const openProfileEdit = () => {
     setEditBio(user.bio || "");
-    setEditSkills(user.skills?.join(", ") || "");
-
-    // Initialize social links for editing
-    setEditSocialLinks({
-      instagram: user.socialLinks?.instagram || "",
-      facebook: user.socialLinks?.facebook || "",
-      github: user.socialLinks?.github || "",
-      linkedin: user.socialLinks?.linkedin || "",
-      portfolio: user.socialLinks?.portfolio || "",
-    });
-    setIsEditUser(true);
+    setEditSkills(normalizeSkills(user.skills).join(", "));
+    setEditSocialLinks({ ...user.socialLinks });
+    setEditingProfile(true);
   };
 
-  if (loading) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0C0C0C] min-h-screen">
-        <div className="text-center">
-          <FaSpinner
-            className="animate-spin text-orange-600 mx-auto mb-4"
-            size={40}
-          />
-          <p className="text-gray-400">Loading profile...</p>
-        </div>
-      </div>
-    );
-  }
+  const cancelProfileEdit = () => {
+    setEditingProfile(false);
+    setEditBio(""); setEditSkills(""); setEditSocialLinks({});
+  };
 
-  if (!user) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0C0C0C] min-h-screen">
-        <div className="text-center">
-          <p className="text-gray-400">No profile data found</p>
-        </div>
-      </div>
-    );
-  }
+  const handleFieldChange = (field, value) => {
+    if (field === "bio") setEditBio(value);
+    if (field === "skills") setEditSkills(value);
+  };
 
-  const saveProfileData = async () => {
+  const handleSocialChange = (key, value) =>
+    setEditSocialLinks((prev) => ({ ...prev, [key]: value }));
+
+  // ── Save profile ──
+
+  const saveProfile = async () => {
     const userId = user?._id || id;
-    if (!userId) {
-      toast.error("User ID not found");
-      return;
-    }
-
+    if (!userId) { toast.error("User ID not found"); return; }
     setSavingProfile(true);
     try {
-      // Parse skills from comma-separated string to array
-      const skillsArray = editSkills
-        .split(",")
-        .map((skill) => skill.trim())
-        .filter((skill) => skill.length > 0);
-
       const res = await users.editProfile(userId, {
         bio: editBio,
-        skills: skillsArray,
+        skills: normalizeSkills(editSkills),
         socialLinks: editSocialLinks,
       });
-
       if (res.data.success) {
         setUser(res.data.user);
-        setIsEditUser(false);
-        toast.success("Profile updated successfully!");
+        cancelProfileEdit();
+        toast.success("Profile updated!");
       } else {
         toast.error(res.data.message || "Failed to update profile");
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Error updating profile");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Error updating profile");
     } finally {
       setSavingProfile(false);
     }
   };
 
-  const saveProfilePic = async () => {
+  // ── Save avatar ──
+
+  const saveAvatar = async (file) => {
     const userId = user?._id || id;
-    if (!userId) {
-      toast.error("User ID not found");
-      return;
-    }
-
-    if (!selectedFile) {
-      toast.warning("Please select a file");
-      return;
-    }
-
-    setSavingProfilePic(true);
+    if (!userId) { toast.error("User ID not found"); return; }
+    if (!file) { toast.warning("Please select a file"); return; }
+    setSavingAvatar(true);
     try {
       const formData = new FormData();
-      formData.append("photo", selectedFile);
-
+      formData.append("photo", file);
       const res = await users.changeProfilePic(userId, formData);
-
       if (res.data.success) {
         setUser(res.data.user);
-        setIsEditAvatar(false);
-        setSelectedFile(null);
-        toast.success("Profile picture updated successfully!");
+        setEditingAvatar(false);
+        toast.success("Profile picture updated!");
       } else {
-        toast.error(res.data.message || "Failed to update profile picture");
+        toast.error(res.data.message || "Failed to update picture");
       }
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Error updating profile picture"
-      );
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Error updating picture");
     } finally {
-      setSavingProfilePic(false);
+      setSavingAvatar(false);
     }
   };
 
-  const handleCancelEdit = () => {
-    setIsEditUser(false);
-    setEditBio("");
-    setEditSkills("");
-    setEditSocialLinks({});
-  };
+  // ── Derived flags ──
 
-  const handleCancelAvatarEdit = () => {
-    setIsEditAvatar(false);
-    setSelectedFile(null);
-  };
+  const skills = normalizeSkills(user?.skills);
+  const hasSkills = skills.length > 0;
+  const hasRating = (user?.rating?.avg || 0) > 0;
+  const hasSocialLinks = user?.socialLinks &&
+    Object.values(user.socialLinks).some((v) => hasContent(v));
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.warning("Please select an image file");
-        return;
-      }
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.warning("File size should be less than 5MB");
-        return;
-      }
-      setSelectedFile(file);
-    }
-  };
+  // ── Guards ──
 
-  // Check if skills exist and are valid
-  const hasSkills =
-    user.skills &&
-    ((Array.isArray(user.skills) &&
-      user.skills.filter((s) => s && String(s).trim().length > 0).length > 0) ||
-      (typeof user.skills === "string" &&
-        user.skills.split(",").filter((s) => s.trim().length > 0).length > 0));
+  if (loading) return (
+    <div className="flex-1 flex items-center justify-center bg-[#0C0C0C] min-h-screen">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-gray-500 text-sm">Loading profile...</p>
+      </div>
+    </div>
+  );
 
-  // Check if rating exists
-  const hasRating = user.rating?.avg > 0;
-
-  // Check if social links exist
-  const hasSocialLinks =
-    user.socialLinks &&
-    Object.values(user.socialLinks).some(
-      (link) => link && link.trim().length > 0
-    );
-
-  const socialLinksConfig = [
-    {
-      key: "instagram",
-      icon: FaInstagram,
-      color: "gradient-to-r from-pink-500 to-purple-500",
-    },
-    {
-      key: "facebook",
-      icon: FaFacebook,
-      color: "gradient-to-r from-blue-600 to-blue-700",
-    },
-    {
-      key: "github",
-      icon: FaGithub,
-      color: "gradient-to-r from-gray-700 to-gray-900",
-    },
-    {
-      key: "linkedin",
-      icon: FaLinkedin,
-      color: "gradient-to-r from-blue-700 to-blue-800",
-    },
-    {
-      key: "portfolio",
-      icon: FaGlobe,
-      color: "gradient-to-r from-orange-500 to-orange-600",
-    },
-  ];
+  if (!user) return (
+    <div className="flex-1 flex items-center justify-center bg-[#0C0C0C] min-h-screen">
+      <p className="text-gray-500 text-sm">No profile data found.</p>
+    </div>
+  );
 
   return (
     <div className="flex-1 bg-[#0C0C0C] min-h-screen overflow-y-auto">
       <Helmet>
         <title>Profile | TaskTribe</title>
-        <meta
-          name="description"
-          content="View and edit your TaskTribe profile. Update your bio, skills, photo, social links, and personal details to improve your visibility and build trust."
-        />
+        <meta name="description" content="View and edit your TaskTribe profile." />
       </Helmet>
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 mt-10 md:mt-0">
-        {/* Profile Header Card */}
-        <div className="bg-[#111] border border-orange-500/50 rounded-2xl shadow-lg shadow-orange-500/10 mb-6 overflow-hidden">
-          <div className="bg-gradient-to-r from-orange-600/20 to-orange-500/10 h-32 md:h-40"></div>
 
-          <div className="px-6 md:px-8 pb-6 md:pb-8 -mt-16 md:-mt-20">
-            {/* Profile Picture */}
-            <div className="relative inline-block">
-              {isEditAvatar ? (
-                <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#111] bg-[#222] flex flex-col items-center justify-center shadow-xl p-4">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    id="profile-pic-input"
-                  />
-                  <label
-                    htmlFor="profile-pic-input"
-                    className="cursor-pointer text-orange-500 text-sm text-center mb-2 hover:text-orange-400"
-                  >
-                    {selectedFile ? selectedFile.name : "Choose File"}
-                  </label>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={saveProfilePic}
-                      disabled={savingProfilePic || !selectedFile}
-                      className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white p-1.5 rounded-full shadow-lg transition-all"
-                      title="Save"
-                    >
-                      {savingProfilePic ? (
-                        <FaSpinner className="animate-spin" size={12} />
-                      ) : (
-                        <FaCheckCircle size={12} />
-                      )}
-                    </button>
-                    <button
-                      onClick={handleCancelAvatarEdit}
-                      disabled={savingProfilePic}
-                      className="bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white p-1.5 rounded-full shadow-lg transition-all"
-                      title="Cancel"
-                    >
-                      <FaTimes size={12} />
-                    </button>
-                  </div>
-                </div>
+      <div className="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-10">
+
+        {/* ── Profile Header ── */}
+        <div className="bg-[#111] border border-[#1E1E1E] rounded-2xl overflow-hidden mb-5">
+
+          {/* Banner */}
+          <div className="h-28 md:h-36 bg-gradient-to-r from-orange-600/20 via-orange-500/10 to-transparent relative">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMTAwLDUwLC4wOCkiLz48L3N2Zz4=')] opacity-40" />
+          </div>
+
+          <div className="px-6 md:px-8 pb-7 -mt-14 md:-mt-16">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+
+              {/* Avatar */}
+              {editingAvatar ? (
+                <AvatarEditor
+                  onSave={saveAvatar}
+                  onCancel={() => setEditingAvatar(false)}
+                  saving={savingAvatar}
+                />
               ) : (
-                <>
-                  {user.photo ? (
-                    <img
-                      src={user.photo}
-                      alt={`${user.name || ""} ${user.surname || ""}`}
-                      className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#111] object-cover shadow-xl"
-                    />
-                  ) : (
-                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#111] bg-gradient-to-br from-orange-600 to-orange-500 flex items-center justify-center shadow-xl">
-                      <span className="text-4xl md:text-5xl font-bold text-white">
-                        {getInitials(user.name, user.surname)}
-                      </span>
-                    </div>
-                  )}
-                  <button
-                    onClick={() => setIsEditAvatar(true)}
-                    className="absolute bottom-2 right-2 bg-orange-600 hover:bg-orange-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
-                  >
-                    <FaEdit size={14} />
-                  </button>
-                </>
+                <AvatarDisplay user={user} onEdit={() => setEditingAvatar(true)} />
               )}
+
+              {/* Edit / Save buttons */}
+              <div className="flex gap-2 pb-1">
+                {editingProfile ? (
+                  <>
+                    <button
+                      onClick={saveProfile}
+                      disabled={savingProfile}
+                      className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all"
+                    >
+                      {savingProfile
+                        ? <><FaSpinner className="animate-spin" size={13} /> Saving…</>
+                        : <><FaCheckCircle size={13} /> Save</>}
+                    </button>
+                    <button
+                      onClick={cancelProfileEdit}
+                      disabled={savingProfile}
+                      className="flex items-center gap-2 bg-[#1E1E1E] hover:bg-[#2a2a2a] border border-[#2a2a2a] text-gray-400 hover:text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all"
+                    >
+                      <FaTimes size={13} /> Cancel
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={openProfileEdit}
+                    className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all"
+                  >
+                    <FaEdit size={13} /> Edit Profile
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* User Info */}
-            <div className="mt-4 md:mt-6">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex-1">
-                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                    {user.name || ""} {user.surname || ""}
-                  </h1>
-                  {isEditUser ? (
-                    <div className="space-y-4 mt-4">
-                      <div>
-                        <label className="block text-gray-400 text-sm font-medium mb-2">
-                          Bio
-                        </label>
-                        <textarea
-                          value={editBio}
-                          onChange={(e) => setEditBio(e.target.value)}
-                          className="w-full bg-[#222] border border-orange-500/50 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-orange-500 resize-none"
-                          rows="3"
-                          placeholder="Tell us about yourself..."
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-gray-400 text-sm font-medium mb-2">
-                          Skills (comma-separated)
-                        </label>
-                        <input
-                          type="text"
-                          value={editSkills}
-                          onChange={(e) => setEditSkills(e.target.value)}
-                          className="w-full bg-[#222] border border-orange-500/50 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-orange-500"
-                          placeholder="e.g., JavaScript, React, Node.js"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-gray-400 text-sm font-medium mb-2">
-                          Social Links
-                        </label>
-                        <div className="space-y-2">
-                          {socialLinksConfig.map(({ key, icon: Icon }) => (
-                            <div key={key} className="flex items-center gap-2">
-                              <Icon className="text-orange-500 w-5 h-5 flex-shrink-0" />
-                              <input
-                                type="url"
-                                value={editSocialLinks[key]}
-                                onChange={(e) =>
-                                  setEditSocialLinks((prev) => ({
-                                    ...prev,
-                                    [key]: e.target.value,
-                                  }))
-                                }
-                                className="flex-1 bg-[#222] border border-orange-500/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-orange-500"
-                                placeholder={`Enter ${key} URL`}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      {user.bio ? (
-                        <p className="text-gray-300 text-base md:text-lg max-w-2xl leading-relaxed">
-                          {user.bio}
-                        </p>
-                      ) : (
-                        <p className="text-gray-500 italic">No bio available</p>
-                      )}
-                    </>
-                  )}
-                </div>
+            {/* Name + bio */}
+            <div className="mt-4">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                {user.name} {user.surname}
+              </h1>
 
-                <div className="flex gap-2">
-                  {isEditUser ? (
-                    <>
-                      <button
-                        onClick={saveProfileData}
-                        disabled={savingProfile}
-                        className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-green-500/50"
-                      >
-                        {savingProfile ? (
-                          <FaSpinner className="animate-spin" />
-                        ) : (
-                          <FaCheckCircle />
-                        )}
-                        <span>{savingProfile ? "Saving..." : "Save"}</span>
-                      </button>
-                      <button
-                        onClick={handleCancelEdit}
-                        disabled={savingProfile}
-                        className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-800 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-all duration-200"
-                      >
-                        <FaTimes />
-                        <span>Cancel</span>
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={handleEditClick}
-                      className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/50 self-start"
-                    >
-                      <FaEdit />
-                      <span>Edit Profile</span>
-                    </button>
-                  )}
-                </div>
-              </div>
+              {editingProfile ? (
+                <EditForm
+                  bio={editBio}
+                  skills={editSkills}
+                  socialLinks={editSocialLinks}
+                  onChange={handleFieldChange}
+                  onSocialChange={handleSocialChange}
+                />
+              ) : (
+                <p className={`text-sm leading-relaxed max-w-2xl ${user.bio ? "text-gray-400" : "text-gray-600 italic"}`}>
+                  {user.bio || "No bio yet — click Edit Profile to add one."}
+                </p>
+              )}
 
               {/* Email */}
-              <div className="flex flex-wrap items-center gap-4 md:gap-6 mt-4 pt-4 border-t border-gray-800">
-                <div className="flex items-center gap-2 text-gray-300">
-                  <FaEnvelope className="text-orange-500" />
-                  <span className="text-sm md:text-base">{user.email}</span>
-                </div>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[#1E1E1E]">
+                <FaEnvelope className="text-orange-500" size={13} />
+                <span className="text-gray-400 text-sm">{user.email}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stats & Skills Grid - Conditional Rendering */}
+        {/* ── Stats Row ── */}
         {(hasRating || hasSkills) && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Rating Card - Only show if has rating */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
             {hasRating && (
-              <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-orange-600/20 p-3 rounded-lg">
-                    <FaTrophy className="text-orange-500" size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-gray-400 text-sm font-medium">
-                      Rating
-                    </h3>
-                    <p className="text-white text-2xl font-bold">
-                      {user.rating.avg.toFixed(1)}
-                    </p>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  {renderStars(user.rating.avg)}
-                  <p className="text-gray-500 text-sm">
-                    Based on {user.rating?.count || 0}{" "}
-                    {user.rating?.count === 1 ? "review" : "reviews"}
-                  </p>
-                </div>
-              </div>
+              <StatCard icon={FaTrophy} label="Rating" value={user.rating.avg.toFixed(1)}>
+                <StarRating rating={user.rating.avg} />
+                <p className="text-gray-600 text-xs mt-1">
+                  {user.rating?.count || 0} {user.rating?.count === 1 ? "review" : "reviews"}
+                </p>
+              </StatCard>
             )}
-
-            {/* Skills Card - Only show if has skills */}
             {hasSkills && (
-              <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-orange-600/20 p-3 rounded-lg">
-                    <FaCheckCircle className="text-orange-500" size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-gray-400 text-sm font-medium">
-                      Skills
-                    </h3>
-                    <p className="text-white text-2xl font-bold">
-                      {(() => {
-                        if (!user.skills) return 0;
-                        if (Array.isArray(user.skills)) {
-                          return user.skills.filter(
-                            (s) => s && String(s).trim().length > 0
-                          ).length;
-                        }
-                        if (typeof user.skills === "string") {
-                          return user.skills
-                            .split(",")
-                            .filter((s) => s.trim().length > 0).length;
-                        }
-                        return 0;
-                      })()}
-                    </p>
-                  </div>
+              <StatCard icon={FaCheckCircle} label="Skills" value={skills.length}>
+                <div className="flex flex-wrap gap-2">
+                  {skills.map((skill, i) => (
+                    <span key={i} className="bg-orange-500/10 text-orange-400 border border-orange-500/20 px-2.5 py-1 rounded-full text-xs font-medium">
+                      {skill}
+                    </span>
+                  ))}
                 </div>
-                {(() => {
-                  let skillsArray = [];
-                  if (user.skills) {
-                    if (Array.isArray(user.skills)) {
-                      skillsArray = user.skills.filter(
-                        (skill) => skill && String(skill).trim().length > 0
-                      );
-                    } else if (typeof user.skills === "string") {
-                      skillsArray = user.skills
-                        .split(",")
-                        .map((s) => s.trim())
-                        .filter((s) => s.length > 0);
-                    }
-                  }
-
-                  return skillsArray.length > 0 ? (
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {skillsArray.map((skill, index) => (
-                        <span
-                          key={index}
-                          className="bg-orange-600/20 text-orange-400 px-3 py-1.5 rounded-full text-sm font-medium border border-orange-500/50 hover:bg-orange-600/30 transition-colors"
-                        >
-                          {String(skill).trim()}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null;
-                })()}
-              </div>
+              </StatCard>
             )}
           </div>
         )}
 
-        {/* Social Links Card - Only show if has social links */}
-        {hasSocialLinks && !isEditUser && (
-          <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 mb-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="bg-orange-600/20 p-3 rounded-lg">
-                <FaGlobe className="text-orange-500" size={24} />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white">
-                  Social Links
-                </h3>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {socialLinksConfig.map(({ key, icon: Icon, color }) => {
-                const link = user.socialLinks?.[key];
-                if (!link || link.trim().length === 0) return null;
-
-                return (
-                  <a
-                    key={key}
-                    href={link.startsWith("http") ? link : `https://${link}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-3 p-4 bg-[#222] border border-orange-500/30 rounded-lg hover:bg-[#2a2a2a] hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/20 transition-all duration-200"
-                  >
-                    <div
-                      className={`p-3 rounded-lg bg-gradient-to-r ${color} group-hover:scale-110 transition-transform`}
-                    >
-                      <Icon className="text-white" size={20} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white font-medium text-sm truncate group-hover:no-underline">
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                      </p>
-                      <p
-                        className="text-orange-400 text-xs truncate"
-                        title={link}
-                      >
-                        {link.replace(/^https?:\/\//, "")}
-                      </p>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          </div>
+        {/* ── Social Links ── */}
+        {hasSocialLinks && !editingProfile && (
+          <SocialLinks links={user.socialLinks} />
         )}
 
-        {/* Help & Settings Section */}
-        <div className="bg-[#111] border border-orange-500/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 mb-6">
-          <h3 className="text-xl font-semibold text-white mb-4">
-            Account & Support
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button
-              onClick={() => navigate(`/user/${id}/help`)}
-              className="flex items-center gap-4 p-4 bg-[#222] border border-orange-500/30 rounded-lg hover:bg-[#2a2a2a] hover:border-orange-500/50 transition-all duration-200 group"
-            >
-              <div className="bg-orange-600/20 p-3 rounded-lg group-hover:bg-orange-600/30 transition-colors">
-                <FaQuestionCircle className="text-orange-500" size={24} />
-              </div>
-              <div className="flex-1 text-left">
-                <h4 className="text-white font-medium mb-1">Help & Support</h4>
-                <p className="text-gray-400 text-sm">
-                  Get assistance with your account or tasks
-                </p>
-              </div>
-            </button>
+        {/* ── Account & Support ── */}
+        <AccountSection userId={id} navigate={navigate} />
 
-            <button
-              onClick={() => navigate(`/user/${id}/setting`)}
-              className="flex items-center gap-4 p-4 bg-[#222] border border-orange-500/30 rounded-lg hover:bg-[#2a2a2a] hover:border-orange-500/50 transition-all duration-200 group"
-            >
-              <div className="bg-orange-600/20 p-3 rounded-lg group-hover:bg-orange-600/30 transition-colors">
-                <FaCog className="text-orange-500" size={24} />
-              </div>
-              <div className="flex-1 text-left">
-                <h4 className="text-white font-medium mb-1">Settings</h4>
-                <p className="text-gray-400 text-sm">
-                  Manage your account preferences and privacy
-                </p>
-              </div>
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );
