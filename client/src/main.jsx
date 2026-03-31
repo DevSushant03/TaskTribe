@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
-import TaskList from "./Pages/TaskList";
+import TaskList from "./Pages/BrowseTask";
 import TaskDetails from "./Pages/TaskDetails";
 import PostTask from "./Pages/PostTask";
 import Manage from "./Pages/Manage";

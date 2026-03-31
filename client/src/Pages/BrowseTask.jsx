@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { task } from "../utils/api";
 import { Helmet } from "react-helmet";
 import BrowseSkeleton from "../Components/Skeleton";
-export default function TaskList() {
+export default function BrowseTask() {
   const [tasks, setTasks] = useState([]);
   const [filtered, setFiltered] = useState(null);
   const [loading, setloading] = useState(false);
