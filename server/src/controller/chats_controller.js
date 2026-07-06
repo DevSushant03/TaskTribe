@@ -1,5 +1,5 @@
 import { MessageModel, ChatRoomModel } from "../models/Chat_model.js";
-import { uploadToCloudinary } from "./task_controller.js";
+import { uploadToCloudinary } from "../utils/cloudinary_service.js";
 import { io, userSocketMap } from "../app.js";
 
 export const getUserForSideBar = async (req, res) => {

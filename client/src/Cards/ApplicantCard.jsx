@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { task } from "../utils/api";
-import ViewProfile from "../Components/ViewProfile";
+import { task } from "../features/task/api/task_api";
+import ViewProfile from "../features/task/components/ViewProfile";
 import { toast } from "react-toastify";
 import emailjs from "@emailjs/browser";
 function ApplicantCard({ applicant, selectedTask, fetchPostedTasks, setTab }) {

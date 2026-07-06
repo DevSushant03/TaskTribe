@@ -5,9 +5,12 @@ import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
+import morgan from "morgan";
+
 
 const app = express();
 const server = http.createServer(app);
+
 
 export const io = new Server(server, {
   cors: {
@@ -66,6 +69,7 @@ io.on("connection", (socket) => {
   });
 });
 
+app.use(morgan("tiny"));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

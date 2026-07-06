@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { task } from "../utils/api";
-import CircularLoader from "../Components/CircularLoader";
+import { task } from "../features/task/api/task_api";
+import CircularLoader from "../Components/ui/CircularLoader";
 import { toast } from "react-toastify";
 
 export default function RatingAndReviewCard({ taskId, onClose, onSuccess }) {

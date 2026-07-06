@@ -1,12 +1,11 @@
 import React, { useContext, useState } from "react";
-import { users } from "../utils/api";
+import { users } from "../features/auth/api/auth_api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ContextApi } from "../Context/ContextApi";
 
 export default function UserOnboarding2({ onBack, userData }) {
   const Navigate = useNavigate();
-  const { setid } = useContext(ContextApi);
   const [loading, setloading] = useState(false);
   const [photo] = useState(userData.photo || null);
   const [bio] = useState(userData.bio || "");
@@ -54,7 +53,6 @@ export default function UserOnboarding2({ onBack, userData }) {
       const response = await users.setUserData(fd);
       if (response.data.success) {
         Navigate(`/user/${response.data.userid}/dashboard`);
-        setid(response.data.userid);
         toast.success("Profile created successfully!");
       } else {
         toast.error(response.data?.message || "Unable to save profile");

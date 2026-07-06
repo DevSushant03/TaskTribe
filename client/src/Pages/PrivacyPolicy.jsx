@@ -1,6 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import Footer from "../Components/Footer";
+import Footer from "../Components/common/Footer";
 import logo from "../assets/icon.jpeg";
 
 export default function PrivacyPolicy() {

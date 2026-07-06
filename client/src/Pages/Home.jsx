@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
 import HeroSection from "../Components/HeroSection";
-import LightRays from "../Components/LightRays";
+import LightRays from "../Components/ui/LightRays";
 import FeaturesSection from "../Components/FeaturesSection";
 import SolveAndEarn from "../Components/SolveAndEarn";
 import FeedbackSection from "../Components/FeedbackSection";
-import Navbar from "../Components/Navbar";
-import Footer from "../Components/Footer";
+import Navbar from "../Components/common/Navbar";
+import Footer from "../Components/common/Footer";
 import { Helmet } from "react-helmet";
-import InfiniteScroll from "../Components/InfiniteScroll";
 import Lenis from "@studio-freight/lenis";
 export default function Home() {
   useEffect(() => {

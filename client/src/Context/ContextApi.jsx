@@ -1,9 +1,8 @@
 // src/context/AuthContext.js
 import { createContext, useState, useEffect } from "react";
-import { task, users } from "../utils/api";
-
 export const ContextApi = createContext();
-
+import { users } from "../features/auth/api/auth_api";
+import { task } from "../features/task/api/task_api";
 export const ContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [Task, setTask] = useState(null);
@@ -12,7 +11,7 @@ export const ContextProvider = ({ children }) => {
 
   const fetchProfile = async () => {
     try {
-      const res = await users.getUser(id);
+      const res = await users.getUser();
       setUser(res.data?.user);
     } catch (err) {
       setUser(null);

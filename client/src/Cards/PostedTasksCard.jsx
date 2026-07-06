@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { task } from "../utils/api";
-import CircularLoader from "../Components/CircularLoader";
-import EditTaskModal from "../Components/EditTaskModal";
+import { task } from "../features/task/api/task_api";
+import CircularLoader from "../Components/ui/CircularLoader";
+import EditTaskModal from "../features/task/components/EditTaskModal";
 import RatingAndReviewCard from "../Cards/RatingAndReviewCard";
 import { toast } from "react-toastify";
 export default function PostedTasksCard({

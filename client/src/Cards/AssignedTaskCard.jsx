@@ -1,8 +1,8 @@
 import React from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import { task } from "../utils/api";
+import { task } from "../features/task/api/task_api";
 import { useState } from "react";
-import CircularLoader from "../Components/CircularLoader";
+import CircularLoader from "../Components/ui/CircularLoader";
 import { toast } from "react-toastify";
 function AssignedTaskCard({ tasks, key, fetchAssignedTasks }) {
   const [open, setopen] = useState(null);

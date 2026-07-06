@@ -1,5 +1,5 @@
 import userModel from "../models/user_model.js";
-import { uploadToCloudinary, deleteCloudinaryFile } from "./task_controller.js";
+import { uploadToCloudinary, deleteCloudinaryFile } from "../utils/cloudinary_service.js";
 
 export const getUserData = async (req, res) => {
   try {
