@@ -11,8 +11,8 @@ import {
   AssignedTaskSkeleton,
   ManagePostedTaskSkeleton,
 } from "../../../Components/ui/Skeleton.jsx";
-import TaskApplyByMe from "../Components/TaskApplyByMe.jsx";
-<ArrowLeft className="w-6 h-6" />;
+import TaskApplyByMe from "../../task/components/TaskApplyByMe.jsx";
+
 
 const Manage = () => {
   const [open, setopen] = useState(null);
