@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import ForgotPasswordEmail from "../Components/ForgotPasswordEmail";
-import OtpVarificationForm from "../Components/OtpVarificationForm";
+import ForgotPasswordEmail from "../components/ForgotPasswordEmail";
+import OtpVarificationForm from "../components/OtpVarificationForm";
 import { useMediaQuery } from "react-responsive";
-import ResetPassword from "../Components/ResetPassword";
+import ResetPassword from "../components/ResetPassword";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 export default function ForgotPasswordOnboarding() {
