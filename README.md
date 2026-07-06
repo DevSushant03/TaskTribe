@@ -1,6 +1,6 @@
 # TaskTribe
 
-TaskTribe is a **collaborative skill-sharing platform** where anyone with skills or expertise can **post tasks, offer help, and collaborate** with others. It’s designed to connect people who want to help and those who need assistance, regardless of age, profession, or background.
+TaskTribe is a collaborative platform designed for college students to post, share, and solve academic or campus-related tasks. Whether it's finding a partner for a group project, getting help with assignments, or offering solutions to peers, TaskTribe connects students in a trusted environment.
 
 [![React](https://img.shields.io/badge/React-18.2.0-blue?logo=react&logoColor=white)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20-green?logo=node.js&logoColor=white)](https://nodejs.org/)
