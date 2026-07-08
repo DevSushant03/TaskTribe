@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ForgotPasswordEmail from "../components/ForgotPasswordEmail";
-import OtpVarificationForm from "../components/OtpVarificationForm";
+import OtpVarificationForm from "../components/OtpVerificationForm";
 import { useMediaQuery } from "react-responsive";
 import ResetPassword from "../components/ResetPassword";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
