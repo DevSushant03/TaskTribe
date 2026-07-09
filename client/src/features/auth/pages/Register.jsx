@@ -4,7 +4,6 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Helmet } from "react-helmet";
 import { toast } from "react-toastify";
-import emailjs from "@emailjs/browser";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 import { registerSchema } from "../validator/auth_validation.js";
@@ -36,8 +35,6 @@ export default function Register() {
   const verifyOtpMutation = useVerifyRegisterOtp();
   const registerMutation = useRegister();
 
- 
-
   // Step 1: details are valid (RHF + zod already checked this) -> request OTP -> email it
   const handleDetailsSubmit = async (data) => {
     try {
@@ -48,23 +45,16 @@ export default function Register() {
         return;
       }
 
-      const expiryTime = new Date(Date.now() + 15 * 60 * 1000).toLocaleTimeString();
+      const expiryTime = new Date(
+        Date.now() + 15 * 60 * 1000,
+      ).toLocaleTimeString();
 
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        {
-          email: data.email,
-          title: "OTP Verification",
-          message: "Use the following One-Time Password to verify your account:",
-          highlight: res.data.otp,
-          footer_note: `This OTP is valid for 15 minutes till ${expiryTime}. Do not share this OTP with anyone.`,
-          year: new Date().getFullYear(),
-          company_name: "TaskTribe",
-          website_url: "https://tasktribe-plum.vercel.app",
-          logo_url: "https://tasktribe-plum.vercel.app/icon.jpeg",
-        },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+      await sendOtpService(
+        data.email,
+        res.data.otp,
+        expiryTime,
+        "OTP Verification",
+        "Use the following One-Time Password to verify your account:",
       );
 
       toast.success("OTP sent successfully");
@@ -87,7 +77,10 @@ export default function Register() {
     const email = methods.getValues("email");
 
     try {
-      const verifyRes = await verifyOtpMutation.mutateAsync({ otp: enteredOtp, email });
+      const verifyRes = await verifyOtpMutation.mutateAsync({
+        otp: enteredOtp,
+        email,
+      });
 
       if (!verifyRes.data.success) {
         toast.error(verifyRes.data.message);
@@ -100,12 +93,6 @@ export default function Register() {
         otp: enteredOtp,
       });
 
-      if (registerRes.data.success) {
-        toast.success(registerRes.data.message);
-        navigate("/auth");
-      } else {
-        toast.error(registerRes.data.message);
-      }
     } catch (err) {
       toast.error(err?.message || "Registration failed");
     }
@@ -132,7 +119,10 @@ export default function Register() {
 
           {step === "details" && (
             <FormProvider {...methods}>
-              <RegisterForm onValid={handleDetailsSubmit} loading={generateOtpMutation.isPending} />
+              <RegisterForm
+                onValid={handleDetailsSubmit}
+                loading={generateOtpMutation.isPending}
+              />
             </FormProvider>
           )}
 
@@ -142,7 +132,9 @@ export default function Register() {
               setOtp={setOtp}
               email={methods.getValues("email")}
               onVerify={handleOtpVerify}
-              loading={verifyOtpMutation.isPending || registerMutation.isPending}
+              loading={
+                verifyOtpMutation.isPending || registerMutation.isPending
+              }
             />
           )}
 

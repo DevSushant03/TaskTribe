@@ -1,13 +1,18 @@
 import React, { useState } from "react";
+import ForgetPasswordBackground from "../components/ForgetPasswordBackground";
+import ProgressBar from "../components/ProgressBar";
+import SecurityBadges from "../components/SecurityBadges";
+
 import ForgotPasswordEmail from "../components/ForgotPasswordEmail";
-import OtpVarificationForm from "../components/OtpVerificationForm";
-import { useMediaQuery } from "react-responsive";
+import OtpVerificationForm from "../components/OtpVerificationForm";
 import ResetPassword from "../components/ResetPassword";
+
+import { useMediaQuery } from "react-responsive";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+
 export default function ForgotPasswordOnboarding() {
   const isMobile = useMediaQuery({ maxWidth: 768 });
-  console.log(isMobile);
 
   const navigate = useNavigate();
   const [step, setstep] = useState(1);
@@ -24,24 +29,7 @@ export default function ForgotPasswordOnboarding() {
       >
         <FaArrowAltCircleLeft color="white" size={25} /> back to login
       </button>
-      {/* animated orange gradient blobs */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-orange-500/30 blur-3xl" />
-        <div className="absolute top-40 -right-20 h-80 w-80 rounded-full bg-amber-400/30 blur-3xl" />
-        <div className="absolute bottom-[-6rem] left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-orange-600/30 blur-3xl" />
-      </div>
-
-      {/* subtle grid + noise */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_#ffffff10,_transparent_55%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,_#ffffff0f_1px,_transparent_1px),linear-gradient(to_bottom,_#ffffff0f_1px,_transparent_1px)] bg-[size:80px_80px]" />
-      <div
-        className="pointer-events-none absolute inset-0 mix-blend-soft-light opacity-40"
-        style={{
-          backgroundImage:
-            "url('https://grainy-gradients.vercel.app/noise.svg')",
-        }}
-      />
-
+      <ForgetPasswordBackground />
       {/* content */}
       <div className="relative z-10 flex h-full w-full items-center justify-center px-4">
         <div className="grid w-full max-w-6xl grid-cols-1 gap-10 lg:grid-cols-[1.2fr,1fr]">
@@ -57,77 +45,10 @@ export default function ForgotPasswordOnboarding() {
             </div>
 
             {/* progress / steps */}
-            <div className="space-y-4">
-              <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-slate-900/80">
-                <div
-                  className={`h-full rounded-full bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 transition-all duration-500 ${
-                    step === 1 ? "w-1/3" : step === 2 ? "w-2/3" : "w-full"
-                  }`}
-                />
-              </div>
-
-              <div className="flex items-center justify-between text-xs font-medium text-slate-300">
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`flex h-6 w-6 items-center justify-center rounded-full border text-[10px] ${
-                      step >= 1
-                        ? "border-orange-400 bg-orange-500/20 text-orange-50"
-                        : "border-slate-600 bg-slate-900/40 text-slate-400"
-                    }`}
-                  >
-                    1
-                  </div>
-                  <span>Email</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`flex h-6 w-6 items-center justify-center rounded-full border text-[10px] ${
-                      step >= 2
-                        ? "border-amber-400 bg-amber-500/20 text-amber-50"
-                        : "border-slate-600 bg-slate-900/40 text-slate-400"
-                    }`}
-                  >
-                    2
-                  </div>
-                  <span>OTP</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`flex h-6 w-6 items-center justify-center rounded-full border text-[10px] ${
-                      step === 3
-                        ? "border-yellow-400 bg-yellow-500/20 text-yellow-50"
-                        : "border-slate-600 bg-slate-900/40 text-slate-400"
-                    }`}
-                  >
-                    3
-                  </div>
-                  <span>New password</span>
-                </div>
-              </div>
-            </div>
+            <ProgressBar step={step} />
 
             {/* security badges */}
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-[11px] text-slate-400">
-              <div className="inline-flex items-center gap-2 rounded-full border border-slate-700/60 bg-black/60 px-3 py-1 backdrop-blur">
-                <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-orange-500/20">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-3 w-3 text-orange-300"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M9.5 16.5 6 13l1.4-1.4 2.1 2.1 7.1-7.1L18 8l-8.5 8.5Z"
-                    />
-                  </svg>
-                </span>
-                <span>Bank‑grade TLS & salted hashing</span>
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-slate-700/60 bg-black/60 px-3 py-1 backdrop-blur">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span>No password stored in plain text</span>
-              </div>
-            </div>
+            <SecurityBadges/>
           </div>
 
           {/* right: glassy auth card shell (your steps go inside) */}
@@ -176,7 +97,7 @@ export default function ForgotPasswordOnboarding() {
                   />
                 )}
                 {step === 2 && (
-                  <OtpVarificationForm
+                  <OtpVerificationForm
                     nextStep={nextStep}
                     back={back}
                     setEmail={setemail}

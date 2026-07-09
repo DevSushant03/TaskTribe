@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../api/auth_api"; // your axios instance
-import emailjs from "@emailjs/browser";
+import { sendOtpService } from "../../../services/sendOtpServices";
 
 const ForgotPasswordEmail = ({ nextStep, setEmail }) => {
   const [email, setUserEmail] = useState("");
@@ -24,29 +24,18 @@ const ForgotPasswordEmail = ({ nextStep, setEmail }) => {
 
       if (res.data.success) {
         const expiryTime = new Date(
-          Date.now() + 15 * 60 * 1000
+          Date.now() + 15 * 60 * 1000,
         ).toLocaleTimeString();
 
-        await emailjs.send(
-          import.meta.env.VITE_EMAILJS_SERVICE_ID,
-          import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-          {
-            email: email,
-            title: "Reset Password – OTP Verification",
-            message:
-              "You requested to reset your password. Use the following One-Time Password (OTP) to verify your identity. This OTP is valid for a limited time. Please do not share it with anyone.",
-
-            highlight: res.data.otp,
-            footer_note: `This OTP is valid for 15 minutes till ${expiryTime}.
-                Do not share this OTP with anyone.`,
-            year: new Date().getFullYear(),
-            company_name: "TaskTribe",
-            website_url: "https://tasktribe-plum.vercel.app",
-            logo_url: "https://tasktribe-plum.vercel.app/icon.jpeg",
-          },
-          import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        await sendOtpService(
+          email,
+          res.data.otp,
+          expiryTime,
+          "Reset Password – OTP Verification",
+          "You requested to reset your password. Use the following One-Time Password (OTP) to verify your identity. This OTP is valid for a limited time. Please do not share it with anyone.",
         );
-        setEmail(email)
+        
+        setEmail(email);
         toast.success(res.data.message);
         nextStep();
       } else {
@@ -64,7 +53,6 @@ const ForgotPasswordEmail = ({ nextStep, setEmail }) => {
       onSubmit={handleSubmit}
       className="bg-white p-6 rounded-xl shadow-md w-full max-w-md"
     >
-    
       <p className="text-sm text-gray-500 text-center mb-6">
         Enter your registered email to receive an OTP
       </p>
