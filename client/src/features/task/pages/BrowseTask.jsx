@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { Helmet } from "react-helmet";
@@ -45,14 +45,12 @@ export default function BrowseTask() {
         </Link>
       </div>
 
-      {/* Filters */}
       <TaskFilterBar
         filterOptions={filterOptions}
         activeFilter={activeFilter}
         setActiveFilter={setActiveFilter}
       />
-
-      {/* Task Grid  */}
+      
       <TaskGrid tasks={FilteredData} isError={isError} isLoading={isLoading} />
     </div>
   );

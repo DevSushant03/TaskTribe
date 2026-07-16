@@ -9,7 +9,7 @@ import { task } from "../../../features/task/api/task_api";
 import { useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { toast } from "react-toastify";
-import { ContextApi } from "../../../Context/ContextApi";
+import { UserContext } from "../../../Context/UserProvider";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -264,7 +264,7 @@ function AccountSection({ userId, navigate }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 function ProfilePage() {
-  const { user, loading, setUser } = useContext(ContextApi);
+  const { user, isLoading } = useContext(UserContext);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -312,7 +312,6 @@ function ProfilePage() {
         socialLinks: editSocialLinks,
       });
       if (res.data.success) {
-        setUser(res.data.user);
         cancelProfileEdit();
         toast.success("Profile updated!");
       } else {
@@ -337,7 +336,6 @@ function ProfilePage() {
       formData.append("photo", file);
       const res = await users.changeProfilePic(userId, formData);
       if (res.data.success) {
-        setUser(res.data.user);
         setEditingAvatar(false);
         toast.success("Profile picture updated!");
       } else {
@@ -360,7 +358,7 @@ function ProfilePage() {
 
   // ── Guards ──
 
-  if (loading) return (
+  if (isLoading) return (
     <div className="flex-1 flex items-center justify-center bg-[#0C0C0C] min-h-screen">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />

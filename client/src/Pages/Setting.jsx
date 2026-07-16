@@ -2,11 +2,11 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../features/auth/api/auth_api";
 import { toast } from "react-toastify";
-import { ContextApi } from "../Context/ContextApi";
+import { UserContext } from "../Context/UserProvider";
 
 export default function Settings() {
   const navigate = useNavigate();
-  const { user } = useContext(ContextApi);
+  const { user } = useContext(UserContext);
   const [isLogout, setIsLogout] = useState(false);
   const [loading, setloading] = useState(false);
 

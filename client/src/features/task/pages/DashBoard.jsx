@@ -1,29 +1,40 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { FaPlus, FaSearch, FaTasks, FaUsers, FaCheckCircle } from "react-icons/fa";
+import {
+  FaPlus,
+  FaSearch,
+  FaTasks,
+  FaUsers,
+  FaCheckCircle,
+} from "react-icons/fa";
 import { Helmet } from "react-helmet";
-import { ContextApi } from "../../../Context/ContextApi";
+import { UserContext } from "../../../Context/UserProvider";
+import { TaskContext } from "../../../Context/TaskProvider";
 
 const DashBoard = () => {
-  const { user, Task, loading } = useContext(ContextApi);
+  const { user, isLoading: isUserLoading } = useContext(UserContext);
+  const { tasks, isLoading: isTaskLoading } = useContext(TaskContext);
 
+  
   const globalStats = [
     {
       label: "Tasks Shared by Students",
-      value: Task?.length,
+      value: tasks?.length,
       icon: <FaTasks className="text-orange-500" />,
     },
     {
       label: "Peers You Helped",
-      value: Task?.filter(
-        (task) => task.assignedTo?._id === user?._id && task.status === "completed"
+      value: tasks?.filter(
+        (task) =>
+          task.assignedTo?._id === user?._id && task.status === "completed",
       ).length,
       icon: <FaUsers className="text-orange-500" />,
     },
     {
       label: "Collaborations Completed",
-      value: Task?.filter(
-        (task) => task.createdBy?._id === user?._id && task.status === "completed"
+      value: tasks?.filter(
+        (task) =>
+          task.createdBy?._id === user?._id && task.status === "completed",
       ).length,
       icon: <FaCheckCircle className="text-orange-500" />,
     },
@@ -32,20 +43,22 @@ const DashBoard = () => {
   const clientStats = [
     {
       label: "Open Tasks",
-      value: Task?.filter(
-        (task) => task.createdBy?._id === user?._id && task.status === "open"
+      value: tasks?.filter(
+        (task) => task.createdBy?._id === user?._id && task.status === "open",
       ).length,
     },
     {
       label: "Ongoing",
-      value: Task?.filter(
-        (task) => task.createdBy?._id === user?._id && task.status === "in_progress"
+      value: tasks?.filter(
+        (task) =>
+          task.createdBy?._id === user?._id && task.status === "in_progress",
       ).length,
     },
     {
       label: "Completed",
-      value: Task?.filter(
-        (task) => task.createdBy?._id === user?._id && task.status === "completed"
+      value: tasks?.filter(
+        (task) =>
+          task.createdBy?._id === user?._id && task.status === "completed",
       ).length,
     },
   ];
@@ -53,28 +66,33 @@ const DashBoard = () => {
   const freelancerStats = [
     {
       label: "Active Collabs",
-      value: Task?.filter(
-        (task) => task.assignedTo?._id === user?._id && task.status === "in_progress"
+      value: tasks?.filter(
+        (task) =>
+          task.assignedTo?._id === user?._id && task.status === "in_progress",
       ).length,
     },
     {
       label: "Applications",
-      value: Task?.filter(
+      value: tasks?.filter(
         (task) =>
-          task.applicants?.some((app) => String(app.user) === String(user?._id)) &&
-          task.status === "open"
+          task.applicants?.some(
+            (app) => String(app.user) === String(user?._id),
+          ) && task.status === "open",
       ).length,
     },
     {
       label: "Tasks Done",
-      value: Task?.filter(
-        (task) => task.assignedTo?._id === user?._id && task.status === "completed"
+      value: tasks?.filter(
+        (task) =>
+          task.assignedTo?._id === user?._id && task.status === "completed",
       ).length,
     },
   ];
 
-  const clientTasks = Task?.filter((task) => task.createdBy?._id === user?._id);
-  const freelancerTasks = Task?.filter((task) => task.assignedTo?._id === user?._id);
+  const clientTasks = tasks?.filter((task) => task.createdBy?._id === user?._id);
+  const freelancerTasks = tasks?.filter(
+    (task) => task.assignedTo?._id === user?._id,
+  );
 
   const statusStyle = (status) => {
     if (status === "open")
@@ -86,7 +104,7 @@ const DashBoard = () => {
     return "bg-gray-700/30 text-gray-400 border border-gray-700";
   };
 
-  if (loading) {
+  if (isUserLoading || isTaskLoading) {
     return (
       <div className="flex-1 bg-[#0C0C0C] min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -104,7 +122,6 @@ const DashBoard = () => {
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-10">
-
         {/* ── Header ── */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
           <div>
@@ -116,12 +133,15 @@ const DashBoard = () => {
               <span className="text-orange-500">{user?.name}</span> 👋
             </h1>
             <p className="text-gray-500 text-sm">
-              Here's a snapshot of your learning journey and campus collaborations.
+              Here's a snapshot of your learning journey and campus
+              collaborations.
             </p>
           </div>
           <div className="flex items-center gap-2 bg-[#111] border border-[#1E1E1E] rounded-full px-4 py-2 self-start md:self-auto">
             <span className="w-2 h-2 bg-green-500 rounded-full" />
-            <span className="text-gray-400 text-xs font-medium">Active on campus</span>
+            <span className="text-gray-400 text-xs font-medium">
+              Active on campus
+            </span>
           </div>
         </div>
 
@@ -137,7 +157,9 @@ const DashBoard = () => {
               </div>
               <div>
                 <p className="text-gray-500 text-xs mb-0.5">{stat.label}</p>
-                <p className="text-2xl font-bold text-white">{stat.value ?? 0}</p>
+                <p className="text-2xl font-bold text-white">
+                  {stat.value ?? 0}
+                </p>
               </div>
             </div>
           ))}
@@ -153,14 +175,14 @@ const DashBoard = () => {
 
         {/* ── Two Columns ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
           {/* ── Academic Tasks Column ── */}
           <section className="flex flex-col gap-4">
-
             {/* Stats card */}
             <div className="bg-[#111] border border-[#1E1E1E] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-5">
-                <h2 className="text-base font-semibold text-white">Your Academic Tasks</h2>
+                <h2 className="text-base font-semibold text-white">
+                  Your Academic Tasks
+                </h2>
                 <div className="w-2 h-2 rounded-full bg-orange-500" />
               </div>
               <div className="grid grid-cols-3 gap-3 mb-5">
@@ -170,7 +192,9 @@ const DashBoard = () => {
                     className="bg-[#0C0C0C] border border-[#1A1A1A] rounded-xl p-3"
                   >
                     <p className="text-gray-600 text-xs mb-1">{stat.label}</p>
-                    <p className="text-xl font-bold text-white">{stat.value ?? 0}</p>
+                    <p className="text-xl font-bold text-white">
+                      {stat.value ?? 0}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -194,8 +218,13 @@ const DashBoard = () => {
             {/* Task list card */}
             <div className="bg-[#111] border border-[#1E1E1E] rounded-2xl p-6 flex-1">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-white">Recent Academic Tasks</h3>
-                <Link to="../manage" className="text-orange-500 text-xs font-medium hover:text-orange-400">
+                <h3 className="text-sm font-semibold text-white">
+                  Recent Academic Tasks
+                </h3>
+                <Link
+                  to="../manage"
+                  className="text-orange-500 text-xs font-medium hover:text-orange-400"
+                >
                   View all →
                 </Link>
               </div>
@@ -211,7 +240,8 @@ const DashBoard = () => {
                           {task.title}
                         </p>
                         <p className="text-gray-600 text-xs mt-0.5">
-                          ₹{task.budget?.min}–₹{task.budget?.max} · students collaborating
+                          ₹{task.budget?.min}–₹{task.budget?.max} · students
+                          collaborating
                         </p>
                       </div>
                       <span
@@ -232,11 +262,12 @@ const DashBoard = () => {
 
           {/* ── Peer Collaboration Column ── */}
           <section className="flex flex-col gap-4">
-
             {/* Stats card */}
             <div className="bg-[#111] border border-[#1E1E1E] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-5">
-                <h2 className="text-base font-semibold text-white">Peer Collaboration</h2>
+                <h2 className="text-base font-semibold text-white">
+                  Peer Collaboration
+                </h2>
                 <div className="w-2 h-2 rounded-full bg-orange-500" />
               </div>
               <div className="grid grid-cols-3 gap-3 mb-5">
@@ -246,7 +277,9 @@ const DashBoard = () => {
                     className="bg-[#0C0C0C] border border-[#1A1A1A] rounded-xl p-3"
                   >
                     <p className="text-gray-600 text-xs mb-1">{stat.label}</p>
-                    <p className="text-xl font-bold text-white">{stat.value ?? 0}</p>
+                    <p className="text-xl font-bold text-white">
+                      {stat.value ?? 0}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -270,8 +303,13 @@ const DashBoard = () => {
             {/* Task list card */}
             <div className="bg-[#111] border border-[#1E1E1E] rounded-2xl p-6 flex-1">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-white">Recent Peer Collaborations</h3>
-                <Link to="../manage" className="text-orange-500 text-xs font-medium hover:text-orange-400">
+                <h3 className="text-sm font-semibold text-white">
+                  Recent Peer Collaborations
+                </h3>
+                <Link
+                  to="../manage"
+                  className="text-orange-500 text-xs font-medium hover:text-orange-400"
+                >
                   View all →
                 </Link>
               </div>
@@ -310,7 +348,6 @@ const DashBoard = () => {
               </div>
             </div>
           </section>
-
         </div>
       </div>
     </div>

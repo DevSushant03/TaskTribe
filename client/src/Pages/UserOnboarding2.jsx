@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { users } from "../features/auth/api/auth_api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { ContextApi } from "../Context/ContextApi";
 
 export default function UserOnboarding2({ onBack, userData }) {
   const Navigate = useNavigate();

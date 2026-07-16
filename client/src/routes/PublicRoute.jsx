@@ -7,15 +7,15 @@ const PublicRoute = () => {
     data,
     isLoading,
   } = useCurrentUser();
-
+ 
   if (isLoading) {
     return <Loader/>
   }
 
-  if (data?.data.user) {
+  if (data) {
     return (
       <Navigate
-        to={`/user/${data?.data.user._id}/dashboard`}
+        to={`/user/${data?._id}/dashboard`}
         replace
       />
     );

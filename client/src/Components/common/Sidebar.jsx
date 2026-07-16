@@ -9,11 +9,11 @@ import {
   FaSearch,
 } from "react-icons/fa";
 import { IoMdNotifications } from "react-icons/io";
-import { ContextApi } from "../../Context/ContextApi";
+import { UserContext } from "../../Context/UserProvider";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, loading } = useContext(ContextApi);
+  const { user, isLoading } = useContext(UserContext);
   const { id } = useParams();
 
   const getInitials = (name, surname) => {
@@ -26,9 +26,11 @@ export default function Sidebar() {
     <>
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between p-4 bg-[#0c0c0c] shadow fixed w-full z-20">
-        <h1 className="logoText text-xl text-orange-600 tracking-widest">TaskTribe</h1>
+        <h1 className="logoText text-xl text-orange-600 tracking-widest">
+          TaskTribe
+        </h1>
         <button onClick={() => setIsOpen(true)}>
-          <FaBars  size={24} color="white" />
+          <FaBars size={24} color="white" />
         </button>
       </div>
 
@@ -46,7 +48,10 @@ export default function Sidebar() {
           </h1>
 
           {/* Close Button (Mobile Only) */}
-          <button onClick={() => setIsOpen(false)} className="md:hidden text-white">
+          <button
+            onClick={() => setIsOpen(false)}
+            className="md:hidden text-white"
+          >
             <FaTimes size={22} />
           </button>
         </div>

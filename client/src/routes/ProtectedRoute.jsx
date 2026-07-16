@@ -4,12 +4,11 @@ import Loader from "../Components/ui/WaitingLoader";
 
 const ProtectedRoute = () => {
   const { data, isLoading, isError } = useCurrentUser();
-
-  if (isLoading) {
+  if (isLoading){
     return <Loader />;
   }
 
-  if (isError || !data?.data?.user){
+  if (isError || !data){
     return <Navigate to="/auth" replace />
   }
 
