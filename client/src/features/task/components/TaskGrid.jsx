@@ -25,7 +25,7 @@ export default function TaskGrid({ tasks, isError, isLoading }) {
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {tasks?.map((task) => (
-        <TaskCard key={task,_id} task={task}/>
+        <TaskCard key={task._id} task={task}/>
       ))}
     </div>
   );
