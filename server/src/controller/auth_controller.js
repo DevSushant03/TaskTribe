@@ -13,7 +13,6 @@ import {
 //! Login functionality---------------------------------------
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  console.log('complete1')
   
   if (!email || !password) {
     return res.json({
@@ -22,7 +21,6 @@ export const login = async (req, res) => {
     });
   }
   try {
-    console.log('complete2')
     const user = await userModel.findOne({ email });
     if (!user) {
       return res.json({
@@ -32,7 +30,6 @@ export const login = async (req, res) => {
       });
     }
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log('complete3')
     
     if (!isMatch) {
       return res.json({

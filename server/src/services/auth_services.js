@@ -3,20 +3,17 @@ import bcrypt from "bcryptjs";
 
 export const createAccessToken = (jwt, user, res) => {
   try {
-    console.log("reach");
     
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
     
-    console.log("reach2");
     res.cookie("accessToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    console.log("reach3");
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }

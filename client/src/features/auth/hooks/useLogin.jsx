@@ -10,7 +10,6 @@ export default function useLogin() {
   return useMutation({
     mutationFn: auth.login,
     onSuccess: (data) => {
-      console.log(data);
       if (data.success === false || data.data?.success === false) {
         toast.error(data.message || data.data?.message || "Login failed");
         return; 
