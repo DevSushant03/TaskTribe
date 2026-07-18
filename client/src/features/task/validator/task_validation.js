@@ -22,7 +22,7 @@ export const TaskValidationSchema = z
       .min(1, "Minimum budget is required.")
       .refine(
         (val) => !val || (!isNaN(Number(val)) && Number(val) > 0),
-        "Minimum budget must be a greater then 0."
+        "Minimum budget must be a greater then 0.",
       ),
 
     budgetMax: z
@@ -30,7 +30,7 @@ export const TaskValidationSchema = z
       .min(1, "Minimum budget is required.")
       .refine(
         (val) => !val || (!isNaN(Number(val)) && Number(val) > 0),
-        "Maximum budget must be a positive number."
+        "Maximum budget must be a positive number.",
       ),
 
     deadline: z
@@ -38,14 +38,23 @@ export const TaskValidationSchema = z
       .min(1, "Deadline is required.")
       .refine(
         (val) => !val || new Date(val) > new Date(),
-        "Deadline must be a future date."
+        "Deadline must be a future date.",
       ),
+    attachments: z
+      .array(
+        z.object({
+          file: z.instanceof(File),
+          filename: z.string(),
+        }),
+      )
+      .optional()
+      .default([]),
 
     agreedRules: z
       .boolean()
       .refine(
         (val) => val === true,
-        "You must agree to the rules and regulations to post a task."
+        "You must agree to the rules and regulations to post a task.",
       ),
   })
   .refine(
@@ -60,5 +69,5 @@ export const TaskValidationSchema = z
     {
       message: "Minimum budget cannot be greater than maximum budget.",
       path: ["budgetMax"],
-    }
+    },
   );

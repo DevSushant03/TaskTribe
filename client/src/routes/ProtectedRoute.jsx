@@ -8,7 +8,6 @@ const ProtectedRoute = () => {
     return <Loader />;
   }
 
-  console.log(data)
   if (isError || !data){
     return <Navigate to="/auth" replace />
   }
