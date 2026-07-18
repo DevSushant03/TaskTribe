@@ -3,13 +3,14 @@ import { task } from "../api/task_api";
 import { toast } from "react-toastify";
 import { useQueryClient ,useMutation} from "@tanstack/react-query";
 
-export default function useCreateTask() {
+export default function useCreateTask(reset) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (FormData) => task.createTask(FormData),
     onSuccess: (res) => {
       if (res.data.success) {
         toast.success("Task Post Successfully");
+        reset();
         queryClient.invalidateQueries({ queryKey: ["open-tasks"] });
       } else {
         toast.error(res.data.message);
