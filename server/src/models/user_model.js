@@ -38,27 +38,6 @@ const userSchema = new mongoose.Schema({
     default: [],
   },
 
-  notifications: {
-    type: [
-      {
-        from: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "user",
-          required: false, // Allow null for system/tasktribe notifications
-        },
-        message: String,
-        isRead: {
-          type: Boolean,
-          default: false,
-        },
-        createdAt: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
-    default: [],
-  },
   isCreatedProfile: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

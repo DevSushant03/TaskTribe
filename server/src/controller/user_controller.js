@@ -1,5 +1,9 @@
 import userModel from "../models/user_model.js";
-import { uploadToCloudinary, deleteCloudinaryFile } from "../utils/cloudinary_service.js";
+import notificationModel from "../models/notification_model.js"
+import {
+  uploadToCloudinary,
+  deleteCloudinaryFile,
+} from "../utils/cloudinary_service.js";
 
 export const getUserData = async (req, res) => {
   try {
@@ -53,7 +57,7 @@ export const setUserData = async (req, res) => {
     if (req.file) {
       const result = await uploadToCloudinary(
         req.file.buffer,
-        "ProfilePictures"
+        "ProfilePictures",
       );
       profilePic = result.secure_url;
     }
@@ -69,7 +73,7 @@ export const setUserData = async (req, res) => {
           socialLinks: parsedSocialLinks, // Now properly parsed
           isCreatedProfile: true,
         },
-        { new: true, runValidators: true }
+        { new: true, runValidators: true },
       )
       .select("-password");
 
@@ -167,20 +171,11 @@ export const editProfile = async (req, res) => {
       .findByIdAndUpdate(userid, updateData, { new: true, runValidators: true })
       .select("-password");
 
-    await userModel.findByIdAndUpdate(
-      userid,
-      {
-        $push: {
-          notifications: {
-            from: null,
-            message: "Your profile information has been successfully updated.",
-            isRead: false,
-            createdAt: new Date(),
-          },
-        },
-      },
-      { runValidators: true }
-    );
+    await notificationModel.create({
+      recipient: userid,
+      from: null,
+      message: "Your profile information has been successfully updated.",
+    });
 
     return res.json({
       success: true,
@@ -222,24 +217,15 @@ export const editProfilePic = async (req, res) => {
       .findByIdAndUpdate(
         userid,
         { photo: result.secure_url },
-        { new: true, runValidators: true }
+        { new: true, runValidators: true },
       )
       .select("-password");
 
-    await userModel.findByIdAndUpdate(
-      userid,
-      {
-        $push: {
-          notifications: {
-            from: null,
-            message: "Your profile picture has been successfully updated.",
-            isRead: false,
-            createdAt: new Date(),
-          },
-        },
-      },
-      { runValidators: true }
-    );
+    await notificationModel.create({
+      recipient: userid,
+      from: null,
+      message: "Your profile picture has been successfully updated.",
+    });
 
     return res.json({
       success: true,

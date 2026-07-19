@@ -1,10 +1,13 @@
 import taskModel from "../models/task_model.js";
+import notificationModel from "../models/notification_model.js";
 import bankModel from "../models/BankDetails_model.js";
 import { ChatRoomModel, MessageModel } from "../models/Chat_model.js";
 import userModel from "../models/user_model.js";
 import FundAccount from "../models/BankDetails_model.js";
-import { deleteCloudinaryFile, uploadToCloudinary } from "../utils/cloudinary_service.js";
-
+import {
+  deleteCloudinaryFile,
+  uploadToCloudinary,
+} from "../utils/cloudinary_service.js";
 
 export const createTask = async (req, res) => {
   const { userid } = req.user;
@@ -48,13 +51,10 @@ export const createTask = async (req, res) => {
       attachments: uploadedFiles,
     });
 
-    await userModel.findByIdAndUpdate(userid, {
-      $push: {
-        notifications: {
-          from: null, //from tasktribe
-          message: `Your task "${newTask.title}" has been posted successfully`,
-        },
-      },
+    await notificationModel.create({
+      recipient: userid,
+      from: null,
+      message: `Your task "${newTask.title}" has been posted successfully`,
     });
 
     return res.json({
@@ -123,7 +123,7 @@ export const editTask = async (req, res) => {
       }
       // Remove deleted files from attachments
       task.attachments = task.attachments.filter(
-        (att) => !deleteUrls.includes(att.url)
+        (att) => !deleteUrls.includes(att.url),
       );
     }
 
@@ -164,13 +164,10 @@ export const editTask = async (req, res) => {
     // Notify all applicants if there are any
     if (task.applicants && task.applicants.length > 0) {
       const notificationPromises = task.applicants.map((applicant) => {
-        return userModel.findByIdAndUpdate(applicant.user, {
-          $push: {
-            notifications: {
-              from: task.createdBy,
-              message: `The task "${task.title}" has been updated. Please review the changes.`,
-            },
-          },
+        return notificationModel.create({
+          recipient: applicant.user,
+          from: task.createdBy,
+          message: `The task "${task.title}" has been updated. Please review the changes.`,
         });
       });
       await Promise.all(notificationPromises);
@@ -266,7 +263,7 @@ export const getTaskApplyByMe = async (req, res) => {
         "applicants.user": userid,
       })
       .select(
-        "title description budget deadline applicants.bidAmount applicants.message"
+        "title description budget deadline applicants.bidAmount applicants.message",
       )
       .populate("createdBy", "name surname photo email")
       .sort({ createdAt: -1 });
@@ -303,7 +300,7 @@ export const cancelTaskApplyByMe = async (req, res) => {
     }
 
     task.applicants = task.applicants.filter(
-      (applicant) => applicant.user.toString() !== userid
+      (applicant) => applicant.user.toString() !== userid,
     );
     task.applicantsCount = task.applicants.length;
     await task.save();
@@ -334,7 +331,7 @@ export const updateTaskApplication = async (req, res) => {
     }
 
     const applicantIndex = task.applicants.findIndex(
-      (a) => a.user.toString() === userid
+      (a) => a.user.toString() === userid,
     );
 
     if (applicantIndex === -1) {
@@ -390,13 +387,10 @@ export const deleteTask = async (req, res) => {
 
     if (task.applicants && task.applicants.length > 0) {
       const notificationPromises = task.applicants.map((applicant) => {
-        return userModel.findByIdAndUpdate(applicant.user, {
-          $push: {
-            notifications: {
-              from: null,
-              message: `The task "${task.title}" has been deleted by creator.`,
-            },
-          },
+        return notificationModel.create({
+          recipient: applicant.user,
+          from: null,
+          message: `The task "${task.title}" has been deleted by creator.`,
         });
       });
       await Promise.all(notificationPromises);
@@ -404,13 +398,10 @@ export const deleteTask = async (req, res) => {
 
     await taskModel.findByIdAndDelete(TaskId);
 
-    await userModel.findByIdAndUpdate(userid, {
-      $push: {
-        notifications: {
-          from: null,
-          message: `Your task "${task.title}" has been deleted successfully`,
-        },
-      },
+    await notificationModel.create({
+      recipient: userid,
+      from: null,
+      message: `Your task "${task.title}" has been deleted successfully`,
     });
 
     return res.json({
@@ -472,15 +463,11 @@ export const rejectSubmitedWork = async (req, res) => {
     };
     await task.save();
 
-    // Notify the assigned user that changes are requested
-    await userModel.findByIdAndUpdate(task.assignedTo, {
-      $push: {
-        notifications: {
-          from: task.createdBy,
-          message:
-            "Your submitted work was reviewed. The task creator requested changes. Please update and resubmit your work.",
-        },
-      },
+    await notificationModel.create({
+      recipient: task.assignedTO,
+      from: task.createdBy,
+      message:
+        "Your submitted work was reviewed. The task creator requested changes. Please update and resubmit your work.",
     });
 
     return res.json({
@@ -511,7 +498,7 @@ export const applyForTask = async (req, res) => {
     }
 
     const alreadyApplied = task.applicants.some(
-      (a) => a.user.toString() === userid
+      (a) => a.user.toString() === userid,
     );
 
     if (alreadyApplied) {
@@ -531,13 +518,10 @@ export const applyForTask = async (req, res) => {
     task.applicantsCount += 1;
     await task.save();
 
-    await userModel.findByIdAndUpdate(userid, {
-      $push: {
-        notifications: {
-          from: null, //from tasktribe
-          message: `Your proposal for "${task.title}" has been submitted successfully`,
-        },
-      },
+    await notificationModel.create({
+      recipient: userid,
+      from: null,
+      message: `Your proposal for "${task.title}" has been submitted successfully`,
     });
 
     return res.status(200).json({
@@ -563,7 +547,7 @@ export const getMyTask = async (req, res) => {
       .find({ createdBy: userid })
       .populate(
         "applicants.user",
-        "name surname skills bio email photo review rating"
+        "name surname skills bio email photo review rating",
       )
       .populate("assignedTo", "name surname email photo");
 
@@ -595,7 +579,7 @@ export const acceptApplicant = async (req, res) => {
         .json({ success: false, message: "Task not found" });
     }
     const acceptsApplicant = task.applicants.find(
-      (a) => a.user.toString() === applicantId
+      (a) => a.user.toString() === applicantId,
     );
     if (!acceptsApplicant) {
       return res
@@ -604,7 +588,7 @@ export const acceptApplicant = async (req, res) => {
     }
     // Get all rejected applicants before clearing the array
     const rejectedApplicants = task.applicants.filter(
-      (a) => a.user.toString() !== applicantId
+      (a) => a.user.toString() !== applicantId,
     );
 
     task.assignedTo = applicantId;
@@ -613,25 +597,17 @@ export const acceptApplicant = async (req, res) => {
     task.applicantsCount = 0;
     await task.save();
 
-    // Send notification to accepted applicant
-    await userModel.findByIdAndUpdate(applicantId, {
-      $push: {
-        notifications: {
-          from: task.createdBy,
-          message: `🎉 Your proposal was accepted for "${task.title}"`,
-        },
-      },
+    await notificationModel.create({
+      recipient: applicantId,
+      from: task.createdBy,
+      message: `🎉 Your proposal was accepted for "${task.title}"`,
     });
 
-    // Send notifications to all rejected applicants
     const rejectPromises = rejectedApplicants.map((rej) => {
-      return userModel.findByIdAndUpdate(rej.user, {
-        $push: {
-          notifications: {
-            from: task.createdBy,
-            message: `Your proposal was not selected for "${task.title}"`,
-          },
-        },
+      return notificationModel.create({
+        recipient: rej.user,
+        from: task.createdBy,
+        message: `Your proposal was not selected for "${task.title}"`,
       });
     });
 
@@ -652,7 +628,7 @@ export const acceptApplicant = async (req, res) => {
     }
 
     res.json({
-      success:true,
+      success: true,
       message: "Applicant accepted",
       task,
     });
@@ -676,20 +652,17 @@ export const rejectApplicant = async (req, res) => {
         .json({ success: false, message: "Task not found" });
     }
     const updatedApplicants = task.applicants.filter(
-      (a) => a.user.toString() !== applicantId
+      (a) => a.user.toString() !== applicantId,
     );
 
     task.applicants = updatedApplicants;
     task.applicantsCount = updatedApplicants.length;
     await task.save();
 
-    await userModel.findByIdAndUpdate(applicantId, {
-      $push: {
-        notifications: {
-          from: task.createdBy,
-          message: `Your proposal was not selected for "${task.title}"`,
-        },
-      },
+    await notificationModel.create({
+      recipient: applicantId,
+      from: task.createdBy,
+      message: `Your proposal was not selected for "${task.title}"`,
     });
 
     res.json({
@@ -759,14 +732,12 @@ export const submitWork = async (req, res) => {
     task.status = "submitted";
     await task.save();
 
-    await userModel.findByIdAndUpdate(task.createdBy, {
-      $push: {
-        notifications: {
-          from: task.assignedTo,
-          message: `Your task "${task.title}" workfiles is submitted `,
-        },
-      },
+    await notificationModel.create({
+      recipient: task.createdBy,
+      from: task.assignedTo,
+      message: `Your task "${task.title}" workfiles is submitted `,
     });
+
     res.json({
       success: true,
       message: "Work Submitted Successfully",
@@ -861,22 +832,16 @@ export const markAsComplete = async (req, res) => {
       },
     });
 
-    await userModel.findByIdAndUpdate(task.createdBy, {
-      $push: {
-        notifications: {
-          from: null, //from tasktribe
-          message: `Your task "${task.title}" has been completed successfully`,
-        },
-      },
+    await notificationModel.create({
+      recipient: task.createdBy,
+      from: null,
+      message: `Your task "${task.title}" has been completed successfully `,
     });
 
-    await userModel.findByIdAndUpdate(task.assignedTo, {
-      $push: {
-        notifications: {
-          from: null, //from tasktribe
-          message: `Your task "${task.title}" has been completed successfully. Your Payment will be credited to your account within 2-3 business days. If your payment is not credited, you can contact us`,
-        },
-      },
+    await notificationModel.create({
+      recipient: task.assignedTo,
+      from: null,
+      message: `Your task "${task.title}" has been completed successfully. Your Payment will be credited to your account within 2-3 business days. If your payment is not credited, you can contact us`,
     });
 
     res.json({
