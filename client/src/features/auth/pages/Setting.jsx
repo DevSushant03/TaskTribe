@@ -1,14 +1,13 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../features/auth/api/auth_api";
+import { auth } from "../api/auth_api";
 import { toast } from "react-toastify";
-import { UserContext } from "../Context/UserProvider";
-
+import { UserContext } from "../../../Context/UserProvider";
+import useLogOut from "../hooks/useLogOut";
 export default function Settings() {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const [isLogout, setIsLogout] = useState(false);
-  const [loading, setloading] = useState(false);
 
   const [privacy, setPrivacy] = useState({
     directMessage: true,
@@ -16,23 +15,9 @@ export default function Settings() {
     onlineStatus: true,
   });
 
-  const handleLogOut = async () => {
-    setloading(true);
-    try {
-      const res = await auth.logout();
-      if (res.data.success) {
-        toast.success(res.data.message);
-        setIsLogout(false);
-        navigate("/");
-      } else {
-        toast.error(res.data.message);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Error logging out");
-    } finally {
-      setloading(false);
-    }
-  };
+  const { mutate, isPending: loading } = useLogOut();
+
+
 
   return (
     <div className="w-full min-h-full bg-[#050505] text-white px-4 py-6 md:py-8 flex justify-center overflow-x-hidden overflow-y-auto">
@@ -74,50 +59,6 @@ export default function Settings() {
             }
           />
         </Section>
-
-        {/* Privacy */}
-        {/* <Section title="Privacy & Visibility">
-          <Toggle
-            label="Allow direct messages"
-            description="Let other users contact you directly."
-            checked={privacy.directMessage}
-            onChange={() =>
-              setPrivacy({
-                ...privacy,
-                directMessage: !privacy.directMessage,
-              })
-            }
-          />
-          <Toggle
-            label="Profile visibility"
-            description="Make your profile visible to other users."
-            checked={privacy.profileVisible}
-            onChange={() =>
-              setPrivacy({
-                ...privacy,
-                profileVisible: !privacy.profileVisible,
-              })
-            }
-          />
-          <Toggle
-            label="Online status"
-            description="Show when you are online."
-            checked={privacy.onlineStatus}
-            onChange={() =>
-              setPrivacy({
-                ...privacy,
-                onlineStatus: !privacy.onlineStatus,
-              })
-            }
-          />
-        </Section> */}
-
-        {/* Security */}
-        {/* <Section title="Security">
-          <button className="px-4 py-2 text-sm rounded-lg border border-zinc-700 hover:border-[#FF6B00] transition">
-            Change password
-          </button>
-        </Section> */}
 
         {/* Danger Zone */}
         <Section title="Danger Zone" danger>
@@ -165,11 +106,11 @@ export default function Settings() {
             </button>
             <button
               type="button"
-              onClick={handleLogOut}
+              onClick={mutate}
               disabled={loading}
               className="px-4 py-2 text-sm rounded-md bg-red-600 text-white hover:bg-red-700 transition"
             >
-              Logout
+              {loading ? "wait.." : "Logout"}
             </button>
           </div>
         </div>
