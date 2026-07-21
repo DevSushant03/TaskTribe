@@ -13,8 +13,9 @@ import { TaskContext } from "../../../Context/TaskProvider";
 
 const DashBoard = () => {
   const { user, isLoading: isUserLoading } = useContext(UserContext);
+  
   const { tasks, isLoading: isTaskLoading } = useContext(TaskContext);
-
+ 
   
   const globalStats = [
     {

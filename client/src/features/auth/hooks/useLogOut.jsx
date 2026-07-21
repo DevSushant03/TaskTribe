@@ -9,7 +9,8 @@ export default function useLogOut() {
   return useMutation({
     mutationFn: () => auth.logout(),
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ["currentUser"] });
+      queryClient.resetQueries({ queryKey: ["currentUser"] }); 
+      queryClient.clear();
       navigate("/");
     },
   });

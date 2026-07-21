@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 import { registerSchema } from "../validator/auth_validation.js";
+import { sendOtpService } from "../services/sendOtpServices.js";
+
 import useRegister from "../hooks/useRegister.jsx";
 import useSendOtp from "../hooks/useSendOtp.jsx";
 import useVerifyRegisterOtp from "../hooks/useVerifyRegisterOtp.jsx";

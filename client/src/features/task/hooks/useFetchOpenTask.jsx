@@ -8,7 +8,7 @@ export default function useFetchOpenTask() {
     queryKey: ["open-tasks"],
     queryFn: async () => {
       const res = await task.getAllOpenTask();
-      return res.data.tasks;
+      return res.data.tasks ?? null;
     },
   });
 }

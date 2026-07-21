@@ -264,7 +264,7 @@ function AccountSection({ userId, navigate }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 function ProfilePage() {
-  const { user, isLoading } = useContext(UserContext);
+  const { user , isLoading } = useContext(UserContext);
   const { id } = useParams();
   const navigate = useNavigate();
 

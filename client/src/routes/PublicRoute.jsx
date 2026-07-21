@@ -12,7 +12,6 @@ const PublicRoute = () => {
     return <Loader/>
   }
 
-  console.log(data)
   if (data) {
     return (
       <Navigate

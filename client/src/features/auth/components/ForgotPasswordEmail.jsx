@@ -2,8 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../api/auth_api"; // your axios instance
-import { sendOtpService } from "../../../services/sendOtpServices";
-
+import { sendOtpService } from "../services/sendOtpServices";
 const ForgotPasswordEmail = ({ nextStep, setEmail }) => {
   const [email, setUserEmail] = useState("");
   const [loading, setLoading] = useState(false);

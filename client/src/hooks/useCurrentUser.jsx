@@ -5,10 +5,10 @@ export const useCurrentUser = () => {
     queryKey: ["currentUser"],
     queryFn: async () => {
       const res = await users.getUser();
-      return res.data.user
+      return res.data.user ?? null;
     },
     staleTime:0,
-    refetchOnMount: "always", // Stops request when a new component using this query loads
+    refetchOnMount: "always", 
     refetchOnReconnect: false,
   });
 };
