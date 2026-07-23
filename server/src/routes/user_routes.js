@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/getuser",verifyAuth, getUserData);
 router.post("/setUserData",upload.single("photo"),verifyAuth, setUserData);
-router.put("/editProfile/:id",verifyAuth, editProfile);
+router.put("/editProfile/",verifyAuth, editProfile);
 router.post("/changeProfilePic/:id",upload.single("photo"),verifyAuth, editProfilePic);
 
 

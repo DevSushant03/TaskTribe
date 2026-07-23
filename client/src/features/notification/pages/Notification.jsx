@@ -20,7 +20,6 @@ function Notification() {
   } = useGetNotifications();
   const { mutate: markAllAsRead } = useMarkAllAsRead();
   const { mutate: markAsRead } = useMarkAsRead();
-  console.log(notifications);
 
   if (isPending) return <NotifyLoader />;
 

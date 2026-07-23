@@ -7,7 +7,7 @@ import TaskList from "../features/task/pages/BrowseTask";
 import TaskDetails from "../features/task/pages/TaskDetails";
 import PostTask from "../features/task/pages/PostTask";
 import Manage from "../features/task/pages/Manage";
-import ProfilePage from "../features/auth/pages/ProfilePage";
+import ProfilePage from "../features/Profile/pages/ProfilePage";
 import Chats from "../features/chats/pages/Chats";
 import DashBoard from "../features/task/pages/DashBoard";
 

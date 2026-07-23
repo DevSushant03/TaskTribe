@@ -19,9 +19,9 @@ export const auth = {
 
 export const users = {
   getUser: () => api.get(`/user/getuser`),
-  editProfile: (id, data) => api.put(`/user/editProfile/${id}`, data),
-  changeProfilePic: (id, formData) =>
-    api.post(`/user/changeProfilePic/${id}`, formData, {
+  editProfile: (data) => api.put(`/user/editProfile/`, data),
+  changeProfilePic: (formData) =>
+    api.post(`/user/changeProfilePic/`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
   setUserData: (data) =>
